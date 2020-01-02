@@ -1,0 +1,411 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_card_back"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cream">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/alpha"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="40dp"
+        android:paddingVertical="20dp">
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="270dp"
+            android:layout_height="380dp"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="رقم المادة"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="الباركود"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="اسم المادة بالعربي"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="اسم المادة بالإنجيزي"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="المجموعة"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="المجموعة الفرعية"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="نسبة الضريبة"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:text="سعر البيع"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_width="wrap_content"
+            android:layout_height="380dp"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+
+            <EditText
+                android:id="@+id/type_card_material_no"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/type_card_barcode"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/type_card_arabic_name"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/type_card_material_name"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2">
+
+                <Spinner
+                    android:id="@+id/type_card_group"
+                    android:layout_width="220dp"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2">
+
+                <Spinner
+                    android:id="@+id/type_card_branch_group"
+                    android:layout_width="220dp"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2">
+
+                <Spinner
+                    android:id="@+id/type_card_tax_percent"
+                    android:layout_width="220dp"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/type_card_sale_price"
+                android:layout_width="220dp"
+                android:layout_height="35dp"
+                android:layout_marginVertical="6dp"
+                android:background="@drawable/shape2"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="380dp"
+            android:layout_margin="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="145dp"
+                android:background="@drawable/shape3"
+                android:src="@android:drawable/ic_menu_add"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/add_cat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape3"
+                android:src="@android:drawable/ic_menu_add" />
+
+            <ImageView
+                android:id="@+id/add_sub_cat"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape3"
+                android:src="@android:drawable/ic_menu_add" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/catLinear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="245dp"
+                android:background="@drawable/shape4"
+                android:orientation="vertical"
+                android:padding="15sp"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:text="رمز المجموعة : "
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:text="اسم المجموعة : "
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:background="@drawable/shape2"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape5"
+                    android:text="add" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/subCatLinear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="300dp"
+                android:background="@drawable/shape4"
+                android:orientation="vertical"
+                android:padding="15sp"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:text="رمز المجموعة : "
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:text="اسم المجموعة : "
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="35dp"
+                        android:layout_marginVertical="6dp"
+                        android:background="@drawable/shape2"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape5"
+                    android:text="add" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="470dp"
+    android:layout_height="250dp"
+    android:background="@color/cream"
+    android:gravity="center"
+    android:padding="40dp"
+    android:id="@+id/settings_back"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="الثيــم :"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+
+        <ImageView
+            android:id="@+id/cream_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/cream_dot" />
+
+        <ImageView
+            android:id="@+id/rosy_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/rosy_dot" />
+
+        <ImageView
+            android:id="@+id/sky_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/sky_dot" />
+
+        <ImageView
+            android:id="@+id/pronze_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/pronze_dot" />
+
+        <ImageView
+            android:id="@+id/gray_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/gray_dot" />
+
+        <ImageView
+            android:id="@+id/red_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/red_dot" />
+
+        <ImageView
+            android:id="@+id/green_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/green_dot" />
+
+        <ImageView
+            android:id="@+id/blue_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/blue_dot" />
+
+    </LinearLayout>
+</LinearLayout>

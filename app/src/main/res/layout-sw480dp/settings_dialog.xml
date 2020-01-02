@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="580dp"
+    android:layout_height="380dp"
+    android:background="@color/cream"
+    android:gravity="center"
+    android:padding="40dp"
+    android:id="@+id/settings_back"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="رقم الـ IP :"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+        <EditText
+            android:id="@+id/ip"
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:layout_marginVertical="6dp"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="اسم الشركة :"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+        <EditText
+            android:id="@+id/company"
+            android:layout_width="220dp"
+            android:layout_height="35dp"
+            android:layout_marginVertical="6dp"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="التحكم بـ :"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+        <CheckBox
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginVertical="6dp"
+            android:text="السعر"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="23sp" />
+
+        <CheckBox
+            android:id="@+id/qty"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginVertical="6dp"
+            android:layout_marginHorizontal="10dp"
+            android:text="الكمية"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/black"
+            android:textSize="23sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="الثيــم :"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+
+        <ImageView
+            android:id="@+id/cream_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/cream_dot" />
+
+        <ImageView
+            android:id="@+id/rosy_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/rosy_dot" />
+
+        <ImageView
+            android:id="@+id/sky_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/sky_dot" />
+
+        <ImageView
+            android:id="@+id/pronze_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/pronze_dot" />
+
+        <ImageView
+            android:id="@+id/gray_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/gray_dot" />
+
+        <ImageView
+            android:id="@+id/red_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/red_dot" />
+
+        <ImageView
+            android:id="@+id/green_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/green_dot" />
+
+        <ImageView
+            android:id="@+id/blue_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/blue_dot" />
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:text="حفظ"
+        android:layout_gravity="center"
+        android:background="@drawable/green_dot"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/white"
+        android:textSize="16dp"/>
+
+
+</LinearLayout>

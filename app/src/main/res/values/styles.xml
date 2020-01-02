@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MenuButtonsSmall">
+        <item name="fab_size">normal</item>
+        <item name="fab_colorNormal">@color/alpha_orange</item>
+        <item name="fab_colorPressed">@color/alpha_orange</item>
+        <item name="fab_colorRipple">@color/alpha_orange</item>
+    </style>
+
+</resources>

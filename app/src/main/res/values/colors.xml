@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#FA235A33</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#C40E0000</color>
+    <color name="gray">#C4413D3D</color>
+    <color name="red">#C4DF2121</color>
+    <color name="orange">#FF5722</color>
+    <color name="green">#FA235A33</color>
+
+
+
+
+
+
+    <!--theme 2-->
+    <color name="rosy1">#B38481</color>
+    <color name="rosy2">#C5908E</color>
+    <color name="rosy3">#CDE8ADAA</color>
+    <color name="rosy4">#61E8ADAA</color>
+    <color name="rosy_blue">#81AFB2</color>#347235
+
+    <!--theme 3-->
+    <color name="green1">#C4235A33</color>
+    <color name="green2">#6D235A33</color>
+    <color name="green3">#489CB071</color>
+    <color name="iguana_green">#9CB071</color>
+
+    <!--theme 4-->
+    <color name="gray1">#6D7B8D</color>
+    <color name="gray2">#9F6D7B8D</color>
+    <color name="gray3">#516D7B8D</color>
+    <color name="gray_orange">#74FF5722</color>
+
+    <!--theme 5-->
+    <color name="red1">#C4C11B17</color>
+    <color name="red2">#7EC11B17</color>
+    <color name="red3">#1DC11B17</color>
+    <color name="red_black">#BF0C0C0C</color>
+
+    <!--theme 6-->
+    <color name="pronz1">#827B60</color>
+    <color name="pronz2">#8D827B60</color>
+    <color name="pronz3">#34827B60</color>
+
+    <!--theme 7-->
+    <color name="sky1">#307D7E</color>
+    <color name="sky2">#9C3B9C9C</color>
+    <color name="sky3">#453B9C9C</color>
+    <color name="sky_brown">#7D514B</color>
+
+    <!--theme 8-->
+    <color name="blue1">#9E4C787E</color>
+    <color name="blue2">#664C787E</color>
+    <color name="blue3">#DF00BCD4</color>
+    <color name="blue4">#5EFFFFFF</color>
+    <color name="gray_blue">#6D7B8D</color>
+
+    <!--theme 9-->
+    <color name="cream">#E5E4E2</color>
+    <color name="beetle_green">#9E4C787E</color>
+    <color name="cream_rosy">#C5908E</color>
+
+
+    <color name="alpha_black">#320C0C0C</color>
+    <color name="alpha_black_dark">#680C0C0C</color>
+    <color name="alpha_white">#86FDFCF5</color>
+    <color name="alpha_green">#B4235A33</color>
+    <color name="alpha_yellow">#CEF7F0CD</color>
+    <color name="alpha_orange">#83FF5722</color>
+
+</resources>
