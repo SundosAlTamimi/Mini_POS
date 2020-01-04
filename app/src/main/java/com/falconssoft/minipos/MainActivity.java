@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DHandler = new DatabaseHandler(this);
+        DHandler = new DatabaseHandler(MainActivity.this);
         required = new EditText(MainActivity.this);
 
         init();
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
         startAnimation();
 
-        if (DHandler.getSettings().getIpAddress() == null)
+        if (DHandler.getSettings() == null)
             DHandler.addSettings(new Settings("", "", 9, 0, 0));
         else {
             setThemeNo(DHandler.getSettings().getThemeNo());
