@@ -68,7 +68,7 @@ public class OrderedListAdapter extends BaseAdapter {
 
         holder.itemNo.setText(itemsList.get(i).getItemNo());
         holder.itemName.setText(itemsList.get(i).getItemName());
-        holder.qty.setText("1");
+        holder.qty.setText("" + itemsList.get(i).getQty());
         holder.price.setText(""+itemsList.get(i).getPrice());
         holder.net.setText(""+itemsList.get(i).getNet());
 
@@ -82,10 +82,10 @@ public class OrderedListAdapter extends BaseAdapter {
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                obj.items2.get(i).setQty((Integer.parseInt(holder.qty.getText().toString()) + 1));
-                obj.items2.get(i).setNet((Integer.parseInt(holder.qty.getText().toString()) + 1) * itemsList.get(i).getPrice());
-                holder.qty.setText(""+ (Integer.parseInt(holder.qty.getText().toString()) + 1));
-                holder.net.setText(""+ ((Integer.parseInt(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
+                obj.items2.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) + 1));
+                obj.items2.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) + 1) * itemsList.get(i).getPrice());
+                holder.qty.setText(""+ (Double.parseDouble(holder.qty.getText().toString()) + 1));
+                holder.net.setText(""+ ((Double.parseDouble(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
                 obj.reCalculate();
             }
         });
@@ -93,11 +93,13 @@ public class OrderedListAdapter extends BaseAdapter {
         holder.minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                obj.items2.get(i).setQty((Integer.parseInt(holder.qty.getText().toString()) - 1));
-                obj.items2.get(i).setNet((Integer.parseInt(holder.qty.getText().toString()) - 1) * itemsList.get(i).getPrice());
-                holder.qty.setText(""+ (Integer.parseInt(holder.qty.getText().toString()) - 1));
-                holder.net.setText(""+ ((Integer.parseInt(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
-                obj.reCalculate();
+                if (Double.parseDouble(holder.qty.getText().toString()) > 1) {
+                    obj.items2.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) - 1));
+                    obj.items2.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) - 1) * itemsList.get(i).getPrice());
+                    holder.qty.setText("" + (Double.parseDouble(holder.qty.getText().toString()) - 1));
+                    holder.net.setText("" + ((Double.parseDouble(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
+                    obj.reCalculate();
+                }
             }
         });
         return view;

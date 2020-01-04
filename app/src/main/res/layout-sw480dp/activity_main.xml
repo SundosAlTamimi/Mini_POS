@@ -215,6 +215,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="المجموع قبل الضريبة : 20"
+                            android:textStyle="bold"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -224,6 +225,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="قيمة الضريبة : 5"
+                            android:textStyle="bold"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -233,6 +235,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="الصافي : 25"
+                            android:textStyle="bold"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -39,7 +40,6 @@ import com.falconssoft.minipos.Modle.Items;
 import com.falconssoft.minipos.Modle.Settings;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 if (items2.size() != 0)
                     saveDialog();
                 else
-                    Toast.makeText(MainActivity.this , "لا يوجد طلبات !" , Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "لا يوجد طلبات !", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -173,23 +173,23 @@ public class MainActivity extends AppCompatActivity {
         adapter3 = new OrderedListAdapter(MainActivity.this, items2);
         itemsList.setAdapter(adapter3);
 
-        items.add(new Items("1", "بطاطا", 10, R.drawable.botato, "خضار"));
-        items.add(new Items("1", "برجر", 10, R.drawable.burgerr, "لحوم"));
-        items.add(new Items("1", "سمك", 10, R.drawable.fish, "اسماك"));
-        items.add(new Items("1", "بطيخ", 10, R.drawable.watermelon, "فواكه"));
-        items.add(new Items("1", "كوردن بلو", 10, R.drawable.corden, "لحوم"));
-        items.add(new Items("1", "سلطة", 10, R.drawable.salad, "خضار"));
-        items.add(new Items("1", "ليمون", 10, R.drawable.limon, "فواكه"));
-        items.add(new Items("1", "فراولة", 10, R.drawable.fruit, "فواكه"));
-        items.add(new Items("1", "بطيخ", 10, R.drawable.watermelon, "فواكه"));
-        items.add(new Items("1", "برجر", 10, R.drawable.burgerr, "لحوم"));
-        items.add(new Items("1", "فراولة", 10, R.drawable.fruit, "فواكه"));
-        items.add(new Items("1", "سمك", 10, R.drawable.fish, "اسماك"));
-        items.add(new Items("1", "كوردن بلو", 10, R.drawable.corden, "لحوم"));
-        items.add(new Items("1", "سلطة", 10, R.drawable.salad, "خضار"));
-        items.add(new Items("1", "ليمون", 10, R.drawable.limon, "فواكه"));
-        items.add(new Items("1", "فراولة", 10, R.drawable.fruit, "فواكه"));
-        items.add(new Items("1", "بطيخ", 10, R.drawable.watermelon, "فواكه"));
+        items.add(new Items("1", "بطاطا", 10, R.drawable.botato, "خضار", 1));
+        items.add(new Items("2", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
+        items.add(new Items("3", "سمك", 10, R.drawable.fish, "اسماك", 1));
+        items.add(new Items("4", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
+        items.add(new Items("5", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
+        items.add(new Items("6", "سلطة", 10, R.drawable.salad, "خضار", 1));
+        items.add(new Items("7", "ليمون", 10, R.drawable.limon, "فواكه", 1));
+        items.add(new Items("8", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+        items.add(new Items("9", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
+        items.add(new Items("10", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
+        items.add(new Items("11", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+        items.add(new Items("12", "سمك", 10, R.drawable.fish, "اسماك", 1));
+        items.add(new Items("13", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
+        items.add(new Items("14", "سلطة", 10, R.drawable.salad, "خضار", 1));
+        items.add(new Items("15", "ليمون", 10, R.drawable.limon, "فواكه", 1));
+        items.add(new Items("16", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+        items.add(new Items("17", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
 
 
         adapter2 = new ItemListAdapter(MainActivity.this, items);
@@ -199,9 +199,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(DHandler.getSettings().getControlPrice() == 0) {
-                    items2.add(new Items(items.get(position).getItemNo(), items.get(position).getItemName(),
-                            items.get(position).getPrice(), items.get(position).getCategory(), 1, (items.get(position).getPrice() * 1)));
+                if (DHandler.getSettings().getControlPrice() == 0) {
+                    boolean found = false;
+                    if (items2.size() != 0) {
+                        for (int i = 0; i < items2.size(); i++)
+                            if (items.get(position).getItemNo().equals(items2.get(i).getItemNo())) {
+                                found = true;
+                                double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
+                                items2.get(i).setQty(++qty);
+//                              items2.get(i).setPrice(price + 10);
+                                items2.get(i).setNet(net + 10);
+                                i = items2.size();
+                            }
+                    }
+
+                    if (!found)
+                        items2.add(new Items(items.get(position).getItemNo()
+                                , items.get(position).getItemName()
+                                , items.get(position).getPrice()
+                                , items.get(position).getCategory()
+                                , 1
+                                , (items.get(position).getPrice() * 1)));
+
+
                     adapter3.notifyDataSetChanged();
                     reCalculate();
                 } else {
@@ -216,25 +236,76 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("هل تريد حذف هذه المادة");
-                builder.setTitle("حذف مادة");
-                builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                final Dialog optionsDialog = new Dialog(MainActivity.this);
+                optionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                optionsDialog.setContentView(R.layout.options_dialog_layout);
+                TextView delete = optionsDialog.findViewById(R.id.options_dialog_delete);
+                TextView edit = optionsDialog.findViewById(R.id.options_dialog_edit);
+
+                delete.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        items2.remove(position);
-                        adapter3.notifyDataSetChanged();
-                        reCalculate();
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("هل تريد حذف هذه المادة");
+                        builder.setTitle("حذف مادة");
+                        builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                items2.remove(position);
+                                adapter3.notifyDataSetChanged();
+                                reCalculate();
+
+                            }
+                        });
+                        builder.setNeutralButton("الغاء", null);
+                        builder.show();
+                        optionsDialog.dismiss();
                     }
                 });
-                builder.show();
+
+                edit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Dialog qtyDialog = new Dialog(MainActivity.this);
+                        qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        qtyDialog.setContentView(R.layout.quantity_dialog);
+                        final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
+                        qty.setText("" + items2.get(position).getQty());
+                        Button done = qtyDialog.findViewById(R.id.quantity_dialog_done);
+
+                        done.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!TextUtils.isEmpty(qty.getText().toString())) {
+                                    double quantity = Double.parseDouble(qty.getText().toString());
+//                                    double net = (items2.get(position).getNet());
+                                    if (quantity > 0) {
+                                        items2.get(position).setQty(quantity);
+                                        items2.get(position).setNet(quantity * 10);
+                                        adapter3.notifyDataSetChanged();
+                                        reCalculate();
+                                        qtyDialog.dismiss();
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    qty.setError("حقل فارغ!");
+                                }
+                            }
+                        });
+                        qtyDialog.show();
+                        optionsDialog.dismiss();
+                    }
+                });
+
+                optionsDialog.show();
                 return false;
             }
         });
 
         startAnimation();
 
-        if (DHandler.getSettings() == null)
+        if (DHandler.getSettings() == null)//.getIpAddress()
             DHandler.addSettings(new Settings("", "", 9, 0, 0));
         else {
             setThemeNo(DHandler.getSettings().getThemeNo());
@@ -390,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
         priceOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!price.getText().toString().equals("")){
+                if (!price.getText().toString().equals("")) {
 
                     item.setPrice(Double.parseDouble(price.getText().toString()));
 
@@ -819,7 +890,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void setDialogTheme(int themeNo, LinearLayout dialogBack, Button button){
+    void setDialogTheme(int themeNo, LinearLayout dialogBack, Button button) {
 
         switch (themeNo) {
             case 2:
@@ -869,7 +940,6 @@ public class MainActivity extends AppCompatActivity {
         String newValue = (((((((((((value + "").replaceAll("١", "1")).replaceAll("٢", "2")).replaceAll("٣", "3")).replaceAll("٤", "4")).replaceAll("٥", "5")).replaceAll("٦", "6")).replaceAll("٧", "7")).replaceAll("٨", "8")).replaceAll("٩", "9")).replaceAll("٠", "0").replaceAll("٫", "."));
         return newValue;
     }
-
 
 
     void init() {
