@@ -270,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         qtyDialog.setContentView(R.layout.quantity_dialog);
                         final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
+                        qty.setText("" + items2.get(position).getQty());
                         Button done = qtyDialog.findViewById(R.id.quantity_dialog_done);
 
                         done.setOnClickListener(new View.OnClickListener() {
