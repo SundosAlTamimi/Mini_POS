@@ -9,6 +9,15 @@ public class Items {
     private double qty;
     private double net;
 
+    public Items(String itemNo, String itemName, double price, int pic, String category, double qty) {
+        this.itemNo = itemNo;
+        this.itemName = itemName;
+        this.price = price;
+        this.category = category;
+        this.pic = pic;
+        this.qty = qty;
+    }
+
     public Items(String itemNo, String itemName, double price, int pic, String category) {
         this.itemNo = itemNo;
         this.itemName = itemName;

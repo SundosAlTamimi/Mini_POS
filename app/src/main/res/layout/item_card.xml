@@ -158,35 +158,56 @@
                 android:textSize="16sp" />
 
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginVertical="6dp"
                 android:background="@drawable/shape2">
 
-                <Spinner
+                <Button
                     android:id="@+id/type_card_group"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape2"
                     android:paddingHorizontal="10dp"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/arrowdoown"
+                    android:padding="20dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:layout_marginVertical="6dp"
-                android:background="@drawable/shape2">
+                android:background="@drawable/shape2"
+                android:orientation="horizontal">
 
-                <Spinner
+                <Button
                     android:id="@+id/type_card_branch_group"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingHorizontal="10dp"
+                    android:background="@drawable/shape2"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+                <ImageButton
+                    android:id="@+id/imageButton2"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/arrowdoown"
+                    android:padding="20dp" />
 
             </LinearLayout>
 
@@ -250,153 +271,153 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/catLinear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="170dp"
-                android:background="@drawable/shape4"
-                android:padding="10sp"
-                android:visibility="invisible"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="90dp"
-                        android:layout_height="25dp"
-                        android:layout_weight="1"
-                        android:text="رمز المجموعة : "
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="25dp"
-                        android:text="1"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="90dp"
-                        android:layout_height="25dp"
-                        android:layout_marginVertical="6dp"
-                        android:text="اسم المجموعة : "
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="25dp"
-                        android:layout_marginVertical="6dp"
-                        android:background="@drawable/shape2"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="13sp" />
-
-                </LinearLayout>
-
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/shape5"
-                    android:text="add"
-                    android:layout_gravity="center"
-                    android:textSize="10dp"
-                    android:layout_marginTop="7dp"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/subCatLinear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="200dp"
-                android:background="@drawable/shape4"
-                android:visibility="visible"
-                android:padding="10sp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="90dp"
-                        android:layout_height="25dp"
-                        android:layout_weight="1"
-                        android:text="رمز المجموعة : "
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="25dp"
-                        android:text="1"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="90dp"
-                        android:layout_height="25dp"
-                        android:layout_marginVertical="6dp"
-                        android:layout_weight="1"
-                        android:text="اسم المجموعة : "
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="25dp"
-                        android:layout_marginVertical="6dp"
-                        android:background="@drawable/shape2"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="13sp" />
-
-                </LinearLayout>
-
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/shape5"
-                    android:text="add"
-                    android:layout_gravity="center"
-                    android:textSize="10dp"
-                    android:layout_marginTop="7dp"/>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|left"
+        android:orientation="vertical"
+        android:padding="40dp">
+
+        <LinearLayout
+            android:id="@+id/catLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape4"
+            android:orientation="vertical"
+            android:padding="10sp"
+            android:visibility="invisible">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:text="رمز المجموعة : "
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="25dp"
+                    android:layout_marginVertical="6dp"
+                    android:text="اسم المجموعة : "
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:layout_marginVertical="6dp"
+                    android:background="@drawable/shape2"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/shape5"
+                android:text="add"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subCatLinear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape4"
+            android:orientation="vertical"
+            android:padding="10sp"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:text="رمز المجموعة : "
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="90dp"
+                    android:layout_height="25dp"
+                    android:layout_marginVertical="6dp"
+                    android:layout_weight="1"
+                    android:text="اسم المجموعة : "
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:layout_marginVertical="6dp"
+                    android:background="@drawable/shape2"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/shape5"
+                android:text="add"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

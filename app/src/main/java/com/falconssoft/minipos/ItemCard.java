@@ -1,23 +1,37 @@
 package com.falconssoft.minipos;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ItemCard extends AppCompatActivity {
 
@@ -26,11 +40,13 @@ public class ItemCard extends AppCompatActivity {
     private List<String> subCatList = new ArrayList<>();
 
     private ArrayAdapter<String> taxAdapter, catAdapter, subCatAdapter;
-    private Spinner taxSpinner, catSpinner, subCatSpinner;
+    private Spinner taxSpinner;
+    private Button catSpinner, subCatSpinner;
     private ImageView addCat, addSubCat;
     private LinearLayout linear1, linear2, catLinear, subCatLinear;
-    private RelativeLayout itemCardBack, alpha;
-
+    private RelativeLayout itemCardBack, alpha,relative;
+   Button buttonShowDropDown;
+    PopupWindow popupWindowDogs;
     DatabaseHandler DHandler;
 
     ScaleAnimation scale;
@@ -42,6 +58,7 @@ public class ItemCard extends AppCompatActivity {
         setContentView(R.layout.item_card);
 
         itemCardBack = findViewById(R.id.item_card_back);
+        relative=findViewById(R.id.relative);
         alpha = findViewById(R.id.alpha);
         taxSpinner = findViewById(R.id.type_card_tax_percent);
         catSpinner = findViewById(R.id.type_card_group);
@@ -54,6 +71,8 @@ public class ItemCard extends AppCompatActivity {
         linear2 = findViewById(R.id.linear2);
 
 
+        catLinear.setVisibility(View.INVISIBLE);
+        subCatLinear.setVisibility(View.INVISIBLE);
         DHandler = new DatabaseHandler(this);
         if (DHandler.getSettings().getIpAddress() != null)
             setThemeNo(DHandler.getSettings().getThemeNo());
@@ -72,29 +91,79 @@ public class ItemCard extends AppCompatActivity {
         catList.add("المجموعة 1");
         catList.add("المجموعة 2");
         catList.add("المجموعة 3");
-        catAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, catList);
-        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        catSpinner.setAdapter(catAdapter);
+//        catAdapter =
+//        catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        catSpinner.setAdapter(catAdapter);
 
         subCatList.add("المجموعة 1");
         subCatList.add("المجموعة 2");
         subCatList.add("المجموعة 3");
-        subCatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subCatList);
-        subCatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        subCatSpinner.setAdapter(subCatAdapter);
+//        subCatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, subCatList);
+//        subCatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        subCatSpinner.setAdapter(subCatAdapter);
+//        buttonShowDropDown=catSpinner;
+
+        if(catList.size()!=0) {
+           catSpinner.setText("" + catList.get(0));
+        }
+        catSpinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonShowDropDown=catSpinner;
+                popupWindowDogs=popupWindowDogs(catList,buttonShowDropDown,"حذف المجموعه");
+                popupWindowDogs.showAsDropDown(v, 0, 0);
+            }
+        });
 
 
+        if(subCatList.size()!=0) {
+            subCatSpinner.setText("" + subCatList.get(0));
+        }
+        subCatSpinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonShowDropDown=subCatSpinner;
+                popupWindowDogs=popupWindowDogs(subCatList,buttonShowDropDown,"حذف المجموعه الفرعيه ");
+                popupWindowDogs.showAsDropDown(v, 0, 0);
+            }
+        });
+////
+//        subCatSpinner.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                Log.e("SubCat",""+catSpinner.getSelectedItemPosition());
+//
+//                return true;
+//            }
+//        });
+//
+//       subCatSpinner.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+//           public boolean onItemLongClick(AdapterView<?> arg0,
+//                                          View arg1,
+//                                          int arg2,
+//                                          long arg3) {
+//              Log.e("Sub Cat",""+subCatSpinner.getSelectedItemPosition());
+//               return false;
+//           }
+//
+//       });
         addCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (flag == 1) {
-                    slideRight(subCatLinear);
+//                    slideRight(subCatLinear);
+                    relative.setBackground(getResources().getDrawable(R.drawable.focused));
+                    catLinear.setVisibility(View.INVISIBLE);
+                    subCatLinear.setVisibility((View.INVISIBLE));
+                    flag=0;
+                }else {
+                    relative.setBackground(getResources().getDrawable(R.drawable.shape2));
+                    subCatLinear.setVisibility((View.INVISIBLE));
+                    catLinear.setVisibility(View.VISIBLE);
+//                slideLeft(catLinear);
+                    flag = 1;
                 }
-                subCatLinear.setVisibility((View.INVISIBLE));
-                catLinear.setVisibility(View.VISIBLE);
-                slideLeft(catLinear);
-                flag = 1;
 
             }
         });
@@ -104,12 +173,18 @@ public class ItemCard extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (flag == 1) {
-                    slideRight(catLinear);
+//                    slideRight(catLinear);
+                    relative.setBackground(getResources().getDrawable(R.drawable.focused));
+                    subCatLinear.setVisibility((View.INVISIBLE));
+                    catLinear.setVisibility(View.INVISIBLE);
+                    flag=0;
+                }else {
+                    relative.setBackground(getResources().getDrawable(R.drawable.shape2));
+                    catLinear.setVisibility(View.INVISIBLE);
+                    subCatLinear.setVisibility((View.VISIBLE));
+//                slideLeft(subCatLinear);
+                    flag = 1;
                 }
-                catLinear.setVisibility(View.INVISIBLE);
-                subCatLinear.setVisibility((View.VISIBLE));
-                slideLeft(subCatLinear);
-                flag = 1;
             }
         });
 
@@ -220,4 +295,109 @@ public class ItemCard extends AppCompatActivity {
         animate.setFillAfter(true);
         view.startAnimation(animate);
     }
+
+    public PopupWindow popupWindowDogs(final List<String>list, final Button buttonShowDropDown, final String title) {
+
+        // initialize a pop up window type
+        PopupWindow popupWindow = new PopupWindow(this);
+
+        // the drop down list is a list view
+        ListView listViewDogs = new ListView(this);
+
+        // set our adapter and pass our pop up window contents
+        listViewDogs.setAdapter(dogsAdapter(list));
+
+        // set the item click listener
+        listViewDogs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Context mContext = v.getContext();
+                ItemCard mainActivity = ((ItemCard) mContext);
+
+                // add some animation when a list item was clicked
+                Animation fadeInAnimation = AnimationUtils.loadAnimation(v.getContext(), android.R.anim.fade_in);
+                fadeInAnimation.setDuration(10);
+                v.startAnimation(fadeInAnimation);
+
+                // dismiss the pop up
+                mainActivity.popupWindowDogs.dismiss();
+
+                // get the text and set it as the button text
+                String selectedItemText = ((TextView) v).getText().toString();
+                buttonShowDropDown.setText(selectedItemText);
+
+
+            }
+        });
+
+        listViewDogs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                String selectedItemTag = ((TextView) view).getTag().toString();
+                Toast.makeText(ItemCard.this, "Dog ID is: " + selectedItemTag, Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
+                builder.setMessage("هل انت متأكد من حذف هذه المجموعه ؟");
+                builder.setTitle(""+title);
+                builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        list.remove(position);
+                        if(list.size()!=0) {
+                            ItemCard.this.buttonShowDropDown.setText("" + list.get(0));
+                        }else{
+                            ItemCard.this.buttonShowDropDown.setText("");
+                        }
+                        dogsAdapter(list).notifyDataSetChanged();
+                    }
+                });
+                builder.show();
+                return false;
+            }
+        });
+
+        // some other visual settings
+        popupWindow.setFocusable(true);
+        popupWindow.setWidth(220);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+        // set the list view as pop up window content
+        popupWindow.setContentView(listViewDogs);
+
+        return popupWindow;
+    }
+
+    /*
+     * adapter where the list values will be set
+     */
+    private ArrayAdapter<String> dogsAdapter(final List<String> dogsArray) {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.list_content, dogsArray) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                // setting the ID and text for every items in the list
+//                String item = getItem(position);
+//                String[] itemArr = item.split("::");
+//                String text = itemArr[0];
+//                String id = itemArr[1];
+
+                // visual settings for the list item
+                TextView listItem = new TextView(ItemCard.this);
+                listItem.setBackground(getResources().getDrawable(R.drawable.shape6));
+                listItem.setGravity(Gravity.CENTER);
+                listItem.setText(""+dogsArray.get(position));
+                listItem.setTag(""+dogsArray.get(position));
+                listItem.setTextSize(18);
+                listItem.setPadding(10, 10, 10, 10);
+                listItem.setTextColor(getResources().getColor(R.color.black));
+
+                return listItem;
+            }
+        };
+
+        return adapter;
+    }
+
+
 }
