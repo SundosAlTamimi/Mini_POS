@@ -1,14 +1,22 @@
 package com.falconssoft.minipos;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -42,12 +51,14 @@ public class ItemCard extends AppCompatActivity {
     private ArrayAdapter<String> taxAdapter, catAdapter, subCatAdapter;
     private Spinner taxSpinner;
     private Button catSpinner, subCatSpinner;
-    private ImageView addCat, addSubCat;
+    private ImageView addCat, addSubCat, itemPic, catPic;
     private LinearLayout linear1, linear2, catLinear, subCatLinear;
     private RelativeLayout itemCardBack, alpha,relative;
    Button buttonShowDropDown;
     PopupWindow popupWindowDogs;
     DatabaseHandler DHandler;
+    int picFlag;
+    static Bitmap itemBitmapPic, categoryPic;
 
     ScaleAnimation scale;
     int flag = 0;
@@ -64,11 +75,13 @@ public class ItemCard extends AppCompatActivity {
         catSpinner = findViewById(R.id.type_card_group);
         subCatSpinner = findViewById(R.id.type_card_branch_group);
         addCat = findViewById(R.id.add_cat);
+        catPic = findViewById(R.id.cat_image);
         addSubCat = findViewById(R.id.add_sub_cat);
         catLinear = findViewById(R.id.catLinear);
         subCatLinear = findViewById(R.id.subCatLinear);
         linear1 = findViewById(R.id.linear1);
         linear2 = findViewById(R.id.linear2);
+        itemPic = findViewById(R.id.item_image);
 
 
         catLinear.setVisibility(View.INVISIBLE);
@@ -127,32 +140,12 @@ public class ItemCard extends AppCompatActivity {
                 popupWindowDogs.showAsDropDown(v, 0, 0);
             }
         });
-////
-//        subCatSpinner.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Log.e("SubCat",""+catSpinner.getSelectedItemPosition());
-//
-//                return true;
-//            }
-//        });
-//
-//       subCatSpinner.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-//           public boolean onItemLongClick(AdapterView<?> arg0,
-//                                          View arg1,
-//                                          int arg2,
-//                                          long arg3) {
-//              Log.e("Sub Cat",""+subCatSpinner.getSelectedItemPosition());
-//               return false;
-//           }
-//
-//       });
+
         addCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (flag == 1) {
-//                    slideRight(subCatLinear);
                     relative.setBackground(getResources().getDrawable(R.drawable.focused));
                     catLinear.setVisibility(View.INVISIBLE);
                     subCatLinear.setVisibility((View.INVISIBLE));
@@ -161,7 +154,6 @@ public class ItemCard extends AppCompatActivity {
                     relative.setBackground(getResources().getDrawable(R.drawable.shape2));
                     subCatLinear.setVisibility((View.INVISIBLE));
                     catLinear.setVisibility(View.VISIBLE);
-//                slideLeft(catLinear);
                     flag = 1;
                 }
 
@@ -182,13 +174,75 @@ public class ItemCard extends AppCompatActivity {
                     relative.setBackground(getResources().getDrawable(R.drawable.shape2));
                     catLinear.setVisibility(View.INVISIBLE);
                     subCatLinear.setVisibility((View.VISIBLE));
-//                slideLeft(subCatLinear);
                     flag = 1;
                 }
             }
         });
 
+        itemPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                intent.putExtra("crop", "true");
+                intent.putExtra("scale", true);
+                intent.putExtra("outputX", 256);
+                intent.putExtra("outputY", 256);
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent, 1);
+                picFlag = 0;
+            }
+        });
+
+        catPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                intent.putExtra("crop", "true");
+                intent.putExtra("scale", true);
+                intent.putExtra("outputX", 256);
+                intent.putExtra("outputY", 256);
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent, 1);
+                picFlag = 1;
+            }
+        });
+
         startAnimation();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (requestCode == 1) {
+            final Bundle extras = data.getExtras();
+            if (extras != null) {
+                //Get image
+
+                if (picFlag == 0) {
+                    itemPic.setBackgroundDrawable(null);
+                    itemBitmapPic = extras.getParcelable("data");
+                    itemPic.setImageDrawable(new BitmapDrawable(getResources(), itemBitmapPic));
+
+                } else {
+                    catPic.setBackgroundDrawable(null);
+                    categoryPic = extras.getParcelable("data");
+                    catPic.setImageDrawable(new BitmapDrawable(getResources(), categoryPic));
+                }
+            }
+        }
     }
 
     void setThemeNo(int themeNo) {
