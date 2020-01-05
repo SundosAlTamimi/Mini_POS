@@ -11,7 +11,7 @@ import com.falconssoft.minipos.Modle.Settings;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "MiniBOSDatabase";
     static SQLiteDatabase db;
 
@@ -23,6 +23,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SETTINGS_THEME_NO = "THEME_NO";
     private static final String SETTINGS_CONTROL_PRICE = "CONTROL_PRICE";
     private static final String SETTINGS_CONTROL_QTY = "CONTROL_QTY";
+    private static final String SETTINGS_COMPANY_ID = "COMPANY_ID";
+    private static final String SETTINGS_TAX_CALC_KIND = "TAX_CALC_KIND";
 
     //******************************************************************
 
@@ -38,7 +40,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + SETTINGS_IP_ADDRESS + " TEXT,"
                 + SETTINGS_THEME_NO + " INTEGER,"
                 + SETTINGS_CONTROL_PRICE + " TEXT,"
-                + SETTINGS_CONTROL_QTY + " TEXT" + ")";
+                + SETTINGS_CONTROL_QTY + " TEXT,"
+                + SETTINGS_COMPANY_ID + " TEXT,"
+                + SETTINGS_TAX_CALC_KIND + " TEXT" + ")";
         db.execSQL(CREATE_TABLE_SETTINGS);
 
 
@@ -47,11 +51,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-//        try {
-//            db.execSQL("ALTER TABLE SETTINGS_TABLE ADD " + SETTINGS_USER_NO + " TEXT");
-//        }catch (Exception e){
-//            Log.e("upgrade", "USER NO");
-//        }
+        try {
+            db.execSQL("ALTER TABLE SETTINGS ADD " + SETTINGS_COMPANY_ID + " TEXT");
+        }catch (Exception e){
+            Log.e("upgrade", "SETTINGS");
+        }
+
+        try {
+            db.execSQL("ALTER TABLE SETTINGS ADD " + SETTINGS_TAX_CALC_KIND + " TEXT");
+        }catch (Exception e){
+            Log.e("upgrade", "SETTINGS");
+        }
 
     }
 
@@ -66,6 +76,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(SETTINGS_THEME_NO, settings.getThemeNo());
         contentValues.put(SETTINGS_CONTROL_PRICE, settings.getControlPrice());
         contentValues.put(SETTINGS_CONTROL_QTY, settings.getControlQty());
+        contentValues.put(SETTINGS_COMPANY_ID, settings.getCompanyID());
+        contentValues.put(SETTINGS_TAX_CALC_KIND, settings.getTaxCalcKind());
 
         db.insert(SETTINGS_TABLE, null, contentValues);
         db.close();
@@ -104,6 +116,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(SETTINGS_COMPANY_NAME, settings.getCompanyName());
         values.put(SETTINGS_CONTROL_PRICE, settings.getControlPrice());
         values.put(SETTINGS_CONTROL_QTY, settings.getControlQty());
+        values.put(SETTINGS_COMPANY_ID, settings.getCompanyID());
+        values.put(SETTINGS_TAX_CALC_KIND, settings.getTaxCalcKind());
 
         db.update(SETTINGS_TABLE, values, null, null);
     }

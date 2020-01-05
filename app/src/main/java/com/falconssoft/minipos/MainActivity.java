@@ -26,6 +26,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -235,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         startAnimation();
 
         if (DHandler.getSettings().getIpAddress() == null)
-            DHandler.addSettings(new Settings("", "", 9, 0, 0));
+            DHandler.addSettings(new Settings("", "", 9, 0, 0, "", 0));
         else {
             setThemeNo(DHandler.getSettings().getThemeNo());
             theme = DHandler.getSettings().getThemeNo();
@@ -466,8 +468,12 @@ public class MainActivity extends AppCompatActivity {
         settingsBack = settingsDialog.findViewById(R.id.settings_back);
         final EditText ip = settingsDialog.findViewById(R.id.ip);
         final EditText company = settingsDialog.findViewById(R.id.company);
+        final EditText companyID = settingsDialog.findViewById(R.id.company_id);
         CheckBox price = settingsDialog.findViewById(R.id.price);
         CheckBox qty = settingsDialog.findViewById(R.id.qty);
+        RadioGroup taxCalcKind = settingsDialog.findViewById(R.id.tax_type);
+        RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
+        RadioButton include = settingsDialog.findViewById(R.id.include);
 
         ImageView creamDot = settingsDialog.findViewById(R.id.cream_dot);
         ImageView rosyDot = settingsDialog.findViewById(R.id.rosy_dot);
@@ -496,6 +502,11 @@ public class MainActivity extends AppCompatActivity {
                 qty.setChecked(true);
                 cQty = 1;
             }
+
+            if (DHandler.getSettings().getTaxCalcKind() == 0)
+                exclude.setChecked(true);
+            else
+                include.setChecked(true);
         }
 
         price.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -519,6 +530,8 @@ public class MainActivity extends AppCompatActivity {
                     cQty = 0;
             }
         });
+
+        final int taxKind = taxCalcKind.getCheckedRadioButtonId() == R.id.exclude ? 0 : 1;
 
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -572,7 +585,9 @@ public class MainActivity extends AppCompatActivity {
         saveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), theme, cPrice, cQty));
+
+
+                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), theme, cPrice, cQty, company.getText().toString(), taxKind));
                 settingsDialog.dismiss();
             }
         });
@@ -870,7 +885,13 @@ public class MainActivity extends AppCompatActivity {
         return newValue;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
+        Intent intent = new Intent(MainActivity.this , LogIn.class);
+        startActivity(intent);
+    }
 
     void init() {
 
