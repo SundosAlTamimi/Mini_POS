@@ -28,6 +28,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private OrderedListAdapter adapter3;
     private HorizontalListView listView;
     private ListView itemsList;
-    private Button saveSettings, savePay, priceOk;
+    private Button saveSettings, savePay, priceOk, qtyOk;
     private ImageView save, search, clear;
     private static TextView sumNoTax, tax, sumAfterTax;
-    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack;
+    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack;
     private com.github.clans.fab.FloatingActionMenu menuLabelsRight;
     private com.github.clans.fab.FloatingActionButton fabAddItem, fabReports, fabSettings;
     ItemGridAdapter gridAdapter;
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                                 items2.get(i).setQty(++qty);
 //                              items2.get(i).setPrice(price + 10);
                                 items2.get(i).setNet(net + 10);
-                                i = items2.size();
+                                break;
                             }
                     }
 
@@ -227,8 +229,27 @@ public class MainActivity extends AppCompatActivity {
                     adapter3.notifyDataSetChanged();
                     reCalculate();
                 } else {
-                    priceDialog(new Items(items.get(position).getItemNo(), items.get(position).getItemName(),
-                            items.get(position).getPrice(), items.get(position).getCategory(), 1, (items.get(position).getPrice() * 1)));
+
+                    boolean found = false;
+                    if (items2.size() != 0) {
+                        for (int i = 0; i < items2.size(); i++)
+                            if (items.get(position).getItemNo().equals(items2.get(i).getItemNo())) {
+                                found = true;
+                                double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
+                                items2.get(i).setQty(++qty);
+//                              items2.get(i).setPrice(price + 10);
+                                items2.get(i).setNet(net + 10);
+                                i = items2.size();
+                            }
+                    }
+
+                    if (!found)
+
+                        priceDialog(new Items(items.get(position).getItemNo(), items.get(position).getItemName(),
+                                items.get(position).getPrice(), items.get(position).getCategory(), 1, (items.get(position).getPrice() * 1)));
+
+                    adapter3.notifyDataSetChanged();
+                    reCalculate();
                 }
 
             }
@@ -238,69 +259,75 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                final Dialog optionsDialog = new Dialog(MainActivity.this);
-                optionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                optionsDialog.setContentView(R.layout.options_dialog_layout);
-                TextView delete = optionsDialog.findViewById(R.id.options_dialog_delete);
-                TextView edit = optionsDialog.findViewById(R.id.options_dialog_edit);
 
-                delete.setOnClickListener(new View.OnClickListener() {
+                String[] options = {"حذف المادة", "تعديل المادة"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setTitle("Pick a color");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setMessage("هل تريد حذف هذه المادة");
-                        builder.setTitle("حذف مادة");
-                        builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                items2.remove(position);
-                                adapter3.notifyDataSetChanged();
-                                reCalculate();
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage("هل تريد حذف هذه المادة");
+                            builder.setTitle("حذف مادة");
+                            builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    items2.remove(position);
+                                    adapter3.notifyDataSetChanged();
+                                    reCalculate();
 
-                            }
-                        });
-                        builder.setNeutralButton("الغاء", null);
-                        builder.show();
-                        optionsDialog.dismiss();
-                    }
-                });
-
-                edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Dialog qtyDialog = new Dialog(MainActivity.this);
-                        qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        qtyDialog.setContentView(R.layout.quantity_dialog);
-                        final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
-                        qty.setText("" + items2.get(position).getQty());
-                        Button done = qtyDialog.findViewById(R.id.quantity_dialog_done);
-
-                        done.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (!TextUtils.isEmpty(qty.getText().toString())) {
-                                    double quantity = Double.parseDouble(qty.getText().toString());
-//                                    double net = (items2.get(position).getNet());
-                                    if (quantity > 0) {
-                                        items2.get(position).setQty(quantity);
-                                        items2.get(position).setNet(quantity * 10);
-                                        adapter3.notifyDataSetChanged();
-                                        reCalculate();
-                                        qtyDialog.dismiss();
-                                    } else {
-                                        Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
-                                    }
-                                } else {
-                                    qty.setError("حقل فارغ!");
                                 }
-                            }
-                        });
-                        qtyDialog.show();
-                        optionsDialog.dismiss();
+                            });
+                            builder.setNeutralButton("الغاء", null);
+                            builder.show();
+
+                        } else {
+                            final Dialog qtyDialog = new Dialog(MainActivity.this);
+                            qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            qtyDialog.setContentView(R.layout.quantity_dialog);
+
+                            qtyBack = qtyDialog.findViewById(R.id.qty_back);
+                            final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
+                            qtyOk = qtyDialog.findViewById(R.id.quantity_dialog_done);
+
+                            qty.setText("" + items2.get(position).getQty());
+                            qty.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    qty.setText("");
+                                }
+                            });
+
+
+                            setDialogTheme(theme, qtyBack, qtyOk);
+
+                            qtyOk.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (!TextUtils.isEmpty(qty.getText().toString())) {
+                                        double quantity = Double.parseDouble(qty.getText().toString());
+
+                                        if (quantity > 0) {
+                                            items2.get(position).setQty(quantity);
+                                            items2.get(position).setNet(quantity * 10);
+                                            adapter3.notifyDataSetChanged();
+                                            reCalculate();
+                                            qtyDialog.dismiss();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        qty.setError("حقل فارغ!");
+                                    }
+                                }
+                            });
+                            qtyDialog.show();
+                        }
                     }
                 });
+                builder.show();
 
-                optionsDialog.show();
                 return false;
             }
         });
@@ -308,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
         startAnimation();
 
         if (DHandler.getSettings() == null)//.getIpAddress()
-            DHandler.addSettings(new Settings("", "", 9, 0, 0));
+            DHandler.addSettings(new Settings("", "", 9, 0, 0, "", 0, ""));
         else {
             setThemeNo(DHandler.getSettings().getThemeNo());
             theme = DHandler.getSettings().getThemeNo();
@@ -573,8 +600,13 @@ public class MainActivity extends AppCompatActivity {
         settingsBack = settingsDialog.findViewById(R.id.settings_back);
         final EditText ip = settingsDialog.findViewById(R.id.ip);
         final EditText company = settingsDialog.findViewById(R.id.company);
+        final EditText companyID = settingsDialog.findViewById(R.id.company_id);
+        final EditText posNo = settingsDialog.findViewById(R.id.pos_no);
         CheckBox price = settingsDialog.findViewById(R.id.price);
         CheckBox qty = settingsDialog.findViewById(R.id.qty);
+        RadioGroup taxCalcKind = settingsDialog.findViewById(R.id.tax_type);
+        RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
+        RadioButton include = settingsDialog.findViewById(R.id.include);
 
         ImageView creamDot = settingsDialog.findViewById(R.id.cream_dot);
         ImageView rosyDot = settingsDialog.findViewById(R.id.rosy_dot);
@@ -603,6 +635,11 @@ public class MainActivity extends AppCompatActivity {
                 qty.setChecked(true);
                 cQty = 1;
             }
+
+            if (DHandler.getSettings().getTaxCalcKind() == 0)
+                exclude.setChecked(true);
+            else
+                include.setChecked(true);
         }
 
         price.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -626,6 +663,8 @@ public class MainActivity extends AppCompatActivity {
                     cQty = 0;
             }
         });
+
+        final int taxKind = taxCalcKind.getCheckedRadioButtonId() == R.id.exclude ? 0 : 1;
 
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -679,7 +718,9 @@ public class MainActivity extends AppCompatActivity {
         saveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), theme, cPrice, cQty));
+
+
+                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), theme, cPrice, cQty, companyID.getText().toString(), taxKind, posNo.getText().toString()));
                 settingsDialog.dismiss();
             }
         });
@@ -703,6 +744,14 @@ public class MainActivity extends AppCompatActivity {
         setDialogTheme(theme, saveBack, savePay);
 
         required.setText("" + due);
+        payed.setText("" + due);
+
+        payed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                payed.setText("");
+            }
+        });
 
         payed.addTextChangedListener(new TextWatcher() {
             @Override
@@ -713,7 +762,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.e("***", payed.getText().toString());
                 if (payed.getText().toString().equals(""))
-                    remaining.setText("");
+                    remaining.setText("0");
                 else
                     remaining.setText(convertToEnglish(String.format("%.3f", (Double.parseDouble(required.getText().toString()) - Double.parseDouble(payed.getText().toString())))));
             }
@@ -977,6 +1026,13 @@ public class MainActivity extends AppCompatActivity {
         return newValue;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(MainActivity.this, LogIn.class);
+        startActivity(intent);
+    }
 
     void init() {
 
