@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private Button saveSettings, savePay, priceOk, qtyOk;
     private ImageView save, search, clear;
     private static TextView sumNoTax, tax, sumAfterTax;
-    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack;
+    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack, functionsBack;
     private com.github.clans.fab.FloatingActionMenu menuLabelsRight;
-    private com.github.clans.fab.FloatingActionButton fabAddItem, fabReports, fabSettings;
+    private com.github.clans.fab.FloatingActionButton fabAddItem, fabFunctions, fabSettings;
     ItemGridAdapter gridAdapter;
     TextView required;
 
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     static double sum = 0, taxValue = 2, due;
 
 
-    Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog;
+    Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog, functionsDialog;
     DatabaseHandler DHandler;
 
     ArrayList<Items> items;
@@ -132,10 +132,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabReports.setOnClickListener(new View.OnClickListener() {
+        fabFunctions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reportDialog();
+                functionsDialog();
             }
         });
 
@@ -523,6 +523,37 @@ public class MainActivity extends AppCompatActivity {
         itemsGrid.setAdapter(gridAdapter);
     }
 
+    public void functionsDialog() {
+        functionsDialog = new Dialog(MainActivity.this);
+        functionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        functionsDialog.setCancelable(false);
+        functionsDialog.setContentView(R.layout.functions);
+        functionsDialog.setCanceledOnTouchOutside(true);
+
+        functionsBack = functionsDialog.findViewById(R.id.functions_back);
+        Button reports = functionsDialog.findViewById(R.id.reports);
+        Button dayClose = functionsDialog.findViewById(R.id.day_close);
+
+        setDialogTheme(theme, functionsBack, reports);
+        setDialogTheme(theme, functionsBack, dayClose);
+
+        reports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reportDialog();
+                functionsDialog.dismiss();
+            }
+        });
+
+        dayClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                functionsDialog.dismiss();
+            }
+        });
+        functionsDialog.show();
+    }
+
     public void reportDialog() {
         reportsDialog = new Dialog(MainActivity.this);
         reportsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -763,8 +794,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.rosy_blue));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.rosy_blue));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.rosy_blue));
-                fabReports.setColorPressed(getResources().getColor(R.color.rosy_blue));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.rosy_blue));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.rosy_blue));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.rosy_blue));
                 fabSettings.setColorPressed(getResources().getColor(R.color.rosy_blue));
@@ -786,8 +817,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.iguana_green));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.iguana_green));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.iguana_green));
-                fabReports.setColorPressed(getResources().getColor(R.color.iguana_green));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.iguana_green));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.iguana_green));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.iguana_green));
                 fabSettings.setColorPressed(getResources().getColor(R.color.iguana_green));
@@ -809,8 +840,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.gray_orange));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.gray_orange));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.gray_orange));
-                fabReports.setColorPressed(getResources().getColor(R.color.gray_orange));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_orange));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_orange));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.gray_orange));
                 fabSettings.setColorPressed(getResources().getColor(R.color.gray_orange));
@@ -832,8 +863,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.red_black));
-                fabReports.setColorPressed(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
                 fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
@@ -855,8 +886,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.red_black));
-                fabReports.setColorPressed(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
                 fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
@@ -878,8 +909,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabReports.setColorPressed(getResources().getColor(R.color.sky_brown));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.sky_brown));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.sky_brown));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabSettings.setColorPressed(getResources().getColor(R.color.sky_brown));
@@ -901,8 +932,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.gray_blue));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.gray_blue));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.gray_blue));
-                fabReports.setColorPressed(getResources().getColor(R.color.gray_blue));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_blue));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_blue));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.gray_blue));
                 fabSettings.setColorPressed(getResources().getColor(R.color.gray_blue));
@@ -924,8 +955,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.beetle_green));
-                fabReports.setColorPressed(getResources().getColor(R.color.beetle_green));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.beetle_green));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.beetle_green));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.cream_rosy));
                 fabSettings.setColorPressed(getResources().getColor(R.color.cream_rosy));
@@ -1017,7 +1048,7 @@ public class MainActivity extends AppCompatActivity {
 
         menuLabelsRight = findViewById(R.id.menu_labels_right);
         fabAddItem = findViewById(R.id.fab_add_item);
-        fabReports = findViewById(R.id.fab_reports);
+        fabFunctions = findViewById(R.id.fab_function);
         fabSettings = findViewById(R.id.fab_settings);
     }
 }

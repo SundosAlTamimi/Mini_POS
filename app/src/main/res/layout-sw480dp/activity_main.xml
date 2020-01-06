@@ -263,12 +263,12 @@
                         app:fab_label="Add Item" />
 
                     <com.github.clans.fab.FloatingActionButton
-                        android:id="@+id/fab_reports"
+                        android:id="@+id/fab_function"
                         style="@style/MenuButtonsSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@android:drawable/ic_menu_agenda"
-                        app:fab_label="Reports" />
+                        app:fab_label="Functions" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_settings"
