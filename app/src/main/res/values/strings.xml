@@ -7,5 +7,9 @@
 
     <string name="price">السعر</string>
     <string name="quantity">الكمية</string>
+    <string name="close_day">اغلاق اليوم </string>
+    <string name="new_day">يوم جديد</string>
+    <string name="total_cash">مجموع الكاش</string>
+    <string name="close">اغلاق</string>
 
 </resources>
