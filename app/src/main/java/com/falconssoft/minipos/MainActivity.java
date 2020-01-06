@@ -1,5 +1,6 @@
 package com.falconssoft.minipos;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -133,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
         fabReports.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reportDialog();
+//                reportDialog();
+                CloseDayDialog();
             }
         });
 
@@ -525,6 +527,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         reportsDialog.show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void CloseDayDialog() {
+        final Dialog  closeDialog = new Dialog(MainActivity.this);
+        closeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        closeDialog.setCancelable(false);
+        closeDialog.setContentView(R.layout.close_day_dialog);
+        closeDialog.setCanceledOnTouchOutside(false);
+
+        LinearLayout closeDialogLiner=closeDialog.findViewById(R.id.closeDialogLiner);
+
+        TextView closeDay,newDay,totalCash;
+        Button close;
+        close=closeDialog.findViewById(R.id.close);
+        closeDay=closeDialog.findViewById(R.id.closeDay);
+        newDay=closeDialog.findViewById(R.id.newDay);
+        totalCash=closeDialog.findViewById(R.id.totalCash);
+
+        setDialogTheme(theme,closeDialogLiner,close);
+
+        closeDay.setText("21-1-2020");
+        newDay.setText("21-1-2020");
+        totalCash.setText("2020");
+
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeDialog.dismiss();
+            }
+        });
+
+        closeDialog.show();
     }
 
     public void settingDialog() {
