@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
-    android:gravity="center"
     android:descendantFocusability="blocksDescendants"
-    android:layoutDirection="rtl"
+    android:gravity="center"
+    android:layoutDirection="locale"
     android:orientation="horizontal">
 
 
@@ -41,24 +41,24 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/plus"
                 android:layout_width="30dp"
                 android:layout_height="15dp"
-                android:text="+"
-                android:gravity="center"
                 android:background="@drawable/shape2"
-                android:textSize="11sp"/>
+                android:gravity="center"
+                android:text="+"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginHorizontal="5dp"
+                android:gravity="center"
                 android:text="3"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
@@ -67,10 +67,10 @@
                 android:id="@+id/minus"
                 android:layout_width="30dp"
                 android:layout_height="15dp"
-                android:text="-"
-                android:gravity="center"
                 android:background="@drawable/shape2"
-                android:textSize="12sp"/>
+                android:gravity="center"
+                android:text="-"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
