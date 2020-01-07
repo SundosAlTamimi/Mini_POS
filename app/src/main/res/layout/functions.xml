@@ -17,7 +17,7 @@
             android:id="@+id/reports"
             android:layout_width="180dp"
             android:layout_height="100dp"
-            android:text="تقارير"
+            android:text="@string/reports"
             android:textSize="23sp"
             android:layout_margin="10dp"
             android:textColor="@color/white"/>
@@ -26,7 +26,7 @@
             android:id="@+id/day_close"
             android:layout_width="180dp"
             android:layout_height="100dp"
-            android:text="اغلاق اليوم"
+            android:text="@string/close_day"
             android:textSize="23sp"
             android:layout_margin="10dp"
             android:textColor="@color/white"/>

@@ -12,6 +12,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -26,12 +28,14 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,10 +55,12 @@ public class ItemCard extends AppCompatActivity {
     private ArrayAdapter<String> taxAdapter, catAdapter, subCatAdapter;
     private Spinner taxSpinner;
     private Button catSpinner, subCatSpinner;
+    private ImageView save, search, back;
+    private EditText itemNo, barcode;
     private ImageView addCat, addSubCat, itemPic, catPic;
     private LinearLayout linear1, linear2, catLinear, subCatLinear;
-    private RelativeLayout itemCardBack, alpha,relative;
-   Button buttonShowDropDown;
+    private RelativeLayout itemCardBack, alpha, relative;
+    Button buttonShowDropDown;
     PopupWindow popupWindowDogs;
     DatabaseHandler DHandler;
     int picFlag;
@@ -68,29 +74,33 @@ public class ItemCard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_card);
 
-        itemCardBack = findViewById(R.id.item_card_back);
-        relative=findViewById(R.id.relative);
-        alpha = findViewById(R.id.alpha);
-        taxSpinner = findViewById(R.id.type_card_tax_percent);
-        catSpinner = findViewById(R.id.type_card_group);
-        subCatSpinner = findViewById(R.id.type_card_branch_group);
-        addCat = findViewById(R.id.add_cat);
-        catPic = findViewById(R.id.cat_image);
-        addSubCat = findViewById(R.id.add_sub_cat);
-        catLinear = findViewById(R.id.catLinear);
-        subCatLinear = findViewById(R.id.subCatLinear);
-        linear1 = findViewById(R.id.linear1);
-        linear2 = findViewById(R.id.linear2);
-        itemPic = findViewById(R.id.item_image);
+        init();
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemCard.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         catLinear.setVisibility(View.INVISIBLE);
         subCatLinear.setVisibility(View.INVISIBLE);
+
         DHandler = new DatabaseHandler(this);
         if (DHandler.getSettings().getIpAddress() != null)
             setThemeNo(DHandler.getSettings().getThemeNo());
 
         scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.INFINITE, .5f, ScaleAnimation.RELATIVE_TO_SELF, .8f);
+
+        barcode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus)
+                    if (barcode.getText().toString().equals(""))
+                        barcode.setText(itemNo.getText().toString());
+            }
+        });
 
         taxList.add("0");
         taxList.add("4");
@@ -116,27 +126,27 @@ public class ItemCard extends AppCompatActivity {
 //        subCatSpinner.setAdapter(subCatAdapter);
 //        buttonShowDropDown=catSpinner;
 
-        if(catList.size()!=0) {
-           catSpinner.setText("" + catList.get(0));
+        if (catList.size() != 0) {
+            catSpinner.setText("" + catList.get(0));
         }
         catSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonShowDropDown=catSpinner;
-                popupWindowDogs=popupWindowDogs(catList,buttonShowDropDown,"حذف المجموعه");
+                buttonShowDropDown = catSpinner;
+                popupWindowDogs = popupWindowDogs(catList, buttonShowDropDown, "حذف المجموعه");
                 popupWindowDogs.showAsDropDown(v, 0, 0);
             }
         });
 
 
-        if(subCatList.size()!=0) {
+        if (subCatList.size() != 0) {
             subCatSpinner.setText("" + subCatList.get(0));
         }
         subCatSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonShowDropDown=subCatSpinner;
-                popupWindowDogs=popupWindowDogs(subCatList,buttonShowDropDown,"حذف المجموعه الفرعيه ");
+                buttonShowDropDown = subCatSpinner;
+                popupWindowDogs = popupWindowDogs(subCatList, buttonShowDropDown, "حذف المجموعه الفرعيه ");
                 popupWindowDogs.showAsDropDown(v, 0, 0);
             }
         });
@@ -149,8 +159,8 @@ public class ItemCard extends AppCompatActivity {
                     relative.setBackground(getResources().getDrawable(R.drawable.focused));
                     catLinear.setVisibility(View.INVISIBLE);
                     subCatLinear.setVisibility((View.INVISIBLE));
-                    flag=0;
-                }else {
+                    flag = 0;
+                } else {
                     relative.setBackground(getResources().getDrawable(R.drawable.shape2));
                     subCatLinear.setVisibility((View.INVISIBLE));
                     catLinear.setVisibility(View.VISIBLE);
@@ -169,8 +179,8 @@ public class ItemCard extends AppCompatActivity {
                     relative.setBackground(getResources().getDrawable(R.drawable.focused));
                     subCatLinear.setVisibility((View.INVISIBLE));
                     catLinear.setVisibility(View.INVISIBLE);
-                    flag=0;
-                }else {
+                    flag = 0;
+                } else {
                     relative.setBackground(getResources().getDrawable(R.drawable.shape2));
                     catLinear.setVisibility(View.INVISIBLE);
                     subCatLinear.setVisibility((View.VISIBLE));
@@ -253,6 +263,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
                 alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
                 break;
 
             case 3:
@@ -260,6 +274,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
                 alpha.setBackgroundColor(getResources().getColor(R.color.green3));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
                 break;
 
             case 4:
@@ -267,6 +285,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
                 alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
                 break;
 
             case 5:
@@ -274,6 +296,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
                 alpha.setBackgroundColor(getResources().getColor(R.color.red3));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
                 break;
 
             case 6:
@@ -281,6 +307,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
                 alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
                 break;
 
             case 7:
@@ -288,6 +318,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
                 alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
                 break;
 
             case 8:
@@ -295,6 +329,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
                 itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
                 alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
                 break;
 
             case 9:
@@ -302,6 +340,10 @@ public class ItemCard extends AppCompatActivity {
                 subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
                 itemCardBack.setBackgroundColor(getResources().getColor(R.color.cream));
                 alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
+
+                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
+                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
+                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
                 break;
 
 
@@ -350,7 +392,7 @@ public class ItemCard extends AppCompatActivity {
         view.startAnimation(animate);
     }
 
-    public PopupWindow popupWindowDogs(final List<String>list, final Button buttonShowDropDown, final String title) {
+    public PopupWindow popupWindowDogs(final List<String> list, final Button buttonShowDropDown, final String title) {
 
         // initialize a pop up window type
         PopupWindow popupWindow = new PopupWindow(this);
@@ -391,14 +433,14 @@ public class ItemCard extends AppCompatActivity {
                 Toast.makeText(ItemCard.this, "Dog ID is: " + selectedItemTag, Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
                 builder.setMessage("هل انت متأكد من حذف هذه المجموعه ؟");
-                builder.setTitle(""+title);
+                builder.setTitle("" + title);
                 builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         list.remove(position);
-                        if(list.size()!=0) {
+                        if (list.size() != 0) {
                             ItemCard.this.buttonShowDropDown.setText("" + list.get(0));
-                        }else{
+                        } else {
                             ItemCard.this.buttonShowDropDown.setText("");
                         }
                         dogsAdapter(list).notifyDataSetChanged();
@@ -440,8 +482,8 @@ public class ItemCard extends AppCompatActivity {
                 TextView listItem = new TextView(ItemCard.this);
                 listItem.setBackground(getResources().getDrawable(R.drawable.shape6));
                 listItem.setGravity(Gravity.CENTER);
-                listItem.setText(""+dogsArray.get(position));
-                listItem.setTag(""+dogsArray.get(position));
+                listItem.setText("" + dogsArray.get(position));
+                listItem.setTag("" + dogsArray.get(position));
                 listItem.setTextSize(18);
                 listItem.setPadding(10, 10, 10, 10);
                 listItem.setTextColor(getResources().getColor(R.color.black));
@@ -453,5 +495,26 @@ public class ItemCard extends AppCompatActivity {
         return adapter;
     }
 
+    void init(){
+        itemCardBack = findViewById(R.id.item_card_back);
+        relative = findViewById(R.id.relative);
+        alpha = findViewById(R.id.alpha);
+        taxSpinner = findViewById(R.id.type_card_tax_percent);
+        catSpinner = findViewById(R.id.type_card_group);
+        subCatSpinner = findViewById(R.id.type_card_branch_group);
+        addCat = findViewById(R.id.add_cat);
+        catPic = findViewById(R.id.cat_image);
+        addSubCat = findViewById(R.id.add_sub_cat);
+        catLinear = findViewById(R.id.catLinear);
+        subCatLinear = findViewById(R.id.subCatLinear);
+        linear1 = findViewById(R.id.linear1);
+        linear2 = findViewById(R.id.linear2);
+        itemPic = findViewById(R.id.item_image);
+        itemNo = findViewById(R.id.type_card_material_no);
+        barcode = findViewById(R.id.type_card_barcode);
+        save = findViewById(R.id.save);
+        search = findViewById(R.id.search);
+        back = findViewById(R.id.back);
+    }
 
 }
