@@ -70,5 +70,6 @@
     <color name="alpha_green">#B4235A33</color>
     <color name="alpha_yellow">#CEF7F0CD</color>
     <color name="alpha_orange">#83FF5722</color>
+    <color name="alpha_glasss">#00FDFCF5</color>
 
 </resources>

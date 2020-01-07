@@ -19,7 +19,7 @@
             android:id="@+id/priceText"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="السعر :"
+            android:text="@string/price"
             android:textColor="@color/black"
             android:textSize="24dp"/>
 
@@ -41,7 +41,7 @@
         android:id="@+id/ok"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="تم"
+        android:text="@string/done"
         android:layout_gravity="center"
         android:background="@drawable/green_dot"
         android:layout_marginTop="15dp"

@@ -5,7 +5,7 @@
     android:background="@color/cream"
     android:gravity="center"
     android:padding="40dp"
-    android:id="@+id/price_back"
+    android:id="@+id/qty_back"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,28 +15,25 @@
         android:padding="5dp"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/priceText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="@string/quantity"
+            android:textColor="@color/black"
+            android:textSize="24dp"/>
+
+
         <EditText
             android:id="@+id/quantity_dialog_qty"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="35dp"
-            android:layout_weight="5"
             android:layout_marginVertical="6dp"
             android:paddingHorizontal="10dp"
             android:background="@drawable/shape2"
             android:gravity="center"
-            android:inputType="numberDecimal"
             android:textColor="@color/black"
             android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/priceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/quantity"
-            android:textColor="@color/black"
-            android:textSize="24dp"/>
 
     </LinearLayout>
 
@@ -44,7 +41,7 @@
         android:id="@+id/quantity_dialog_done"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="تم"
+        android:text="@string/done"
         android:layout_gravity="center"
         android:background="@drawable/green_dot"
         android:layout_marginTop="15dp"

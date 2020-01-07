@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="المجموعات"
+                android:text="@string/categories"
                 android:textColor="@color/white"
                 android:textSize="23sp" />
 
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="رمز الصنف"
+                            android:text="@string/item_no"
                             android:textColor="@color/black"
                             android:textSize="20sp" />
 
@@ -139,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="اسم الصنف"
+                            android:text="@string/item_name"
                             android:textColor="@color/black"
                             android:textSize="20sp" />
 
@@ -148,7 +148,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="الكمية"
+                            android:text="@string/quantity"
                             android:textColor="@color/black"
                             android:textSize="20sp" />
 
@@ -157,7 +157,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="السعر"
+                            android:text="@string/price"
                             android:textColor="@color/black"
                             android:textSize="20sp" />
 
@@ -166,7 +166,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="الاجمالي"
+                            android:text="@string/total"
                             android:textColor="@color/black"
                             android:textSize="20sp" />
 
@@ -183,61 +183,61 @@
                         android:id="@+id/list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="50dp" />
+                        android:layout_marginBottom="35dp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="100dp"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/alpha_yellow"
                         android:orientation="horizontal"
-                        android:padding="10dp" />
+                        android:paddingHorizontal="10dp"
+                        android:paddingTop="5dp"/>
 
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/sum_no_tax"
                             android:layout_width="230dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="المجموع قبل الضريبة : 20"
+                            android:text="@string/total_no_tax"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textColor="@color/red1"
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tax"
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="قيمة الضريبة : 5"
+                            android:text="@string/tax_value"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textColor="@color/red1"
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/sum_after_tax"
                             android:layout_width="170dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="الصافي : 25"
+                            android:text="@string/net_sales"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textColor="@color/red1"
+                            android:textSize="15sp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -263,19 +263,19 @@
                         app:fab_label="Add Item" />
 
                     <com.github.clans.fab.FloatingActionButton
-                        android:id="@+id/fab_reports"
+                        android:id="@+id/fab_function"
                         style="@style/MenuButtonsSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@android:drawable/ic_menu_report_image"
-                        app:fab_label="Reports" />
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:fab_label="Functions" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_settings"
                         style="@style/MenuButtonsSmall"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@android:drawable/ic_menu_edit"
+                        android:src="@android:drawable/ic_menu_manage"
                         app:fab_label="Settings" />
 
                 </com.github.clans.fab.FloatingActionMenu>
