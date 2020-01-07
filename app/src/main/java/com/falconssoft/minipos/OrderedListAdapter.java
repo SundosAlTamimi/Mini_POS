@@ -16,10 +16,12 @@ public class OrderedListAdapter extends BaseAdapter {
 
     private Context context;
     private static List<Items> itemsList;
+    private MainActivity obj;
 
     public OrderedListAdapter(Context context, List<Items> itemsList) {
         this.context = context;
         this.itemsList = itemsList;
+        obj = new MainActivity();
     }
 
     public OrderedListAdapter() {
@@ -72,13 +74,13 @@ public class OrderedListAdapter extends BaseAdapter {
         holder.price.setText(""+itemsList.get(i).getPrice());
         holder.net.setText(""+itemsList.get(i).getNet());
 
-        DatabaseHandler handler = new DatabaseHandler(context);
-        if(handler.getSettings().getControlQty() == 0){
-            holder.plus.setVisibility(View.INVISIBLE);
-            holder.minus.setVisibility(View.INVISIBLE);
-        }
+//        DatabaseHandler handler = new DatabaseHandler(context);
+//        if(handler.getSettings().getControlQty() == 0){
+//            holder.plus.setVisibility(View.INVISIBLE);
+//            holder.minus.setVisibility(View.INVISIBLE);
+//        }
 
-        final MainActivity obj = new MainActivity();
+
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

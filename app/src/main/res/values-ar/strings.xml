@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Mini POS</string>
+
+    <string name="option_type">اختر نوع العملية</string>
+    <string name="delete">حذف</string>
+    <string name="delete_all">حذف الجميع</string>
+    <string name="edit">تعديل</string>
+    <string name="clos">الغاء</string>
+
+    <string name="price">السعر</string>
+    <string name="quantity">الكمية</string>
+    <string name="close_day">اغلاق اليوم </string>
+    <string name="new_day">يوم جديد</string>
+    <string name="total_cash">مجموع الكاش</string>
+    <string name="close">اغلاق</string>
+    <string name="done">تم</string>
+
+    <string name="item_no">رقم الصنف</string>
+    <string name="item_name">اسم الصنف</string>
+    <string name="total">المجموع</string>
+    <string name="total_no_tax">المجموع قبل الضريبة</string>
+    <string name="tax_value">قيمة الضريبة</string>
+    <string name="net_sales">الصافي</string>
+    <string name="categories">المجموعات</string>
+    <string name="add_item">اضافة مادة</string>
+    <string name="functions">العمليات</string>
+    <string name="settings">الاعدادات</string>
+
+    <string name="delete_item">حذف مادة</string>
+    <string name="edit_price">تعديل السعر</string>
+    <string name="edit_qty">تعديل الكمية</string>
+
+    <string name="required">المبلغ المطلوب</string>
+    <string name="payed">المدفوع</string>
+    <string name="remaining">الباقي</string>
+    <string name="pay">دفع</string>
+
+    <string name="cash_report">تقرير الكاش</string>
+    <string name="sales_report">تقرير المبيعات</string>
+    <string name="reports">التقارير</string>
+
+    <string name="ip_no">رقم ال IP</string>
+    <string name="company_name">اسم الشركة</string>
+    <string name="company_id">رقم الشركة ال(ID)</string>
+    <string name="POS_no">رقم ال POS</string>
+    <string name="control">التحم بـ </string>
+    <string name="tax_type">نوع الضريبة</string>
+    <string name="exclude">خاضع</string>
+    <string name="include">شامل</string>
+    <string name="theme">الثيم</string>
+    <string name="save">حفظ</string>
+
+    <string name="delete_message">هل انت متأكد من حذف جميع المواد ؟</string>
+    <string name="delete_item_message">هل انت متأكد من حذف هذه المادة ؟</string>
+    <string name="no_items_message">لم يتم اضافة مواد !</string>
+    <string name="cant_edit_price_message">لا يمكنك التعديل على السعر !</string>
+    <string name="cant_edit_qty_message">لا يمكنك التعديل على الكمية !</string>
+    <string name="item_added_message">تم اضافة المادة الى القائمة !</string>
+
+</resources>

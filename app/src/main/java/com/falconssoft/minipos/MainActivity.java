@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private Button saveSettings, savePay, priceOk, qtyOk;
     private ImageView save, search, clear;
     private static TextView sumNoTax, tax, sumAfterTax;
-    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack;
+    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack, functionsBack;
     private com.github.clans.fab.FloatingActionMenu menuLabelsRight;
-    private com.github.clans.fab.FloatingActionButton fabAddItem, fabReports, fabSettings;
+    private com.github.clans.fab.FloatingActionButton fabAddItem, fabFunctions, fabSettings;
     ItemGridAdapter gridAdapter;
     TextView required;
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     static double sum = 0, taxValue = 2, due;
 
 
-    Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog;
+    Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog, functionsDialog;
     DatabaseHandler DHandler;
 
     ArrayList<Items> items;
@@ -103,9 +103,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage("هل انت متأكد من حذف جميع المواد");
-                builder.setTitle("حذف الجميع");
-                builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                builder.setMessage(getResources().getString(R.string.delete_message));
+                builder.setTitle(getResources().getString(R.string.delete_all));
+                builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         items2.clear();
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 if (items2.size() != 0)
                     saveDialog();
                 else
-                    Toast.makeText(MainActivity.this, "لا يوجد طلبات !", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.no_items_message), Toast.LENGTH_LONG).show();
 
             }
         });
@@ -137,11 +137,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fabReports.setOnClickListener(new View.OnClickListener() {
+        fabFunctions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                reportDialog();
-                CloseDayDialog();
+                functionsDialog();
             }
         });
 
@@ -207,20 +206,20 @@ public class MainActivity extends AppCompatActivity {
 
                 if (DHandler.getSettings().getControlPrice() == 0) {
                     boolean found = false;
-                    int position1= position;
+                    int position1 = position;
                     if (items2.size() != 0) {//.indexOf
-                       Log.e("fffff",""+itemNo.indexOf(items.get(position1).getItemNo()));
-                        int i=itemNo.indexOf(items.get(position1).getItemNo());
+                        Log.e("fffff", "" + itemNo.indexOf(items.get(position1).getItemNo()));
+                        int i = itemNo.indexOf(items.get(position1).getItemNo());
 //                        for (int i = 0; i < items2.size(); i++){
-                            if (i!=-1) {
-                                found = true;
-                                double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
-                                items2.get(i).setQty(++qty);
+                        if (i != -1) {
+                            found = true;
+                            double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
+                            items2.get(i).setQty(++qty);
 //                              items2.get(i).setPrice(price + 10);
-                                items2.get(i).setNet(net + 10);
+                            items2.get(i).setNet(net + 10);
 
 //                                break;
-                            }
+                        }
 //                    }
                     }
 
@@ -239,30 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
                     adapter3.notifyDataSetChanged();
                     reCalculate();
-                } else {
-
-                    boolean found = false;
-                    if (items2.size() != 0) {
-                        for (int i = 0; i < items2.size(); i++)
-                            if (items.get(position).getItemNo().equals(items2.get(i).getItemNo())) {
-                                found = true;
-                                double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
-                                items2.get(i).setQty(++qty);
-//                              items2.get(i).setPrice(price + 10);
-                                items2.get(i).setNet(net + 10);
-                                i = items2.size();
-                            }
-                    }
-
-                    if (!found)
-
-                        priceDialog(new Items(items.get(position).getItemNo(), items.get(position).getItemName(),
-                                items.get(position).getPrice(), items.get(position).getCategory(), 1, (items.get(position).getPrice() * 1)));
-
-                    adapter3.notifyDataSetChanged();
-                    reCalculate();
                 }
-
             }
         });
 
@@ -271,7 +247,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
 
-                String[] options = {"حذف المادة", "تعديل المادة"};
+                String[] options = {
+                        getResources().getString(R.string.delete_item),
+                        getResources().getString(R.string.edit_price),
+                        getResources().getString(R.string.edit_qty)};
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 //                builder.setTitle("Pick a color");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -279,9 +259,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setMessage("هل تريد حذف هذه المادة");
-                            builder.setTitle("حذف مادة");
-                            builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                            builder.setMessage(getResources().getString(R.string.delete_item_message));
+                            builder.setTitle(getResources().getString(R.string.delete_item));
+                            builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     items2.remove(position);
@@ -291,50 +271,20 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             });
-                            builder.setNeutralButton("الغاء", null);
+                            builder.setNeutralButton(getResources().getString(R.string.clos), null);
                             builder.show();
 
+                        } else if (which == 1) {
+                            if (DHandler.getSettings().getControlPrice() == 1)
+                                priceDialog(position);
+                            else
+                                Toast.makeText(MainActivity.this , getResources().getString(R.string.cant_edit_price_message) , Toast.LENGTH_LONG).show();
+
                         } else {
-                            final Dialog qtyDialog = new Dialog(MainActivity.this);
-                            qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            qtyDialog.setContentView(R.layout.quantity_dialog);
-
-                            qtyBack = qtyDialog.findViewById(R.id.qty_back);
-                            final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
-                            qtyOk = qtyDialog.findViewById(R.id.quantity_dialog_done);
-
-                            qty.setText("" + items2.get(position).getQty());
-                            qty.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    qty.setText("");
-                                }
-                            });
-
-
-                            setDialogTheme(theme, qtyBack, qtyOk);
-
-                            qtyOk.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (!TextUtils.isEmpty(qty.getText().toString())) {
-                                        double quantity = Double.parseDouble(qty.getText().toString());
-
-                                        if (quantity > 0) {
-                                            items2.get(position).setQty(quantity);
-                                            items2.get(position).setNet(quantity * 10);
-                                            adapter3.notifyDataSetChanged();
-                                            reCalculate();
-                                            qtyDialog.dismiss();
-                                        } else {
-                                            Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        qty.setError("حقل فارغ!");
-                                    }
-                                }
-                            });
-                            qtyDialog.show();
+                            if (DHandler.getSettings().getControlQty() == 1)
+                            qtyDialog(position);
+                            else
+                                Toast.makeText(MainActivity.this , getResources().getString(R.string.cant_edit_qty_message) , Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -479,12 +429,15 @@ public class MainActivity extends AppCompatActivity {
                 items2.add(new Items(gridItems.get(position).getItemNo(), gridItems.get(position).getItemName(),
                         gridItems.get(position).getPrice(), gridItems.get(position).getPic(), gridItems.get(position).getCategory()));
                 adapter3.notifyDataSetChanged();
+
+                Toast.makeText(MainActivity.this , getResources().getString(R.string.item_added_message), Toast.LENGTH_LONG).show();
+
             }
         });
         itemsDialog.show();
     }
 
-    public void priceDialog(final Items item) {
+    public void priceDialog(final int position) {
         priceDialog = new Dialog(MainActivity.this);
         priceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         priceDialog.setCancelable(false);
@@ -497,18 +450,16 @@ public class MainActivity extends AppCompatActivity {
 
         setDialogTheme(theme, priceBack, priceOk);
 
-        price.setText("" + item.getPrice());
+        price.setText("" + items2.get(position).getPrice());
 
         priceOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!price.getText().toString().equals("")) {
 
-                    item.setPrice(Double.parseDouble(price.getText().toString()));
-
-                    items2.add(item);
+                    items2.get(position).setPrice(Double.parseDouble(price.getText().toString()));
+                    items2.get(position).setNet(items2.get(position).getQty() * Double.parseDouble(price.getText().toString()));
                     adapter3.notifyDataSetChanged();
-                    reCalculate();
 
                     priceDialog.dismiss();
                 }
@@ -516,6 +467,49 @@ public class MainActivity extends AppCompatActivity {
         });
         priceDialog.show();
 
+    }
+
+    void qtyDialog(final int position){
+        final Dialog qtyDialog = new Dialog(MainActivity.this);
+        qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        qtyDialog.setContentView(R.layout.quantity_dialog);
+
+        qtyBack = qtyDialog.findViewById(R.id.qty_back);
+        final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
+        qtyOk = qtyDialog.findViewById(R.id.quantity_dialog_done);
+
+        qty.setText("" + items2.get(position).getQty());
+        qty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                qty.setText("");
+            }
+        });
+
+
+        setDialogTheme(theme, qtyBack, qtyOk);
+
+        qtyOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(qty.getText().toString())) {
+                    double quantity = Double.parseDouble(qty.getText().toString());
+
+                    if (quantity > 0) {
+                        items2.get(position).setQty(quantity);
+                        items2.get(position).setNet(quantity * 10);
+                        adapter3.notifyDataSetChanged();
+                        reCalculate();
+                        qtyDialog.dismiss();
+                    } else {
+                        Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    qty.setError("حقل فارغ!");
+                }
+            }
+        });
+        qtyDialog.show();
     }
 
     public void filter(ArrayList<Items> items, String item, String category, GridView itemsGrid) {
@@ -535,6 +529,38 @@ public class MainActivity extends AppCompatActivity {
         Log.e("******3", "   " + gridItems.size());
         gridAdapter = new ItemGridAdapter(MainActivity.this, gridItems);
         itemsGrid.setAdapter(gridAdapter);
+    }
+
+    public void functionsDialog() {
+        functionsDialog = new Dialog(MainActivity.this);
+        functionsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        functionsDialog.setCancelable(false);
+        functionsDialog.setContentView(R.layout.functions);
+        functionsDialog.setCanceledOnTouchOutside(true);
+
+        functionsBack = functionsDialog.findViewById(R.id.functions_back);
+        Button reports = functionsDialog.findViewById(R.id.reports);
+        Button dayClose = functionsDialog.findViewById(R.id.day_close);
+
+        setDialogTheme(theme, functionsBack, reports);
+        setDialogTheme(theme, functionsBack, dayClose);
+
+        reports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reportDialog();
+                functionsDialog.dismiss();
+            }
+        });
+
+        dayClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeDayDialog();
+                functionsDialog.dismiss();
+            }
+        });
+        functionsDialog.show();
     }
 
     public void reportDialog() {
@@ -569,23 +595,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void CloseDayDialog() {
-        final Dialog  closeDialog = new Dialog(MainActivity.this);
+    public void closeDayDialog() {
+        final Dialog closeDialog = new Dialog(MainActivity.this);
         closeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         closeDialog.setCancelable(false);
         closeDialog.setContentView(R.layout.close_day_dialog);
         closeDialog.setCanceledOnTouchOutside(false);
 
-        LinearLayout closeDialogLiner=closeDialog.findViewById(R.id.closeDialogLiner);
+        LinearLayout closeDialogLiner = closeDialog.findViewById(R.id.closeDialogLiner);
 
-        TextView closeDay,newDay,totalCash;
+        TextView closeDay, newDay, totalCash;
         Button close;
-        close=closeDialog.findViewById(R.id.close);
-        closeDay=closeDialog.findViewById(R.id.closeDay);
-        newDay=closeDialog.findViewById(R.id.newDay);
-        totalCash=closeDialog.findViewById(R.id.totalCash);
+        close = closeDialog.findViewById(R.id.close);
+        closeDay = closeDialog.findViewById(R.id.closeDay);
+        newDay = closeDialog.findViewById(R.id.newDay);
+        totalCash = closeDialog.findViewById(R.id.totalCash);
 
-        setDialogTheme(theme,closeDialogLiner,close);
+        setDialogTheme(theme, closeDialogLiner, close);
 
         closeDay.setText("21-1-2020");
         newDay.setText("21-1-2020");
@@ -811,8 +837,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.rosy_blue));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.rosy_blue));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.rosy_blue));
-                fabReports.setColorPressed(getResources().getColor(R.color.rosy_blue));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.rosy_blue));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.rosy_blue));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.rosy_blue));
                 fabSettings.setColorPressed(getResources().getColor(R.color.rosy_blue));
@@ -834,8 +860,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.iguana_green));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.iguana_green));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.iguana_green));
-                fabReports.setColorPressed(getResources().getColor(R.color.iguana_green));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.iguana_green));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.iguana_green));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.iguana_green));
                 fabSettings.setColorPressed(getResources().getColor(R.color.iguana_green));
@@ -857,8 +883,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.gray_orange));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.gray_orange));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.gray_orange));
-                fabReports.setColorPressed(getResources().getColor(R.color.gray_orange));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_orange));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_orange));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.gray_orange));
                 fabSettings.setColorPressed(getResources().getColor(R.color.gray_orange));
@@ -880,8 +906,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.red_black));
-                fabReports.setColorPressed(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
                 fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
@@ -903,8 +929,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.red_black));
-                fabReports.setColorPressed(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
                 fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
@@ -926,8 +952,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabReports.setColorPressed(getResources().getColor(R.color.sky_brown));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.sky_brown));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.sky_brown));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabSettings.setColorPressed(getResources().getColor(R.color.sky_brown));
@@ -949,8 +975,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.gray_blue));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.gray_blue));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.gray_blue));
-                fabReports.setColorPressed(getResources().getColor(R.color.gray_blue));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_blue));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_blue));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.gray_blue));
                 fabSettings.setColorPressed(getResources().getColor(R.color.gray_blue));
@@ -972,8 +998,8 @@ public class MainActivity extends AppCompatActivity {
                 fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
                 fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
 
-                fabReports.setColorNormal(getResources().getColor(R.color.beetle_green));
-                fabReports.setColorPressed(getResources().getColor(R.color.beetle_green));
+                fabFunctions.setColorNormal(getResources().getColor(R.color.beetle_green));
+                fabFunctions.setColorPressed(getResources().getColor(R.color.beetle_green));
 
                 fabSettings.setColorNormal(getResources().getColor(R.color.cream_rosy));
                 fabSettings.setColorPressed(getResources().getColor(R.color.cream_rosy));
@@ -1065,7 +1091,7 @@ public class MainActivity extends AppCompatActivity {
 
         menuLabelsRight = findViewById(R.id.menu_labels_right);
         fabAddItem = findViewById(R.id.fab_add_item);
-        fabReports = findViewById(R.id.fab_reports);
+        fabFunctions = findViewById(R.id.fab_function);
         fabSettings = findViewById(R.id.fab_settings);
     }
 }

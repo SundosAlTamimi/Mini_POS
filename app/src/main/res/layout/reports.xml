@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginVertical="16dp"
-                android:text="تقرير الكاش"
+                android:text="@string/cash_report"
                 android:layout_marginHorizontal="10dp"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginVertical="16dp"
-                android:text="تقرير المبيعات"
+                android:text="@string/sales_report"
                 android:layout_marginHorizontal="10dp"
                 android:textColor="@color/black"
                 android:textSize="24sp" />

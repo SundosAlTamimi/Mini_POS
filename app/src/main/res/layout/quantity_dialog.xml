@@ -41,7 +41,7 @@
         android:id="@+id/quantity_dialog_done"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:text="تم"
+        android:text="@string/done"
         android:layout_gravity="center"
         android:background="@drawable/green_dot"
         android:layout_marginTop="15dp"
