@@ -429,12 +429,10 @@ public class ItemCard extends AppCompatActivity {
         listViewDogs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                String selectedItemTag = ((TextView) view).getTag().toString();
-                Toast.makeText(ItemCard.this, "Dog ID is: " + selectedItemTag, Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
-                builder.setMessage("هل انت متأكد من حذف هذه المجموعه ؟");
+                builder.setMessage(getResources().getString(R.string.delete_category_message));
                 builder.setTitle("" + title);
-                builder.setPositiveButton("حذف", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         list.remove(position);

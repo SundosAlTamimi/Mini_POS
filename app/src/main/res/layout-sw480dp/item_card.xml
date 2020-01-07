@@ -43,14 +43,6 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/alpha"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="20dp">
-
-        </RelativeLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -74,7 +66,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="رقم المادة"
+                android:text="@string/item_no"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -84,7 +76,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="الباركود"
+                android:text="@string/barcode"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -94,7 +86,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="اسم المادة بالعربي"
+                android:text="@string/item_name_arabic"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -104,7 +96,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="اسم المادة بالإنجيزي"
+                android:text="@string/item_name_english"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -114,7 +106,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="المجموعة"
+                android:text="@string/category"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -124,7 +116,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="المجموعة الفرعية"
+                android:text="@string/sub_category"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -133,7 +125,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="نسبة الضريبة"
+                android:text="@string/tax_value"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -142,7 +134,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="سعر البيع"
+                android:text="@string/sale_price"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -151,7 +143,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="وصف المادة"
+                android:text="item_description"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -235,6 +227,14 @@
                     android:layout_weight="1"
                     android:background="@drawable/arrowdoown"
                     android:padding="20dp" />
+
+                <RelativeLayout
+                    android:id="@+id/alpha"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp">
+
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -359,7 +359,7 @@
                 android:layout_marginVertical="6dp"
                 android:layout_marginTop="20dp"
                 android:layout_weight="1"
-                android:text="صورة المادة"
+                android:text="@string/item_pic"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
@@ -392,7 +392,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="5dp"
                 android:gravity="center"
-                android:text="اضافة مجموعة"
+                android:text="@string/add_cat"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -406,7 +406,7 @@
                     android:layout_height="35dp"
                     android:layout_marginVertical="6dp"
                     android:layout_weight="1"
-                    android:text="رمز المجموعة : "
+                    android:text="@string/cat_no"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -431,7 +431,7 @@
                     android:layout_height="35dp"
                     android:layout_marginVertical="6dp"
                     android:layout_weight="1"
-                    android:text="اسم المجموعة : "
+                    android:text="@string/cat_name"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -458,7 +458,7 @@
                     android:layout_height="35dp"
                     android:layout_marginVertical="6dp"
                     android:layout_weight="1"
-                    android:text="صورة المجموعة : "
+                    android:text="@string/cat_pic"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -486,7 +486,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/shape5"
-                android:text="add" />
+                android:text="@string/add" />
 
         </LinearLayout>
 
@@ -505,7 +505,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="5dp"
                 android:gravity="center"
-                android:text="اضافة مجموعة فرعية"
+                android:text="@string/add_sub_cat"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -519,7 +519,7 @@
                     android:layout_height="35dp"
                     android:layout_marginVertical="6dp"
                     android:layout_weight="1"
-                    android:text="رمز المجموعة : "
+                    android:text="@string/cat_no"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -544,7 +544,7 @@
                     android:layout_height="35dp"
                     android:layout_marginVertical="6dp"
                     android:layout_weight="1"
-                    android:text="اسم المجموعة : "
+                    android:text="@string/cat_name"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -565,7 +565,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/shape5"
-                android:text="add" />
+                android:text="@string/add" />
 
         </LinearLayout>
 

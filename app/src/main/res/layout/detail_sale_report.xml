@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="20dp"
-            android:text="تقرير المبيعات  التفصيلي "
+            android:text="@string/details_sales_report"
             android:textColor="@color/black"
             android:layout_marginBottom="10dp"
             android:textSize="22sp" />
@@ -44,7 +44,7 @@
                 android:id="@+id/textView38"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="من تاريخ "
+                android:text="@string/from"
                 android:textColor="@color/black"
                 android:layout_marginHorizontal="10dp"
                 android:textSize="20sp" />
@@ -66,7 +66,7 @@
                 android:id="@+id/df"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="الى تاريخ "
+                android:text="@string/to"
                 android:textColor="@color/black"
                 android:layout_marginHorizontal="10dp"
                 android:textSize="20sp" />
@@ -116,7 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="رمز الماده "
+                    android:text="@string/item_no"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="22sp" />
@@ -126,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="الكميه المباعه"
+                    android:text="@string/paid_qty"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="22sp" />
@@ -136,7 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="اجمالي البيع قبل الضريبه "
+                    android:text="@string/net_sales_before_tax"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="22sp" />
@@ -146,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="اجمالي البيع "
+                    android:text="@string/net_sales_after_tax"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="22sp" />
