@@ -13,6 +13,7 @@
         android:layout_width="400dp"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="120dp"
+        android:layoutDirection="locale"
         android:orientation="vertical"
         android:padding="30dp">
 
@@ -20,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:gravity="center"
-            android:text="تسجيل الدخول"
+            android:text="@string/log_in"
             android:textColor="@color/black"
             android:textSize="25sp" />
 
@@ -33,7 +34,7 @@
             <TextView
                 android:layout_width="170dp"
                 android:layout_height="50dp"
-                android:text="اسم المستخدم :"
+                android:text="@string/user_name"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="15dp"
@@ -59,7 +60,7 @@
             <TextView
                 android:layout_width="170dp"
                 android:layout_height="50dp"
-                android:text="كلمة المرور :"
+                android:text="@string/password"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="15dp"
@@ -79,7 +80,7 @@
             android:id="@+id/log_in"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:text="دخول"
+            android:text="@string/enter"
             android:layout_gravity="center"
             android:background="@drawable/rosy_dot"
             android:layout_marginTop="20dp"

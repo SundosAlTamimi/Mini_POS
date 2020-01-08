@@ -143,7 +143,7 @@
                 android:layout_height="35dp"
                 android:layout_marginVertical="6dp"
                 android:layout_weight="1"
-                android:text="item_description"
+                android:text="@string/item_description"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

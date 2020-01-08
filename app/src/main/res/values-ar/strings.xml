@@ -6,6 +6,12 @@
     <string name="delete_all">حذف الجميع</string>
     <string name="edit">تعديل</string>
     <string name="clos">الغاء</string>
+    <string name="add">اضافة</string>
+
+    <string name="log_in">تسجيل الدخول</string>
+    <string name="user_name">اسم المستخدم :</string>
+    <string name="password">كلمة المرور :</string>
+    <string name="enter">دخول</string>
 
     <string name="price">السعر</string>
     <string name="quantity">الكمية</string>
@@ -25,6 +31,20 @@
     <string name="add_item">اضافة مادة</string>
     <string name="functions">العمليات</string>
     <string name="settings">الاعدادات</string>
+
+    <string name="barcode">الباركود</string>
+    <string name="item_name_arabic">اسم المادة بالعربي</string>
+    <string name="item_name_english">اسم المادة بالانجليزي</string>
+    <string name="category">المجموعة</string>
+    <string name="sub_category">المجموعة الفرعية</string>
+    <string name="sale_price">سعر البيع</string>
+    <string name="item_description">وصف المادة</string>
+    <string name="item_pic">صورة المادة</string>
+    <string name="add_cat">اضافة مجموعة</string>
+    <string name="add_sub_cat">اضافة مجموعة فرعية</string>
+    <string name="cat_no">رقم المجموعة</string>
+    <string name="cat_name">اسم المجموعة</string>
+    <string name="cat_pic">صورة المجموعة</string>
 
     <string name="delete_item">حذف مادة</string>
     <string name="edit_price">تعديل السعر</string>
@@ -64,6 +84,7 @@
 
     <string name="delete_message">هل انت متأكد من حذف جميع المواد ؟</string>
     <string name="delete_item_message">هل انت متأكد من حذف هذه المادة ؟</string>
+    <string name="delete_category_message">هل انت متأكد من حذف هذه المجموعة ؟</string>
     <string name="no_items_message">لم يتم اضافة مواد !</string>
     <string name="cant_edit_price_message">لا يمكنك التعديل على السعر !</string>
     <string name="cant_edit_qty_message">لا يمكنك التعديل على الكمية !</string>

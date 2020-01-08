@@ -9,6 +9,11 @@
     <string name="done">Done</string>
     <string name="add">Add</string>
 
+    <string name="log_in">Log In</string>
+    <string name="user_name">User Name :</string>
+    <string name="password">Password :</string>
+    <string name="enter">Enter</string>
+
     <string name="price">Price</string>
     <string name="quantity">Qty</string>
     <string name="close_day">Close Day</string>

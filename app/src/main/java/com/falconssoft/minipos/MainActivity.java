@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     String searchQuery;
 
     int cPrice = 0, cQty = 0;
-    static double sum = 0, taxValue = 2, due;
+    static double sum = 0, taxValue = 0, due = 0;
 
 
     Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog, functionsDialog;
@@ -315,9 +315,9 @@ public class MainActivity extends AppCompatActivity {
         taxValue = 2;
         due = sum + (sum * taxValue / 100);
 
-        sumNoTax.setText( getResources().getString(R.string.net_sales_before_tax) + sum);
-        tax.setText( getResources().getString(R.string.tax_value) + taxValue);
-        sumAfterTax.setText( getResources().getString(R.string.net_sales) + due);
+        sumNoTax.setText( getResources().getString(R.string.total_no_tax) + " : " + sum);
+        tax.setText( getResources().getString(R.string.tax_value)  + " : " + taxValue);
+        sumAfterTax.setText( getResources().getString(R.string.net_sales)  + " : " + due);
 //        required = new EditText(MainActivity.this);
 //        required.setText("" + due);
 

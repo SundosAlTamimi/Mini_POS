@@ -212,8 +212,7 @@
                             android:gravity="center"
                             android:text="@string/total_no_tax"
                             android:textColor="@color/red1"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:textSize="15sp"/>
 
                         <TextView
                             android:id="@+id/tax"
@@ -222,8 +221,7 @@
                             android:gravity="center"
                             android:text="@string/tax_value"
                             android:textColor="@color/red1"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:textSize="15sp"/>
 
                         <TextView
                             android:id="@+id/sum_after_tax"
@@ -232,8 +230,7 @@
                             android:gravity="center"
                             android:text="@string/net_sales"
                             android:textColor="@color/red1"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:textSize="15sp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -256,7 +253,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_menu_add"
-                        app:fab_label="Add Item" />
+                        app:fab_label="@string/add_item" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_function"
@@ -264,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@android:drawable/ic_menu_agenda"
-                        app:fab_label="Functions" />
+                        app:fab_label="@string/functions" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_settings"
@@ -272,7 +269,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@android:drawable/ic_menu_manage"
-                        app:fab_label="Settings" />
+                        app:fab_label="@string/settings" />
 
                 </com.github.clans.fab.FloatingActionMenu>
             </RelativeLayout>
