@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="550dp"
-    android:layout_height="350dp"
+    android:layout_width="550px"
+    android:layout_height="350px"
     android:background="@color/cream"
     android:gravity="center"
     android:id="@+id/reports_back"
@@ -17,25 +17,25 @@
             android:id="@+id/cash_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30sp"
+            android:layout_margin="30px"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:padding="20dp"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:padding="20px"
                 android:src="@drawable/report_icon"
                 android:background="@drawable/shape3" />
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginVertical="16dp"
+                android:layout_height="45px"
+                android:layout_marginVertical="16px"
                 android:text="@string/cash_report"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="10px"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textSize="34px" />
 
         </LinearLayout>
 
@@ -43,25 +43,25 @@
             android:id="@+id/sales_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="30sp"
+            android:layout_margin="30px"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:padding="20dp"
+                android:layout_width="150px"
+                android:layout_height="150px"
+                android:padding="20px"
                 android:src="@drawable/report_icon"
                 android:background="@drawable/shape3"/>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginVertical="16dp"
+                android:layout_height="45px"
+                android:layout_marginVertical="16px"
                 android:text="@string/sales_report"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="10px"
                 android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:textSize="34px" />
 
         </LinearLayout>
 

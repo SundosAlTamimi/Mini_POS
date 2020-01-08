@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/closeDialogLiner"
-    android:layout_width="400dp"
-    android:layout_height="370dp"
+    android:layout_width="400px"
+    android:layout_height="370px"
     android:background="@drawable/back_rose"
     android:orientation="vertical"
-    android:padding="30dp">
+    android:padding="30px">
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="20px"
         android:text="@string/close_day"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25sp" />
+        android:textSize="25px" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,9 +25,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="5px"
             android:layout_weight="1"
-            android:padding="1dp"
+            android:padding="1px"
             android:background="@drawable/focused"
             android:orientation="vertical">
 
@@ -36,30 +36,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape2"
-                android:padding="5dp"
+                android:padding="5px"
                 android:text="@string/new_day"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="20px"/>
 
             <TextView
                 android:id="@+id/newDay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="10px"
                 android:text="12-5-1454"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="18px" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="5px"
             android:layout_weight="1"
-            android:padding="1dp"
+            android:padding="1px"
             android:background="@drawable/focused"
             android:orientation="vertical">
 
@@ -68,21 +68,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape2"
-                android:padding="5dp"
+                android:padding="5px"
                 android:text="@string/close_day"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="20px"/>
 
             <TextView
                 android:id="@+id/closeDay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="10px"
                 android:text="12-2-1245"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="18px" />
 
         </LinearLayout>
 
@@ -91,8 +91,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="1dp"
+        android:layout_margin="5px"
+        android:padding="1px"
         android:background="@drawable/focused"
         android:orientation="vertical">
 
@@ -101,32 +101,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape2"
-            android:padding="5dp"
+            android:padding="5px"
             android:text="@string/total_cash"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20px" />
 
         <TextView
             android:id="@+id/totalCash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="10px"
             android:text="5000"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18px" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/close"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
+        android:layout_width="80px"
+        android:layout_height="40px"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:padding="10dp"
+        android:layout_margin="10px"
+        android:padding="10px"
         android:text="@string/close"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="16px" />
 </LinearLayout>
