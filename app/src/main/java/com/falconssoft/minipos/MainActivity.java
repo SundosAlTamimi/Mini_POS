@@ -646,6 +646,7 @@ public class MainActivity extends AppCompatActivity {
         RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
         RadioButton include = settingsDialog.findViewById(R.id.include);
 
+
         ImageView creamDot = settingsDialog.findViewById(R.id.cream_dot);
         ImageView rosyDot = settingsDialog.findViewById(R.id.rosy_dot);
         ImageView skyDot = settingsDialog.findViewById(R.id.sky_dot);
@@ -1053,7 +1054,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 9:
                 dialogBack.setBackgroundColor(getResources().getColor(R.color.cream));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+                button.setBackground(getResources().getDrawable(R.drawable.rosy_dot));
                 break;
         }
 

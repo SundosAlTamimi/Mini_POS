@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="550dp"
-    android:layout_height="350dp"
+    android:layout_width="550px"
+    android:layout_height="350px"
     android:background="@color/cream"
     android:gravity="center"
-    android:padding="40dp"
+    android:padding="40px"
     android:id="@+id/save_back"
     android:orientation="vertical">
 
@@ -12,25 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5dp"
+        android:padding="5px"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="150px"
             android:layout_height="wrap_content"
             android:text="@string/required"
             android:textColor="@color/black"
-            android:textSize="24dp"/>
+            android:textSize="30px" />
 
         <TextView
             android:id="@+id/required"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6dp"
-            android:paddingHorizontal="10dp"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
             android:gravity="center"
+            android:paddingHorizontal="10px"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="30px" />
 
 
     </LinearLayout>
@@ -39,26 +39,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5dp"
+        android:padding="5px"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="150px"
             android:layout_height="wrap_content"
             android:text="@string/payed"
             android:textColor="@color/black"
-            android:textSize="24dp"/>
+            android:textSize="30px" />
 
         <EditText
             android:id="@+id/payed"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6dp"
-            android:gravity="center"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
             android:background="@drawable/shape2"
-            android:paddingHorizontal="10dp"
+            android:gravity="center"
+            android:paddingHorizontal="10px"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="30px" />
 
 
     </LinearLayout>
@@ -67,26 +67,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5dp"
+        android:padding="5px"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="150dp"
+            android:layout_width="150px"
             android:layout_height="wrap_content"
             android:text="@string/remaining"
             android:textColor="@color/black"
-            android:textSize="24dp"/>
+            android:textSize="30px" />
 
         <TextView
             android:id="@+id/remaining"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6dp"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
             android:gravity="center"
+            android:paddingHorizontal="10px"
             android:text="0"
-            android:paddingHorizontal="10dp"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="30px" />
 
 
     </LinearLayout>
@@ -94,14 +94,14 @@
 
     <Button
         android:id="@+id/pay"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/pay"
+        android:layout_width="130px"
+        android:layout_height="50px"
         android:layout_gravity="center"
+        android:layout_marginTop="15px"
         android:background="@drawable/green_dot"
-        android:layout_marginTop="15dp"
+        android:text="@string/pay"
         android:textColor="@color/white"
-        android:textSize="16dp"/>
+        android:textSize="30px" />
 
 
 </LinearLayout>

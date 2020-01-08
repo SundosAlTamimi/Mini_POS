@@ -9,80 +9,80 @@
         android:id="@+id/alpha_linear"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40px"
+        android:layout_marginBottom="20px"
         android:background="@color/alpha_black"
         android:orientation="vertical"
-        android:paddingHorizontal="40dp">
+        android:paddingHorizontal="40px">
 
 
         <TextView
             android:id="@+id/textView33"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="20px"
             android:gravity="center"
             android:text="تقرير الكاش "
             android:textColor="@color/black"
-            android:textSize="22sp" />
+            android:textSize="32px" />
 
         <TextView
             android:id="@+id/textView34"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginVertical="10dp"
+            android:layout_height="1px"
+            android:layout_marginVertical="10px"
             android:background="@color/alpha_white" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="30px"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="10px">
 
 
             <LinearLayout
                 android:id="@+id/linear1"
-                android:layout_width="270dp"
+                android:layout_width="270px"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10px"
+                android:layout_marginBottom="10px"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="16px"
                     android:text="اليوم"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="30px" />
 
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:text="اجمالي البيع قبل الضريبة"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="30px" />
 
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:text="اجمالي قيم الضريبة"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="30px" />
 
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:text="صافي البيع"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="30px" />
 
             </LinearLayout>
 
@@ -90,50 +90,50 @@
                 android:id="@+id/linear2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="10px"
                 android:orientation="vertical">
 
 
                 <EditText
                     android:id="@+id/date"
-                    android:layout_width="220dp"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="16dp"
+                    android:layout_width="220px"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="16px"
                     android:background="@drawable/shape2"
-                    android:paddingHorizontal="10dp"
                     android:focusable="false"
+                    android:paddingHorizontal="10px"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="30px" />
 
                 <EditText
                     android:id="@+id/sales_no_tax"
-                    android:layout_width="220dp"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_width="220px"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:background="@drawable/shape2"
-                    android:paddingHorizontal="10dp"
+                    android:paddingHorizontal="10px"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="30px" />
 
                 <EditText
                     android:id="@+id/tax"
-                    android:layout_width="220dp"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_width="220px"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:background="@drawable/shape2"
-                    android:paddingHorizontal="10dp"
+                    android:paddingHorizontal="10px"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="30px" />
 
                 <EditText
                     android:id="@+id/sales_after_tax"
-                    android:layout_width="220dp"
-                    android:layout_height="35dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_width="220px"
+                    android:layout_height="45px"
+                    android:layout_marginVertical="6px"
                     android:background="@drawable/shape2"
-                    android:paddingHorizontal="10dp"
+                    android:paddingHorizontal="10px"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="30px" />
             </LinearLayout>
 
         </LinearLayout>
