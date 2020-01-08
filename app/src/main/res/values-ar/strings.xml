@@ -50,6 +50,18 @@
     <string name="theme">الثيم</string>
     <string name="save">حفظ</string>
 
+    <string name="day">اليوم</string>
+    <string name="net_sales_before_tax">اجمالي البيع قبل الضريبة</string>
+    <string name="net_tax">اجمالي الضريبة</string>
+    <string name="net_sales_after_tax">اجمالي البيع بعد الضريبة</string>
+
+    <string name="details_sales_report">تقرير المبيعات التفصيلي</string>
+    <string name="from">من تاريخ</string>
+    <string name="to">الى تاريخ</string>
+    <string name="preview">عرض</string>
+    <string name="paid_qty">الكمية المباعة</string>
+
+
     <string name="delete_message">هل انت متأكد من حذف جميع المواد ؟</string>
     <string name="delete_item_message">هل انت متأكد من حذف هذه المادة ؟</string>
     <string name="no_items_message">لم يتم اضافة مواد !</string>

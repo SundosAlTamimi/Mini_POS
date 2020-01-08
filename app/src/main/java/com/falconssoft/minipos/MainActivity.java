@@ -315,9 +315,9 @@ public class MainActivity extends AppCompatActivity {
         taxValue = 2;
         due = sum + (sum * taxValue / 100);
 
-        sumNoTax.setText("المجموع قبل الضريبة : " + sum);
-        tax.setText("الضريبة : " + taxValue);
-        sumAfterTax.setText("الصافي : " + due);
+        sumNoTax.setText( getResources().getString(R.string.net_sales_before_tax) + sum);
+        tax.setText( getResources().getString(R.string.tax_value) + taxValue);
+        sumAfterTax.setText( getResources().getString(R.string.net_sales) + due);
 //        required = new EditText(MainActivity.this);
 //        required.setText("" + due);
 
