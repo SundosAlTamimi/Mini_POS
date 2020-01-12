@@ -62,10 +62,11 @@ public class MainActivity extends AppCompatActivity {
     TextView required;
 
     ArrayList<Items> gridItems;
+    ArrayList<String> itemNo;
     String searchQuery;
 
     int cPrice = 0, cQty = 0;
-    static double sum = 0, taxValue = 2, due;
+    static double sum = 0, taxValue = 0, due = 0;
 
 
     Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog, functionsDialog;
@@ -86,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
         required = new EditText(MainActivity.this);
 
         init();
-
+        items = new ArrayList<>();
+        items2 = new ArrayList<>();
+        itemNo= new ArrayList<>();
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         items2.clear();
+                        itemNo.clear();
                         adapter3.notifyDataSetChanged();
                         reCalculate();
                     }
@@ -148,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ArrayList<Categories> categories = new ArrayList<>();
-        items = new ArrayList<>();
-        items2 = new ArrayList<>();
 
 
         categories.add(new Categories("1", "بطاطا", R.drawable.botato));
@@ -202,30 +204,41 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                boolean found = false;
-                if (items2.size() != 0) {
-                    for (int i = 0; i < items2.size(); i++)
-                        if (items.get(position).getItemNo().equals(items2.get(i).getItemNo())) {
+                if (DHandler.getSettings().getControlPrice() == 0) {
+                    boolean found = false;
+                    int position1 = position;
+                    if (items2.size() != 0) {//.indexOf
+                        Log.e("fffff", "" + itemNo.indexOf(items.get(position1).getItemNo()));
+                        int i = itemNo.indexOf(items.get(position1).getItemNo());
+//                        for (int i = 0; i < items2.size(); i++){
+                        if (i != -1) {
                             found = true;
                             double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
                             items2.get(i).setQty(++qty);
+//                              items2.get(i).setPrice(price + 10);
                             items2.get(i).setNet(net + 10);
-                            break;
+
+//                                break;
                         }
+//                    }
+                    }
+
+                    if (!found) {
+                        itemNo.add(items.get(position1).getItemNo());
+                        items2.add(new Items(items.get(position1).getItemNo()
+                                , items.get(position1).getItemName()
+                                , items.get(position1).getPrice()
+                                , items.get(position1).getCategory()
+                                , 1
+                                , (items.get(position1).getPrice() * 1)));
+                    }
+
+
+//                    itemsList.setAdapter(adapter3);
+
+                    adapter3.notifyDataSetChanged();
+                    reCalculate();
                 }
-
-                if (!found)
-                    items2.add(new Items(items.get(position).getItemNo()
-                            , items.get(position).getItemName()
-                            , items.get(position).getPrice()
-                            , items.get(position).getCategory()
-                            , 1
-                            , (items.get(position).getPrice() * 1)));
-
-
-                adapter3.notifyDataSetChanged();
-                reCalculate();
-
             }
         });
 
@@ -252,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     items2.remove(position);
+                                    itemNo.remove(position);
                                     adapter3.notifyDataSetChanged();
                                     reCalculate();
 
@@ -301,9 +315,9 @@ public class MainActivity extends AppCompatActivity {
         taxValue = 2;
         due = sum + (sum * taxValue / 100);
 
-        sumNoTax.setText("المجموع قبل الضريبة : " + sum);
-        tax.setText("الضريبة : " + taxValue);
-        sumAfterTax.setText("الصافي : " + due);
+        sumNoTax.setText( getResources().getString(R.string.total_no_tax) + " : " + sum);
+        tax.setText( getResources().getString(R.string.tax_value)  + " : " + taxValue);
+        sumAfterTax.setText( getResources().getString(R.string.net_sales)  + " : " + due);
 //        required = new EditText(MainActivity.this);
 //        required.setText("" + due);
 
@@ -631,6 +645,7 @@ public class MainActivity extends AppCompatActivity {
         RadioGroup taxCalcKind = settingsDialog.findViewById(R.id.tax_type);
         RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
         RadioButton include = settingsDialog.findViewById(R.id.include);
+
 
         ImageView creamDot = settingsDialog.findViewById(R.id.cream_dot);
         ImageView rosyDot = settingsDialog.findViewById(R.id.rosy_dot);
@@ -1039,7 +1054,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 9:
                 dialogBack.setBackgroundColor(getResources().getColor(R.color.cream));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+                button.setBackground(getResources().getDrawable(R.drawable.rosy_dot));
                 break;
         }
 

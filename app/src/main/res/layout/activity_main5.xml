@@ -74,8 +74,8 @@
                 <LinearLayout
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentEnd="true"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -111,6 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
+                android:layoutDirection="locale"
                 android:paddingHorizontal="10dp">
 
                 <LinearLayout
@@ -172,18 +173,16 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/alpha_yellow"
-                        android:orientation="horizontal"
-                        android:padding="10dp" />
+                        android:background="@color/alpha_yellow" />
 
                     <ListView
                         android:id="@+id/list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="35dp" />
+                        android:layout_height="290dp"
+                        android:layout_marginBottom="50dp" />
 
                 </LinearLayout>
 
@@ -195,13 +194,10 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <LinearLayout
+                    <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/alpha_yellow"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="10dp"
-                        android:paddingTop="5dp"/>
+                        android:background="@color/alpha_yellow" />
 
 
                     <LinearLayout
@@ -215,9 +211,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/total_no_tax"
-                            android:textStyle="bold"
                             android:textColor="@color/red1"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"/>
 
                         <TextView
                             android:id="@+id/tax"
@@ -225,9 +220,8 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/tax_value"
-                            android:textStyle="bold"
                             android:textColor="@color/red1"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"/>
 
                         <TextView
                             android:id="@+id/sum_after_tax"
@@ -235,7 +229,6 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/net_sales"
-                            android:textStyle="bold"
                             android:textColor="@color/red1"
                             android:textSize="15sp" />
 
@@ -260,7 +253,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@android:drawable/ic_menu_add"
-                        app:fab_label="Add Item" />
+                        app:fab_label="@string/add_item" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_function"
@@ -268,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@android:drawable/ic_menu_agenda"
-                        app:fab_label="Functions" />
+                        app:fab_label="@string/functions" />
 
                     <com.github.clans.fab.FloatingActionButton
                         android:id="@+id/fab_settings"
@@ -276,7 +269,7 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:src="@android:drawable/ic_menu_manage"
-                        app:fab_label="Settings" />
+                        app:fab_label="@string/settings" />
 
                 </com.github.clans.fab.FloatingActionMenu>
             </RelativeLayout>

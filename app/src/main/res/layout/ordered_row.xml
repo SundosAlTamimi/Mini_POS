@@ -2,92 +2,98 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
-    android:layoutDirection="rtl"
-    android:gravity="center">
+    android:layout_marginTop="10px"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center"
+    android:layoutDirection="locale"
+    android:orientation="horizontal">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="3dp">
+        android:padding="10px">
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/item_no"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="1214"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="25px" />
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/item_name"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
             android:text="تفاح اخضر"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="25px" />
+
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/plus"
-                android:layout_width="30dp"
-                android:layout_height="15dp"
-                android:text="+"
-                android:gravity="center"
+                android:layout_width="45px"
+                android:layout_height="35px"
                 android:background="@drawable/shape2"
-                android:textSize="11sp"/>
+                android:gravity="center"
+                android:text="+"
+                android:textSize="25px" />
 
             <TextView
                 android:id="@+id/qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5px"
                 android:gravity="center"
-                android:layout_marginHorizontal="5dp"
                 android:text="3"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="25px" />
 
             <Button
                 android:id="@+id/minus"
-                android:layout_width="30dp"
-                android:layout_height="15dp"
-                android:text="-"
-                android:gravity="center"
+                android:layout_width="45px"
+                android:layout_height="35px"
                 android:background="@drawable/shape2"
-                android:textSize="12sp"/>
+                android:gravity="center"
+                android:text="-"
+                android:textSize="25px" />
 
         </LinearLayout>
 
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/price"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.75"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="25px" />
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/net"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:text="2.25"
-            android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="25px" />
 
     </LinearLayout>
 

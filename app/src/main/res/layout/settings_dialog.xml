@@ -1,84 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="470dp"
-    android:layout_height="250dp"
+    android:id="@+id/settings_back"
+    android:layout_width="700px"
+    android:layout_height="500px"
     android:background="@color/cream"
     android:gravity="center"
-    android:padding="40dp"
-    android:id="@+id/settings_back"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:padding="30px">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5px">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="190px"
             android:layout_height="wrap_content"
-            android:text="الثيــم :"
+            android:text="@string/ip_no"
             android:textColor="@color/black"
-            android:textSize="24dp"/>
+            android:textSize="24px" />
+
+        <EditText
+            android:id="@+id/ip"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10px"
+            android:textColor="@color/black"
+            android:textSize="18px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <TextView
+            android:layout_width="190px"
+            android:layout_height="wrap_content"
+            android:text="@string/company_name"
+            android:textColor="@color/black"
+            android:textSize="24px" />
+
+        <EditText
+            android:id="@+id/company"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10px"
+            android:textColor="@color/black"
+            android:textSize="18px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <TextView
+            android:layout_width="190px"
+            android:layout_height="wrap_content"
+            android:text="@string/company_id"
+            android:textColor="@color/black"
+            android:textSize="24px" />
+
+        <EditText
+            android:id="@+id/company_id"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10px"
+            android:textColor="@color/black"
+            android:textSize="18px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <TextView
+            android:layout_width="190px"
+            android:layout_height="wrap_content"
+            android:text="@string/POS_no"
+            android:textColor="@color/black"
+            android:textSize="24px" />
+
+        <EditText
+            android:id="@+id/pos_no"
+            android:layout_width="220px"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
+            android:background="@drawable/shape2"
+            android:paddingHorizontal="10px"
+            android:textColor="@color/black"
+            android:textSize="18px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <TextView
+            android:layout_width="190px"
+            android:layout_height="wrap_content"
+            android:text="@string/control"
+            android:textColor="@color/black"
+            android:textSize="24px" />
+
+        <CheckBox
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="35px"
+            android:layout_marginVertical="6px"
+            android:paddingHorizontal="10px"
+            android:text="@string/price"
+            android:textColor="@color/black"
+            android:textSize="23px" />
+
+        <CheckBox
+            android:id="@+id/qty"
+            android:layout_width="wrap_content"
+            android:layout_height="35px"
+            android:layout_marginHorizontal="10px"
+            android:layout_marginVertical="6px"
+            android:paddingHorizontal="10px"
+            android:text="@string/quantity"
+            android:textColor="@color/black"
+            android:textSize="23px" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <RadioGroup
+            android:id="@+id/tax_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="190px"
+                android:layout_height="wrap_content"
+                android:text="@string/tax_type"
+                android:textColor="@color/black"
+                android:textSize="24px" />
+
+            <RadioButton
+                android:id="@+id/exclude"
+                android:layout_width="wrap_content"
+                android:layout_height="35px"
+                android:layout_marginVertical="6px"
+                android:paddingHorizontal="10px"
+                android:text="@string/exclude"
+                android:textColor="@color/black"
+                android:textSize="23px" />
+
+            <RadioButton
+                android:id="@+id/include"
+                android:layout_width="wrap_content"
+                android:layout_height="35px"
+                android:layout_marginHorizontal="10px"
+                android:layout_marginVertical="6px"
+                android:paddingHorizontal="10px"
+                android:text="@string/include"
+                android:textColor="@color/black"
+                android:textSize="23px" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5px">
+
+        <TextView
+            android:layout_width="150px"
+            android:layout_height="wrap_content"
+            android:text="@string/theme"
+            android:textColor="@color/black"
+            android:textSize="24px" />
 
 
         <ImageView
             android:id="@+id/cream_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/cream_dot" />
 
         <ImageView
             android:id="@+id/rosy_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/rosy_dot" />
 
         <ImageView
             android:id="@+id/sky_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/sky_dot" />
 
         <ImageView
             android:id="@+id/pronze_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/pronze_dot" />
 
         <ImageView
             android:id="@+id/gray_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/gray_dot" />
 
         <ImageView
             android:id="@+id/red_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/red_dot" />
 
         <ImageView
             android:id="@+id/green_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/green_dot" />
 
         <ImageView
             android:id="@+id/blue_dot"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:layout_marginHorizontal="5px"
             android:background="@drawable/blue_dot" />
 
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="80px"
+        android:layout_height="37px"
+        android:layout_gravity="center"
+        android:layout_marginTop="15px"
+        android:background="@drawable/green_dot"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="16px" />
+
+
 </LinearLayout>
