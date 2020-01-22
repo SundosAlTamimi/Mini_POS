@@ -1,19 +1,45 @@
 package com.falconssoft.minipos;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.falconssoft.minipos.Modle.Items;
 import com.falconssoft.minipos.Modle.Settings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class SalesReport extends AppCompatActivity {
@@ -23,7 +49,10 @@ public class SalesReport extends AppCompatActivity {
     private Button preview;
     DatabaseHandler DHandler;
     private Calendar myCalendar;
+    private TableLayout tableLayout;
+    private String fromDate, toDate;
 
+    ArrayList<Items> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +61,12 @@ public class SalesReport extends AppCompatActivity {
 
         init();
 
+        items = new ArrayList<>();
         DHandler = new DatabaseHandler(this);
         if (DHandler.getSettings() != null)
             setThemeNo(DHandler.getSettings().getThemeNo());
+
+        myCalendar = Calendar.getInstance();
 
         from.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +88,13 @@ public class SalesReport extends AppCompatActivity {
             }
         });
 
+        preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new JSONTask().execute();
+
+            }
+        });
 
     }
 
@@ -71,10 +110,21 @@ public class SalesReport extends AppCompatActivity {
 
                 String myFormat = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-                if (flag == 0)
+                if (flag == 0) {
                     from.setText(sdf.format(myCalendar.getTime()));
-                else
+//                    myCalendar.add(Calendar.DATE, -1);
+//                    Calendar calendar = myCalendar;
+//                    calendar.add(Calendar.DATE, -1);
+                    fromDate = sdf.format(myCalendar.getTime());
+                } else {
                     to.setText(sdf.format(myCalendar.getTime()));
+//                    myCalendar.add(Calendar.DATE, 1);
+//                    Calendar calendar2 = myCalendar;
+//                    calendar2.add(Calendar.DATE, +1);
+                    toDate = sdf.format(myCalendar.getTime());
+                }
+
+                myCalendar = Calendar.getInstance();
             }
 
         };
@@ -135,11 +185,151 @@ public class SalesReport extends AppCompatActivity {
         }
     }
 
+    private class JSONTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            URLConnection connection = null;
+            BufferedReader reader = null;
+            String finalJson = null;
+
+            try {
+                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=4&FROM_DATE='" + fromDate + "'&TO_DATE='" + toDate + "'");
+
+//                Log.e("dDate", "********"+ dDate);
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+
+                reader = new BufferedReader(new
+                        InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                finalJson = sb.toString();
+
+                JSONObject parentObject = new JSONObject(finalJson);
+
+
+                try {
+                    JSONArray parentArraySales = parentObject.getJSONArray("SALES_REPORT");
+
+                    for (int i = 0; i < parentArraySales.length(); i++) {
+                        JSONObject innerObject = parentArraySales.getJSONObject(i);
+
+                        Items item = new Items();
+                        item.setItemNo(innerObject.getString("ITEMNO"));
+                        item.setQty(innerObject.getDouble("QTY"));
+                        item.setNet(innerObject.getDouble("NET_TOTAL"));
+                        item.setNetWithTax(innerObject.getDouble("NET_TOTAL_WITH_TAX"));
+
+                        items.add(item);
+                    }
+                } catch (JSONException e) {
+                    Log.e("Import SALES_REPORT", e.getMessage().toString());
+                }
+
+
+            } catch (MalformedURLException e) {
+                Log.e("SALES_REPORT", "********ex1");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e("SALES_REPORT", e.getMessage().toString());
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                Log.e("SALES_REPORT", "********ex3  " + e.toString());
+                e.printStackTrace();
+            } finally {
+                Log.e("SALES_REPORT", "********finally");
+                if (connection != null) {
+                    Log.e("SALES_REPORT", "********ex4");
+                    // connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return finalJson;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result != null) {
+                Log.e("result", "*****************" + result);
+
+                fillTable();
+            } else {
+                Toast.makeText(SalesReport.this, "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @SuppressLint("NewApi")
+        void fillTable() {
+
+            tableLayout.removeAllViews();
+            for (int k = 0; k < items.size(); k++) {
+
+//                TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                TableRow tableRow = new TableRow(SalesReport.this);
+//                tableRow.setLayoutParams(tableParams);
+
+                for (int i = 0; i < 4; i++) {
+
+                    TextView textView = new TextView(SalesReport.this);
+                    TableRow.LayoutParams textViewParam = new TableRow.LayoutParams(0, 35, 1f);
+                    textViewParam.setMargins(0, 5, 0, 3);
+                    textView.setTextSize(18);
+                    textView.setGravity(Gravity.CENTER);
+                    textView.setTextColor(SalesReport.this.getColor(R.color.black));
+                    textView.setLayoutParams(textViewParam);
+                    switch (i) {
+                        case 0:
+                            textView.setText(items.get(k).getItemNo());
+                            break;
+                        case 1:
+                            textView.setText("" + items.get(k).getQty());
+                            break;
+                        case 2:
+                            textView.setText("" + items.get(k).getNet());
+                            break;
+                        case 3:
+                            textView.setText("" + items.get(k).getNetWithTax());
+                            break;
+                    }
+                    tableRow.addView(textView);
+                }
+                tableLayout.addView(tableRow);
+            }
+
+        }
+    }
+
+
     void init() {
         back = findViewById(R.id.back);
         alpha = findViewById(R.id.alpha_linear);
         preview = findViewById(R.id.preview);
         from = findViewById(R.id.from);
         to = findViewById(R.id.to);
+        tableLayout = findViewById(R.id.table);
     }
 }

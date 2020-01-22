@@ -11,7 +11,7 @@ import com.falconssoft.minipos.Modle.Settings;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "MiniBOSDatabase";
     static SQLiteDatabase db;
 
@@ -54,13 +54,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         try {
-            db.execSQL("ALTER TABLE SETTINGS ADD " + SETTINGS_POS_NO + " TEXT");
+            db.execSQL("drop table " + SETTINGS_TABLE );
         }catch (Exception e){
             Log.e("upgrade", "SETTINGS");
         }
 
         try {
-            db.execSQL("ALTER TABLE SETTINGS ADD " + SETTINGS_TAX_CALC_KIND + " TEXT");
+            String CREATE_TABLE_SETTINGS = "CREATE TABLE " + SETTINGS_TABLE + "("
+                    + SETTINGS_COMPANY_NAME + " TEXT,"
+                    + SETTINGS_IP_ADDRESS + " TEXT,"
+                    + SETTINGS_THEME_NO + " INTEGER,"
+                    + SETTINGS_CONTROL_PRICE + " TEXT,"
+                    + SETTINGS_CONTROL_QTY + " TEXT,"
+                    + SETTINGS_COMPANY_ID + " TEXT,"
+                    + SETTINGS_TAX_CALC_KIND + " TEXT,"
+                    + SETTINGS_POS_NO + " TEXT" + ")";
+            db.execSQL(CREATE_TABLE_SETTINGS);
         }catch (Exception e){
             Log.e("upgrade", "SETTINGS");
         }

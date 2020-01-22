@@ -94,7 +94,7 @@ public class ItemGridAdapter extends BaseAdapter {
         holder.price.setTextColor(context.getResources().getColor(R.color.red2));
 
         holder.itemName.setText(itemsList.get(i).getItemName());
-        holder.itemPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
+//        holder.itemPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
 //        holder.price.setText(""+itemsList.get(i).getPrice());
 
         return view;

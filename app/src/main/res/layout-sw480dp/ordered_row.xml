@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
-    android:layoutDirection="rtl"
-    android:gravity="center">
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center"
+    android:layoutDirection="locale"
+    android:orientation="horizontal">
 
 
     <LinearLayout
@@ -22,9 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="1214"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/item_name"
@@ -32,42 +32,42 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="تفاح اخضر"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="17sp" />
+
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/plus"
-                android:layout_width="20dp"
+                android:layout_width="30dp"
                 android:layout_height="10dp"
-                android:text="+"
-                android:gravity="center"
                 android:background="@drawable/shape2"
-                android:textSize="10sp"/>
+                android:gravity="center"
+                android:text="+"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginHorizontal="5dp"
+                android:gravity="center"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="17sp" />
 
             <Button
                 android:id="@+id/minus"
-                android:layout_width="20dp"
+                android:layout_width="30dp"
                 android:layout_height="10dp"
-                android:text="-"
-                android:gravity="center_horizontal"
                 android:background="@drawable/shape2"
-                android:textSize="10sp"/>
+                android:gravity="center"
+                android:text="-"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -78,9 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="0.75"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/net"
@@ -88,9 +87,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="2.25"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="17sp" />
 
     </LinearLayout>
 
