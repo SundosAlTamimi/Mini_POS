@@ -1,5 +1,6 @@
 package com.falconssoft.minipos;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -602,6 +603,7 @@ public class ItemCard extends AppCompatActivity {
             super.onPreExecute();
         }
 
+        @SuppressLint("WrongThread")
         @Override
         protected String doInBackground(String... params) {
             URLConnection connection = null;

@@ -60,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Categories> categories;
     ArrayList<Items> gridItems;
     ArrayList<String> itemNo;
+    public static ArrayList<String> itemDetail;
     String searchQuery;
     GridView itemsGrid;
 
@@ -111,8 +113,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DHandler = new DatabaseHandler(MainActivity.this);
-        posNo = DHandler.getSettings().getPosNo();
-        companyNo = DHandler.getSettings().getCompanyID();
+        if(DHandler.getSettings()!=null) {
+            posNo = DHandler.getSettings().getPosNo();
+            companyNo = DHandler.getSettings().getCompanyID();
+        }
+
 
         required = new EditText(MainActivity.this);
 
@@ -122,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         categories = new ArrayList<>();
         orderedItems = new ArrayList<>();
         itemNo = new ArrayList<>();
+        itemDetail = new ArrayList<>();
 
         search.setOnClickListener(onClickListener);
         clear.setOnClickListener(onClickListener);
@@ -912,11 +918,18 @@ public class MainActivity extends AppCompatActivity {
 
 //                    new JSONTask2().execute();
 
+                    Intent intent=new Intent(MainActivity.this,BluetoothConnectMenu.class);
+                    intent.putExtra("printKey", "0");
+                    startActivity(intent);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                orderedItems.clear();
+                itemDetail.add(sumNoTax.getText().toString().substring(sumNoTax.getText().toString().indexOf(":")+1,sumNoTax.getText().toString().length()));
+                itemDetail.add(tax.getText().toString().substring(tax.getText().toString().indexOf(":")+1,tax.getText().toString().length()));
+                itemDetail.add(sumAfterTax.getText().toString().substring(sumAfterTax.getText().toString().indexOf(":")+1,sumAfterTax.getText().toString().length()));
+//                orderedItems.clear();
                 orderedItemsAdapter.notifyDataSetChanged();
                 reCalculate(MainActivity.this);
 
