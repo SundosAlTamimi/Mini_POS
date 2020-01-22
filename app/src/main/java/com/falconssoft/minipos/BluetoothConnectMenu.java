@@ -57,6 +57,7 @@ import java.util.Vector;
 
 import static com.falconssoft.minipos.MainActivity.itemDetail;
 import static com.falconssoft.minipos.MainActivity.orderedItems;
+import static com.falconssoft.minipos.MainActivity.orderedListB;
 
 
 // Source code recreated from a .class file by IntelliJ IDEA
@@ -77,6 +78,8 @@ public class BluetoothConnectMenu extends Activity {
     private EditText btAddrBox;
     private Button connectButton;
     private Button searchButton;
+    ArrayList<Items> orderedItemsB;
+    ArrayList <String> itemDetailB;
 
     LinearLayout item;
     private ListView list;
@@ -191,7 +194,8 @@ public class BluetoothConnectMenu extends Activity {
 //        obj = new DatabaseHandler(BluetoothConnectMenu.this);
 
         decimalFormat = new DecimalFormat("##.000");
-
+        orderedItemsB=new ArrayList<>();
+        itemDetailB = new ArrayList<>();
         Date currentTimeAndDate = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         today = df.format(currentTimeAndDate);
@@ -477,12 +481,14 @@ public class BluetoothConnectMenu extends Activity {
                     case 0:
                         sample.selectContinuousPaper();
                         double totalQty=0.0;
-                        if(orderedItems.size()!=0) {
+                        orderedItemsB=orderedItems;
+                        itemDetailB=itemDetail;
+                        if(orderedItemsB.size()!=0) {
                             Bitmap bitmap1 = convertLayoutToImage_Report_titel(null, "-1");
                             sample.imageTestEnglishReport(1, bitmap1);
 
-                            for (int i = 0; i < orderedItems.size(); i++) {
-                                Bitmap bitmap2 = convertLayoutToImage_Report(orderedItems.get(i), i+"",-1,"");
+                            for (int i = 0; i < orderedItemsB.size(); i++) {
+                                Bitmap bitmap2 = convertLayoutToImage_Report(orderedItemsB.get(i), i+"",-1,"");
                                 sample.imageTestEnglishReport(1, bitmap2);
 
 //                                totalQty+=orderedItems.get(i).getItemQty();
@@ -510,6 +516,11 @@ public class BluetoothConnectMenu extends Activity {
                             Bitmap bitmap4 = convertLayoutToImage_Report(null, "-2",-1,"");
                             sample.imageTestEnglishReport(1, bitmap4);
 
+                           orderedItemsB.clear();
+                           itemDetailB.clear();
+                          MainActivity mainActivity=new MainActivity();
+                            mainActivity.clearFun();
+                            mainActivity.reCalculate(BluetoothConnectMenu.this);
 
                         }else{
                             Toast.makeText(BluetoothConnectMenu.this, "No Item For Print ", Toast.LENGTH_SHORT).show();
@@ -710,7 +721,7 @@ public class BluetoothConnectMenu extends Activity {
         }else if(Integer.parseInt(index)==-5){
 
                 ItemCode.setText(message);
-                itemName.setText(itemDetail.get(indexe));
+                itemName.setText(itemDetailB.get(indexe));
             price.setText(" ");
             Qty.setText(" ");
 

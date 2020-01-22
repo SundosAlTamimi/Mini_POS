@@ -67,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
     private GridView cats;
     private CategoryListAdapter catAdapter;
     private ItemListAdapter itemsAdapter;
-    private OrderedListAdapter orderedItemsAdapter;
+    public static OrderedListAdapter orderedItemsAdapter;
     private HorizontalListView listView;
     private ListView orderedList;
+    public static ListView orderedListB;
     private Button saveSettings, savePay, priceOk, qtyOk;
     private ImageView save, search, clear;
     private static TextView sumNoTax, tax, sumAfterTax;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Items> subItems;
     ArrayList<Categories> categories;
     ArrayList<Items> gridItems;
-    ArrayList<String> itemNo;
+    public static ArrayList<String> itemNo;
     public static ArrayList<String> itemDetail;
     String searchQuery;
     GridView itemsGrid;
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         DHandler = new DatabaseHandler(MainActivity.this);
         if(DHandler.getSettings()!=null) {
             posNo = DHandler.getSettings().getPosNo();
@@ -122,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         required = new EditText(MainActivity.this);
 
         init();
+        orderedListB=orderedList;
         items = new ArrayList<>();
         subItems = new ArrayList<>();
         categories = new ArrayList<>();
@@ -209,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
                             itemNo.clear();
                             orderedItemsAdapter.notifyDataSetChanged();
                             reCalculate(MainActivity.this);
+
                         }
                     });
                     builder.show();
@@ -1175,6 +1179,12 @@ public class MainActivity extends AppCompatActivity {
                 button.setBackground(getResources().getDrawable(R.drawable.rosy_dot));
                 break;
         }
+
+    }
+    void clearFun(){
+     orderedItems.clear();
+      itemNo.clear();
+       orderedItemsAdapter.notifyDataSetChanged();
 
     }
 
