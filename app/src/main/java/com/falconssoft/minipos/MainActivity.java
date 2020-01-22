@@ -3,8 +3,10 @@ package com.falconssoft.minipos;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -39,19 +41,34 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.falconssoft.minipos.Modle.Categories;
+import com.falconssoft.minipos.Modle.CloseDay;
 import com.falconssoft.minipos.Modle.Items;
 import com.falconssoft.minipos.Modle.Settings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
     private GridView cats;
-    private CategoryListAdapter adapter;
-    private ItemListAdapter adapter2;
-    private OrderedListAdapter adapter3;
+    private CategoryListAdapter catAdapter;
+    private ItemListAdapter itemsAdapter;
+    private OrderedListAdapter orderedItemsAdapter;
     private HorizontalListView listView;
-    private ListView itemsList;
+    private ListView orderedList;
     private Button saveSettings, savePay, priceOk, qtyOk;
     private ImageView save, search, clear;
     private static TextView sumNoTax, tax, sumAfterTax;
@@ -60,20 +77,30 @@ public class MainActivity extends AppCompatActivity {
     private com.github.clans.fab.FloatingActionButton fabAddItem, fabFunctions, fabSettings;
     ItemGridAdapter gridAdapter;
     TextView required;
+    String posNo, companyNo;
 
+    TextView closeDay, newDay, totalCashText;
+
+    String totalCash;
+    ArrayList<Items> subItems;
+    ArrayList<Categories> categories;
     ArrayList<Items> gridItems;
     ArrayList<String> itemNo;
     String searchQuery;
+    GridView itemsGrid;
+
+    String today, tomorrow;
+    String voucherNo;
 
     int cPrice = 0, cQty = 0;
-    static double sum = 0, taxValue = 0, due = 0;
+    static double sum = 0, sumWithTax = 0, taxValue = 0, totalTax = 0, due = 0;
 
 
     Dialog settingsDialog, reportsDialog, itemsDialog, saveDialog, priceDialog, functionsDialog;
-    DatabaseHandler DHandler;
+    static DatabaseHandler DHandler;
 
     ArrayList<Items> items;
-    public static ArrayList<Items> items2;
+    public static ArrayList<Items> orderedItems;
 
     public static int theme = 9;
 
@@ -84,215 +111,58 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DHandler = new DatabaseHandler(MainActivity.this);
+        posNo = DHandler.getSettings().getPosNo();
+        companyNo = DHandler.getSettings().getCompanyID();
+
         required = new EditText(MainActivity.this);
 
         init();
         items = new ArrayList<>();
-        items2 = new ArrayList<>();
-        itemNo= new ArrayList<>();
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gridAdapter = new ItemGridAdapter(MainActivity.this, items);
-                itemsDialog();
+        subItems = new ArrayList<>();
+        categories = new ArrayList<>();
+        orderedItems = new ArrayList<>();
+        itemNo = new ArrayList<>();
 
-            }
-        });
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        search.setOnClickListener(onClickListener);
+        clear.setOnClickListener(onClickListener);
+        save.setOnClickListener(onClickListener);
+        fabAddItem.setOnClickListener(onClickListener);
+        fabFunctions.setOnClickListener(onClickListener);
+        fabSettings.setOnClickListener(onClickListener);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(getResources().getString(R.string.delete_message));
-                builder.setTitle(getResources().getString(R.string.delete_all));
-                builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        items2.clear();
-                        itemNo.clear();
-                        adapter3.notifyDataSetChanged();
-                        reCalculate();
-                    }
-                });
-                builder.show();
-            }
-        });
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (items2.size() != 0)
-                    saveDialog();
-                else
-                    Toast.makeText(MainActivity.this, getResources().getString(R.string.no_items_message), Toast.LENGTH_LONG).show();
-
-            }
-        });
-
-        fabAddItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ItemCard.class);
-                startActivity(intent);
-            }
-        });
-
-        fabFunctions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                functionsDialog();
-            }
-        });
-
-        fabSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settingDialog();
-            }
-        });
-
-        ArrayList<Categories> categories = new ArrayList<>();
+        new JSONTask().execute();
+//        categories.add(new Categories("1", "بطاطا", R.drawable.botato, 0));
+//        categories.add(new Categories("2", "برجر", R.drawable.burgerr, 0));
+//        categories.add(new Categories("3", "سمك", R.drawable.fish, 0));
+//        categories.add(new Categories("5", "فواكه", R.drawable.watermelon, 0));
+//        categories.add(new Categories("4", "وجبات", R.drawable.corden, 0));
+//        categories.add(new Categories("6", "سلطات", R.drawable.salad, 0));
+//        categories.add(new Categories("7", "ليمون", R.drawable.limon, 0));
+//        categories.add(new Categories("8", "فواكه", R.drawable.fruit, 0));
 
 
-        categories.add(new Categories("1", "بطاطا", R.drawable.botato));
-        categories.add(new Categories("2", "برجر", R.drawable.burgerr));
-        categories.add(new Categories("3", "سمك", R.drawable.fish));
-        categories.add(new Categories("5", "فواكه", R.drawable.watermelon));
-        categories.add(new Categories("4", "وجبات", R.drawable.corden));
-        categories.add(new Categories("6", "سلطات", R.drawable.salad));
-        categories.add(new Categories("7", "ليمون", R.drawable.limon));
-        categories.add(new Categories("8", "فواكه", R.drawable.fruit));
+        orderedItemsAdapter = new OrderedListAdapter(MainActivity.this, orderedItems);
+        orderedList.setAdapter(orderedItemsAdapter);
+        orderedList.setOnItemLongClickListener(onItemLongClickListener);
 
-        adapter = new CategoryListAdapter(MainActivity.this, categories);
-        cats.setAdapter(adapter);
+//        items.add(new Items("1", "بطاطا", 10, R.drawable.botato, "خضار", 1));
+//        items.add(new Items("2", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
+//        items.add(new Items("3", "سمك", 10, R.drawable.fish, "اسماك", 1));
+//        items.add(new Items("4", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
+//        items.add(new Items("5", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
+//        items.add(new Items("6", "سلطة", 10, R.drawable.salad, "خضار", 1));
+//        items.add(new Items("7", "ليمون", 10, R.drawable.limon, "فواكه", 1));
+//        items.add(new Items("8", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+//        items.add(new Items("9", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
+//        items.add(new Items("10", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
+//        items.add(new Items("11", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+//        items.add(new Items("12", "سمك", 10, R.drawable.fish, "اسماك", 1));
+//        items.add(new Items("13", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
+//        items.add(new Items("14", "سلطة", 10, R.drawable.salad, "خضار", 1));
+//        items.add(new Items("15", "ليمون", 10, R.drawable.limon, "فواكه", 1));
+//        items.add(new Items("16", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
+//        items.add(new Items("17", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
 
-        cats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                items.add(new Items("1", "فراولة", 10, R.drawable.fruit, "فواكه"));
-                adapter2.notifyDataSetChanged();
-            }
-        });
-
-
-        adapter3 = new OrderedListAdapter(MainActivity.this, items2);
-        itemsList.setAdapter(adapter3);
-
-        items.add(new Items("1", "بطاطا", 10, R.drawable.botato, "خضار", 1));
-        items.add(new Items("2", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
-        items.add(new Items("3", "سمك", 10, R.drawable.fish, "اسماك", 1));
-        items.add(new Items("4", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
-        items.add(new Items("5", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
-        items.add(new Items("6", "سلطة", 10, R.drawable.salad, "خضار", 1));
-        items.add(new Items("7", "ليمون", 10, R.drawable.limon, "فواكه", 1));
-        items.add(new Items("8", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-        items.add(new Items("9", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
-        items.add(new Items("10", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
-        items.add(new Items("11", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-        items.add(new Items("12", "سمك", 10, R.drawable.fish, "اسماك", 1));
-        items.add(new Items("13", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
-        items.add(new Items("14", "سلطة", 10, R.drawable.salad, "خضار", 1));
-        items.add(new Items("15", "ليمون", 10, R.drawable.limon, "فواكه", 1));
-        items.add(new Items("16", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-        items.add(new Items("17", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
-
-
-        adapter2 = new ItemListAdapter(MainActivity.this, items);
-        listView.setAdapter(adapter2);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (DHandler.getSettings().getControlPrice() == 0) {
-                    boolean found = false;
-                    int position1 = position;
-                    if (items2.size() != 0) {//.indexOf
-                        Log.e("fffff", "" + itemNo.indexOf(items.get(position1).getItemNo()));
-                        int i = itemNo.indexOf(items.get(position1).getItemNo());
-//                        for (int i = 0; i < items2.size(); i++){
-                        if (i != -1) {
-                            found = true;
-                            double price = items2.get(i).getPrice(), qty = items2.get(i).getQty(), net = items2.get(i).getNet();
-                            items2.get(i).setQty(++qty);
-//                              items2.get(i).setPrice(price + 10);
-                            items2.get(i).setNet(net + 10);
-
-//                                break;
-                        }
-//                    }
-                    }
-
-                    if (!found) {
-                        itemNo.add(items.get(position1).getItemNo());
-                        items2.add(new Items(items.get(position1).getItemNo()
-                                , items.get(position1).getItemName()
-                                , items.get(position1).getPrice()
-                                , items.get(position1).getCategory()
-                                , 1
-                                , (items.get(position1).getPrice() * 1)));
-                    }
-
-
-//                    itemsList.setAdapter(adapter3);
-
-                    adapter3.notifyDataSetChanged();
-                    reCalculate();
-                }
-            }
-        });
-
-        itemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-
-
-                String[] options = {
-                        getResources().getString(R.string.delete_item),
-                        getResources().getString(R.string.edit_price),
-                        getResources().getString(R.string.edit_qty)};
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                builder.setTitle("Pick a color");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setMessage(getResources().getString(R.string.delete_item_message));
-                            builder.setTitle(getResources().getString(R.string.delete_item));
-                            builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    items2.remove(position);
-                                    itemNo.remove(position);
-                                    adapter3.notifyDataSetChanged();
-                                    reCalculate();
-
-                                }
-                            });
-                            builder.setNeutralButton(getResources().getString(R.string.clos), null);
-                            builder.show();
-
-                        } else if (which == 1) {
-                            if (DHandler.getSettings().getControlPrice() == 1)
-                                priceDialog(position);
-                            else
-                                Toast.makeText(MainActivity.this , getResources().getString(R.string.cant_edit_price_message) , Toast.LENGTH_LONG).show();
-
-                        } else {
-                            if (DHandler.getSettings().getControlQty() == 1)
-                            qtyDialog(position);
-                            else
-                                Toast.makeText(MainActivity.this , getResources().getString(R.string.cant_edit_qty_message) , Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                builder.show();
-
-                return false;
-            }
-        });
 
         startAnimation();
 
@@ -305,23 +175,251 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
 
-    void reCalculate() {
+            switch (v.getId()) {
+                case R.id.save:
+                    if (orderedItems.size() != 0)
+                        saveDialog();
+                    else
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.no_items_message), Toast.LENGTH_LONG).show();
+                    break;
+
+                case R.id.search:
+                    gridAdapter = new ItemGridAdapter(MainActivity.this, items);
+                    itemsDialog();
+                    break;
+
+                case R.id.clear:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(getResources().getString(R.string.delete_message));
+                    builder.setTitle(getResources().getString(R.string.delete_all));
+                    builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            orderedItems.clear();
+                            itemNo.clear();
+                            orderedItemsAdapter.notifyDataSetChanged();
+                            reCalculate(MainActivity.this);
+                        }
+                    });
+                    builder.show();
+                    break;
+
+                case R.id.fab_add_item:
+                    Intent intent = new Intent(MainActivity.this, ItemCard.class);
+                    startActivity(intent);
+                    break;
+
+                case R.id.fab_function:
+                    functionsDialog();
+                    break;
+
+                case R.id.fab_settings:
+                    settingDialog();
+                    break;
+            }
+
+        }
+    };
+
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            switch (parent.getId()) {
+
+                case R.id.listview:
+                    boolean found = false;
+                    int position1 = position;
+                    if (orderedItems.size() != 0) {//.indexOf
+                        Log.e("fffff", "" + itemNo.indexOf(subItems.get(position1).getItemNo()));
+                        int i = itemNo.indexOf(subItems.get(position1).getItemNo());
+                        if (i != -1) {
+                            found = true;
+                            double qty = orderedItems.get(i).getQty(), net = orderedItems.get(i).getNet(), netWithTax = orderedItems.get(i).getNetWithTax();
+                            orderedItems.get(i).setQty(++qty);
+                            orderedItems.get(i).setNet(net + subItems.get(position1).getPrice());
+                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(subItems.get(position1).getPrice() , subItems.get(position1).getTaxValue()));
+
+                        }
+                    }
+
+                    if (!found) {
+                        if (!voucherNo.equals("-1")) {
+                            itemNo.add(subItems.get(position1).getItemNo());
+                            orderedItems.add(new Items(subItems.get(position1).getItemNo()
+                                    , subItems.get(position1).getItemName()
+                                    , subItems.get(position1).getPrice()
+                                    , subItems.get(position1).getCategory()
+                                    , 1
+                                    , (subItems.get(position1).getPrice())
+                                    , calculateTax(subItems.get(position1).getPrice() , subItems.get(position1).getTaxValue())
+                                    , subItems.get(position1).getTaxValue()
+                                    , voucherNo
+                                    , 0
+                                    , today
+                                    , companyNo
+                                    , posNo));
+                        } else
+                            Toast.makeText(MainActivity.this, "please check internet connection", Toast.LENGTH_LONG).show();
+                    }
+
+                    orderedItemsAdapter.notifyDataSetChanged();
+                    reCalculate(MainActivity.this);
+
+                    break;
+
+                case R.id.categories:
+                    subItems.clear();
+                    for (int i = 0; i < items.size(); i++) {
+                        if (categories.get(position).getCatName().equals(items.get(i).getCategory()))
+                            subItems.add(items.get(i));
+                    }
+                    itemsAdapter.notifyDataSetChanged();
+                    break;
+
+                case R.id.items_grid:
+                    boolean found2 = false;
+                    int position2 = position;
+                    if (orderedItems.size() != 0) {//.indexOf
+                        int i = itemNo.indexOf(gridItems.get(position2).getItemNo());
+                        if (i != -1) {
+                            found2 = true;
+                            double qty = orderedItems.get(i).getQty(), net = orderedItems.get(i).getNet(), netWithTax = orderedItems.get(i).getNetWithTax();
+                            orderedItems.get(i).setQty(++qty);
+                            orderedItems.get(i).setNet(net + orderedItems.get(i).getPrice());
+                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(orderedItems.get(i).getPrice() , orderedItems.get(i).getTaxValue()));
+                        }
+                    }
+
+                    if (!found2) {
+                        if (!voucherNo.equals("-1")) {
+                            itemNo.add(gridItems.get(position2).getItemNo());
+                            orderedItems.add(new Items(gridItems.get(position2).getItemNo()
+                                    , gridItems.get(position2).getItemName()
+                                    , gridItems.get(position2).getPrice()
+                                    , gridItems.get(position2).getCategory()
+                                    , 1
+                                    , gridItems.get(position2).getPrice()
+                                    , calculateTax(gridItems.get(position2).getPrice() , gridItems.get(position2).getTaxValue())
+                                    , subItems.get(position2).getTaxValue()
+                                    , voucherNo
+                                    , 0
+                                    , today
+                                    , companyNo
+                                    , posNo));
+                        } else
+                            Toast.makeText(MainActivity.this, "please check internet connection", Toast.LENGTH_LONG).show();
+                    }
+                    orderedItemsAdapter.notifyDataSetChanged();
+
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.item_added_message), Toast.LENGTH_LONG).show();
+                    break;
+
+            }
+        }
+    };
+
+    AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+            switch (parent.getId()) {
+                case R.id.list:
+                    String[] options = {
+                            getResources().getString(R.string.delete_item),
+                            getResources().getString(R.string.edit_price),
+                            getResources().getString(R.string.edit_qty)};
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//                builder.setTitle("Pick a color");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage(getResources().getString(R.string.delete_item_message));
+                                builder.setTitle(getResources().getString(R.string.delete_item));
+                                builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        orderedItems.remove(position);
+                                        itemNo.remove(position);
+                                        orderedItemsAdapter.notifyDataSetChanged();
+                                        reCalculate(MainActivity.this);
+
+                                    }
+                                });
+                                builder.setNeutralButton(getResources().getString(R.string.clos), null);
+                                builder.show();
+
+                            } else if (which == 1) {
+                                if (DHandler.getSettings().getControlPrice() == 1)
+                                    priceDialog(position);
+                                else
+                                    Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_price_message), Toast.LENGTH_LONG).show();
+
+                            } else {
+                                if (DHandler.getSettings().getControlQty() == 1)
+                                    qtyDialog(position);
+                                else
+                                    Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_qty_message), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                    builder.show();
+                    break;
+            }
+            return false;
+        }
+    };
+
+    Double calculateTax(Double value , String taxValue){
+
+        Double endValue ;
+        Double taxValu = Double.parseDouble(taxValue);
+
+        if (DHandler.getSettings().getTaxCalcKind() == 0) {
+            endValue = value + (value * taxValu / 100) ;
+
+        } else {
+            endValue = value + ((value * taxValu / 100 ) / (1 + (taxValu / 100)));
+
+        }
+
+        return endValue;
+    }
+
+    void reCalculate(Context context) {
 
         sum = 0;
-        for (int i = 0; i < items2.size(); i++) {
-            sum += items2.get(i).getNet();
+        sumWithTax = 0;
+        totalTax = 0;
+
+        for (int i = 0; i < orderedItems.size(); i++) {
+
+            sum += orderedItems.get(i).getNet();
+
+            double tax = Double.parseDouble(orderedItems.get(i).getTaxValue());
+            if (DHandler.getSettings().getTaxCalcKind() == 0) {
+
+                totalTax += orderedItems.get(i).getNet() * tax / 100 ;
+                sumWithTax += orderedItems.get(i).getNet() + (orderedItems.get(i).getNet() * tax / 100);
+            } else {
+                totalTax += (orderedItems.get(i).getNet() * tax / 100 ) / (1 + (tax / 100));
+                sumWithTax += orderedItems.get(i).getNet() + ((orderedItems.get(i).getNet() * tax / 100 ) / (1 + (tax / 100)));
+            }
         }
-        taxValue = 2;
-        due = sum + (sum * taxValue / 100);
+//        taxValue = 2;
+//        due = sum + (sum * taxValue / 100);
 
-        sumNoTax.setText( getResources().getString(R.string.total_no_tax) + " : " + sum);
-        tax.setText( getResources().getString(R.string.tax_value)  + " : " + taxValue);
-        sumAfterTax.setText( getResources().getString(R.string.net_sales)  + " : " + due);
-//        required = new EditText(MainActivity.this);
-//        required.setText("" + due);
+        sumNoTax.setText(context.getResources().getString(R.string.total_no_tax) + " : " + sum);
+        tax.setText(context.getResources().getString(R.string.tax_value) + " : " + totalTax);
+        sumAfterTax.setText(context.getResources().getString(R.string.net_sales) + " : " + sumWithTax);
 
-//        saveDialog();
     }
 
     void startAnimation() {
@@ -329,11 +427,11 @@ public class MainActivity extends AppCompatActivity {
         animation.setFillAfter(true);
         rightLinear.startAnimation(animation);
 
-        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.INFINITE, .5f, ScaleAnimation.RELATIVE_TO_SELF, .8f);
-        scale.setStartOffset(500);
-        scale.setDuration(700);
-        scale.setInterpolator(new OvershootInterpolator());
-        menuLabelsRight.startAnimation(scale);
+//        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.INFINITE, .5f, ScaleAnimation.RELATIVE_TO_SELF, .8f);
+//        scale.setStartOffset(500);
+//        scale.setDuration(700);
+//        scale.setInterpolator(new OvershootInterpolator());
+//        menuLabelsRight.startAnimation(scale);
 
         slideLeft(topLinear);
     }
@@ -350,18 +448,6 @@ public class MainActivity extends AppCompatActivity {
         view.startAnimation(animate);
     }
 
-    public void slideDown(View view) {
-        TranslateAnimation animate = new TranslateAnimation(
-                0,                 // fromXDelta
-                0,                 // toXDelta
-                0,  // fromYDelta
-                550);                // toYDelta
-        animate.setDuration(700);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
-
-    }
-
     public void itemsDialog() {
         itemsDialog = new Dialog(MainActivity.this);
         itemsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -372,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
         final SearchView searchView = itemsDialog.findViewById(R.id.mSearchTh);
         final Spinner cat = itemsDialog.findViewById(R.id.category);
         itemsBack = itemsDialog.findViewById(R.id.items_back);
-        final GridView itemsGrid = itemsDialog.findViewById(R.id.items);
+        itemsGrid = itemsDialog.findViewById(R.id.items_grid);
 
         setDialogTheme(theme, itemsBack, new Button(MainActivity.this));
 
@@ -384,10 +470,11 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<String> catList = new ArrayList<>();
         catList.add("");
-        catList.add("خضار");
-        catList.add("فواكه");
-        catList.add("لحوم");
-        catList.add("اسماك");
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).getCatType() == 0)
+                catList.add(categories.get(i).getCatName());
+        }
+
         ArrayAdapter<String> catAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, catList);
         catAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cat.setAdapter(catAdapter);
@@ -422,18 +509,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        itemsGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        itemsGrid.setOnItemClickListener(onItemClickListener);
 
-                items2.add(new Items(gridItems.get(position).getItemNo(), gridItems.get(position).getItemName(),
-                        gridItems.get(position).getPrice(), gridItems.get(position).getPic(), gridItems.get(position).getCategory()));
-                adapter3.notifyDataSetChanged();
-
-                Toast.makeText(MainActivity.this , getResources().getString(R.string.item_added_message), Toast.LENGTH_LONG).show();
-
-            }
-        });
         itemsDialog.show();
     }
 
@@ -450,16 +527,16 @@ public class MainActivity extends AppCompatActivity {
 
         setDialogTheme(theme, priceBack, priceOk);
 
-        price.setText("" + items2.get(position).getPrice());
+        price.setText("" + orderedItems.get(position).getPrice());
 
         priceOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!price.getText().toString().equals("")) {
 
-                    items2.get(position).setPrice(Double.parseDouble(price.getText().toString()));
-                    items2.get(position).setNet(items2.get(position).getQty() * Double.parseDouble(price.getText().toString()));
-                    adapter3.notifyDataSetChanged();
+                    orderedItems.get(position).setPrice(Double.parseDouble(price.getText().toString()));
+                    orderedItems.get(position).setNet(orderedItems.get(position).getQty() * Double.parseDouble(price.getText().toString()));
+                    orderedItemsAdapter.notifyDataSetChanged();
 
                     priceDialog.dismiss();
                 }
@@ -469,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void qtyDialog(final int position){
+    void qtyDialog(final int position) {
         final Dialog qtyDialog = new Dialog(MainActivity.this);
         qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         qtyDialog.setContentView(R.layout.quantity_dialog);
@@ -478,7 +555,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
         qtyOk = qtyDialog.findViewById(R.id.quantity_dialog_done);
 
-        qty.setText("" + items2.get(position).getQty());
+        qty.setText("" + orderedItems.get(position).getQty());
         qty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -496,10 +573,10 @@ public class MainActivity extends AppCompatActivity {
                     double quantity = Double.parseDouble(qty.getText().toString());
 
                     if (quantity > 0) {
-                        items2.get(position).setQty(quantity);
-                        items2.get(position).setNet(quantity * 10);
-                        adapter3.notifyDataSetChanged();
-                        reCalculate();
+                        orderedItems.get(position).setQty(quantity);
+                        orderedItems.get(position).setNet(quantity * 10);
+                        orderedItemsAdapter.notifyDataSetChanged();
+                        reCalculate(MainActivity.this);
                         qtyDialog.dismiss();
                     } else {
                         Toast.makeText(MainActivity.this, "الكمية اقل من 1!", Toast.LENGTH_SHORT).show();
@@ -516,17 +593,17 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<Items> tempList = new ArrayList<>();
         for (int k = 0; k < items.size(); k++) {
-            Log.e("******", items.get(k).getCategory() + "   " + item);
+//            Log.e("******", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
             if (
-                    ((items.get(k).getItemName()).toUpperCase().contains(item) || item.equals("")) &&
+                    ((items.get(k).getItemName()).toUpperCase().contains(item.toUpperCase()) || item.equals("")) &&
                             ((items.get(k).getCategory()).equals(category) || category.equals(""))) {
                 tempList.add(items.get(k));
-                Log.e("******2", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
+//                Log.e("******2", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
             }
         }
 
         gridItems = tempList;
-        Log.e("******3", "   " + gridItems.size());
+//        Log.e("******3", "   " + gridItems.size());
         gridAdapter = new ItemGridAdapter(MainActivity.this, gridItems);
         itemsGrid.setAdapter(gridAdapter);
     }
@@ -600,27 +677,33 @@ public class MainActivity extends AppCompatActivity {
         closeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         closeDialog.setCancelable(false);
         closeDialog.setContentView(R.layout.close_day_dialog);
-        closeDialog.setCanceledOnTouchOutside(false);
+        closeDialog.setCanceledOnTouchOutside(true);
 
         LinearLayout closeDialogLiner = closeDialog.findViewById(R.id.closeDialogLiner);
 
-        TextView closeDay, newDay, totalCash;
-        Button close;
+
+        final Button close;
         close = closeDialog.findViewById(R.id.close);
         closeDay = closeDialog.findViewById(R.id.closeDay);
         newDay = closeDialog.findViewById(R.id.newDay);
-        totalCash = closeDialog.findViewById(R.id.totalCash);
+        totalCashText = closeDialog.findViewById(R.id.totalCash);
 
         setDialogTheme(theme, closeDialogLiner, close);
 
-        closeDay.setText("21-1-2020");
-        newDay.setText("21-1-2020");
-        totalCash.setText("2020");
+        new JSONTask2().execute();
 
+        newDay.setText(tomorrow);
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                CloseDay closeDay = new CloseDay(today, "1", Double.parseDouble(totalCash), companyNo);
+                new Export(closeDay.getJSONObject(), "Close_Day");
+
+                Intent intent = new Intent(MainActivity.this , LogIn.class);
+                startActivity(intent);
+
                 closeDialog.dismiss();
             }
         });
@@ -782,8 +865,8 @@ public class MainActivity extends AppCompatActivity {
 
         setDialogTheme(theme, saveBack, savePay);
 
-        required.setText("" + due);
-        payed.setText("" + due);
+        required.setText("" + sumWithTax);
+        payed.setText("" + sumWithTax);
 
         payed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -814,8 +897,30 @@ public class MainActivity extends AppCompatActivity {
         savePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), -1, cPrice, cQty));
-                settingsDialog.dismiss();
+
+                new Export(orderedItems.get(0).getJSONObject2(), "Sales_Master");
+
+                try {
+                    JSONArray jsonArray = new JSONArray();
+                    for (int i = 0; i < orderedItems.size(); i++) {
+                        jsonArray.put(orderedItems.get(i).getJSONObject3());
+                    }
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("Sales_Details", jsonArray);
+                    new Export(jsonObject, "Sales_Details");
+
+//                    new JSONTask2().execute();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                orderedItems.clear();
+                orderedItemsAdapter.notifyDataSetChanged();
+                reCalculate(MainActivity.this);
+
+                saveDialog.dismiss();
             }
         });
 
@@ -1081,7 +1186,7 @@ public class MainActivity extends AppCompatActivity {
 
         cats = findViewById(R.id.categories);
         listView = findViewById(R.id.listview);
-        itemsList = findViewById(R.id.list);
+        orderedList = findViewById(R.id.list);
         topLinear = findViewById(R.id.top_linear);
         rightLinear = findViewById(R.id.right_linear);
         back = findViewById(R.id.back);
@@ -1094,5 +1199,274 @@ public class MainActivity extends AppCompatActivity {
         fabAddItem = findViewById(R.id.fab_add_item);
         fabFunctions = findViewById(R.id.fab_function);
         fabSettings = findViewById(R.id.fab_settings);
+    }
+
+
+    private class JSONTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            URLConnection connection = null;
+            BufferedReader reader = null;
+            String finalJson = null;
+
+            try {
+                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=1");
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+
+                reader = new BufferedReader(new
+                        InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                finalJson = sb.toString();
+
+                JSONObject parentObject = new JSONObject(finalJson);
+
+                categories.clear();
+//                subCatList.clear();
+
+                try {
+                    JSONArray parentArrayCats = parentObject.getJSONArray("CATEGORIES");
+
+                    for (int i = 0; i < parentArrayCats.length(); i++) {
+                        JSONObject innerObject = parentArrayCats.getJSONObject(i);
+
+                        Categories category = new Categories();
+                        category.setCatType(innerObject.getInt("DESC_TYPE"));
+                        category.setCatNo(innerObject.getString("DESC_CODE"));
+                        category.setCatName(innerObject.getString("DESC_NAME"));
+                        category.setPic(innerObject.getInt("DESC_PIC"));
+
+                        categories.add(category);
+                    }
+                } catch (JSONException e) {
+                    Log.e("Import CATEGORIES", e.getMessage().toString());
+                }
+
+                try {
+                    JSONArray parentArrayMaxes = parentObject.getJSONArray("ITEMS");
+
+                    for (int i = 0; i < parentArrayMaxes.length(); i++) {
+                        JSONObject innerObject = parentArrayMaxes.getJSONObject(i);
+
+                        Items item = new Items();
+                        item.setItemNo(innerObject.getString("ITEMNO"));
+                        item.setBarcode(innerObject.getString("ITEM_BARCODE"));
+                        item.setItemName(innerObject.getString("ITEM_NAME_A"));
+                        item.setItemNameE(innerObject.getString("ITEM_NAME_E"));
+                        item.setCategory(innerObject.getString("CATEGORY_ID"));
+                        item.setSubCategory(innerObject.getString("SUB_CATEGORY_ID"));
+                        item.setTaxValue(innerObject.getString("TAX_PERC"));
+                        item.setPrice(innerObject.getDouble("SALE_PRICE"));
+                        item.setDescription(innerObject.getString("ITEMDESC"));
+                        item.setPic(innerObject.getInt("ITEM_PIC"));
+
+                        subItems.add(item);
+                        items.add(item);
+                    }
+
+                } catch (JSONException e) {
+                    Log.e("Import CATEGORIES", e.getMessage().toString());
+                }
+
+                try {
+                    JSONArray parentArrayInfo = parentObject.getJSONArray("INFO");
+                    JSONObject innerObject = parentArrayInfo.getJSONObject(0);
+                    JSONArray parentArrayInfoAlter = parentObject.getJSONArray("INFO_ALTER");
+                    JSONObject innerObject2 = parentArrayInfoAlter.getJSONObject(0);
+
+                    if (!innerObject.getString("SYSTEM_DATE").equals("null")) {
+
+                        today = innerObject.getString("SYSTEM_DATE");
+                        tomorrow = innerObject.getString("SYSTEM_DATE_NEXT");
+                    } else {
+
+                        today = innerObject2.getString("SYSTEM_DATE");
+                        tomorrow = innerObject2.getString("SYSTEM_DATE_NEXT");
+                    }
+
+
+                    voucherNo = "" + (Integer.parseInt(innerObject2.getString("MAX_VOUCHER")) + 1);
+
+
+                } catch (JSONException e) {
+                    Log.e("Import INFO", e.getMessage().toString());
+                }
+
+
+            } catch (MalformedURLException e) {
+                Log.e("CATEGORIES", "********ex1");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e("CATEGORIES", e.getMessage().toString());
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                Log.e("CATEGORIES", "********ex3  " + e.toString());
+                e.printStackTrace();
+            } finally {
+                Log.e("CATEGORIES", "********finally");
+                if (connection != null) {
+                    Log.e("CATEGORIES", "********ex4");
+                    // connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return finalJson;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result != null) {
+                Log.e("result", "*****************" + result);
+
+                catAdapter = new CategoryListAdapter(MainActivity.this, categories);
+                cats.setAdapter(catAdapter);
+
+                cats.setOnItemClickListener(onItemClickListener);
+
+                itemsAdapter = new ItemListAdapter(MainActivity.this, subItems);
+                listView.setAdapter(itemsAdapter);
+
+                listView.setOnItemClickListener(onItemClickListener);
+
+
+            } else {
+                Toast.makeText(MainActivity.this, "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class JSONTask2 extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            URLConnection connection = null;
+            BufferedReader reader = null;
+            String finalJson = null;
+
+            try {
+                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=2");
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+
+                reader = new BufferedReader(new
+                        InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                finalJson = sb.toString();
+
+                JSONObject parentObject = new JSONObject(finalJson);
+
+                try {
+                    JSONArray parentArrayCloseDate = parentObject.getJSONArray("CLOSE_DATE");
+                    JSONObject innerObject = parentArrayCloseDate.getJSONObject(0);
+
+                    if (!innerObject.getString("TODAY").equals("null")) {
+
+                        today = innerObject.getString("TODAY");
+                        tomorrow = innerObject.getString("TOMORROW");
+                    }
+
+                    JSONArray parentArrayTotalCash = parentObject.getJSONArray("TOTAL_CASH");
+                    JSONArray parentArrayTotalCashAlter = parentObject.getJSONArray("TOTAL_CASH_ALTER");
+                    JSONObject innerObject2 = parentArrayTotalCash.getJSONObject(0);
+                    JSONObject innerObject3 = parentArrayTotalCashAlter.getJSONObject(0);
+
+                    if (!innerObject2.getString("TOTAL_C").equals("null")) {
+                        totalCash = innerObject2.getString("TOTAL_C");
+
+                    } else {
+                        if (!innerObject3.getString("TOTAL_C").equals("null")) {
+                            totalCash = innerObject3.getString("TOTAL_C");
+                        } else
+                            totalCash = "0";
+                    }
+
+                } catch (JSONException e) {
+                    Log.e("Import INFO", e.getMessage().toString());
+                }
+
+
+            } catch (MalformedURLException e) {
+                Log.e("CATEGORIES", "********ex1");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e("CATEGORIES", e.getMessage().toString());
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                Log.e("CATEGORIES", "********ex3  " + e.toString());
+                e.printStackTrace();
+            } finally {
+                Log.e("CATEGORIES", "********finally");
+                if (connection != null) {
+                    Log.e("CATEGORIES", "********ex4");
+                    // connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return finalJson;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result != null) {
+                Log.e("result", "*****************" + result);
+
+                closeDay.setText(today);
+                totalCashText.setText(totalCash);
+                newDay.setText(tomorrow);
+
+
+            } else {
+                Toast.makeText(MainActivity.this, "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/items_back"
-    android:layout_width="750px"
-    android:layout_height="500px"
+    android:layout_width="700dp"
+    android:layout_height="500dp"
     android:background="@color/cream"
     android:gravity="center"
     android:orientation="vertical">
@@ -17,30 +17,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10px"
-            android:layout_marginVertical="10px"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
             android:gravity="center"
             android:orientation="horizontal">
 
 
             <SearchView
                 android:id="@+id/mSearchTh"
-                android:layout_width="200px"
-                android:layout_height="40px"
-                android:layout_marginHorizontal="7px"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="7dp"
                 android:background="@drawable/shape2"
-                android:paddingHorizontal="5px"
+                android:paddingHorizontal="5dp"
                 android:queryHint="Search" />
 
             <LinearLayout
                 android:id="@+id/inventory_report_linear_one"
-                android:layout_width="200px"
-                android:layout_height="40px"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginHorizontal="7px"
+                android:layout_marginHorizontal="7dp"
                 android:background="@drawable/shape2"
                 android:orientation="horizontal"
-                android:padding="5px">
+                android:padding="5dp">
 
                 <Spinner
                     android:id="@+id/category"
@@ -59,7 +59,7 @@
             android:orientation="horizontal">
 
             <GridView
-                android:id="@+id/items"
+                android:id="@+id/items_grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:numColumns="4" />

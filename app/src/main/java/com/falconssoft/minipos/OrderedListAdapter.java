@@ -84,11 +84,12 @@ public class OrderedListAdapter extends BaseAdapter {
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                obj.items2.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) + 1));
-                obj.items2.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) + 1) * itemsList.get(i).getPrice());
+                obj.orderedItems.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) + 1));
+                obj.orderedItems.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) + 1) * itemsList.get(i).getPrice());
                 holder.qty.setText(""+ (Double.parseDouble(holder.qty.getText().toString()) + 1));
                 holder.net.setText(""+ ((Double.parseDouble(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
-                obj.reCalculate();
+                obj.reCalculate(context);
+
             }
         });
 
@@ -96,11 +97,11 @@ public class OrderedListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (Double.parseDouble(holder.qty.getText().toString()) > 1) {
-                    obj.items2.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) - 1));
-                    obj.items2.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) - 1) * itemsList.get(i).getPrice());
+                    obj.orderedItems.get(i).setQty((Double.parseDouble(holder.qty.getText().toString()) - 1));
+                    obj.orderedItems.get(i).setNet((Double.parseDouble(holder.qty.getText().toString()) - 1) * itemsList.get(i).getPrice());
                     holder.qty.setText("" + (Double.parseDouble(holder.qty.getText().toString()) - 1));
                     holder.net.setText("" + ((Double.parseDouble(holder.qty.getText().toString())) * itemsList.get(i).getPrice()));
-                    obj.reCalculate();
+                    obj.reCalculate(context);
                 }
             }
         });

@@ -2,88 +2,90 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/log7"
+    android:background="@drawable/log1"
     android:layoutDirection="rtl"
     android:id="@+id/log_back"
     android:orientation="horizontal"
-    android:padding="35dp">
+    android:padding="15dp">
 
     <LinearLayout
         android:id="@+id/log_linear"
-        android:layout_width="600px"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="120px"
+        android:layoutDirection="locale"
+        android:layout_marginHorizontal="110dp"
         android:orientation="vertical"
-        android:padding="30px">
+        android:padding="20dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="45px"
+            android:layout_height="30dp"
             android:gravity="center"
-            android:text="تسجيل الدخول"
+            android:text="@string/log_in"
             android:textColor="@color/black"
-            android:textSize="30px" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50px"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="250px"
-                android:layout_height="50px"
-                android:text="اسم المستخدم :"
+                android:layout_width="170dp"
+                android:layout_height="35dp"
+                android:text="@string/user_name"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="15px"
-                android:textSize="32px" />
+                android:paddingHorizontal="15dp"
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/type_card_material_no"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7px"
-                android:layout_marginHorizontal="15px"
+                android:layout_height="35dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginHorizontal="15dp"
                 android:textColor="@color/black"
-                android:textSize="32px" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15px"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="250px"
-                android:layout_height="50px"
-                android:text="كلمة المرور :"
+                android:layout_width="170dp"
+                android:layout_height="35dp"
+                android:text="@string/password"
                 android:textColor="@color/black"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="15px"
-                android:textSize="32px" />
+                android:paddingHorizontal="15dp"
+                android:textSize="18sp" />
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15px"
-                android:layout_marginBottom="7px"
+                android:layout_height="35dp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginBottom="7dp"
                 android:textColor="@color/black"
-                android:textSize="32px" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 
         <Button
             android:id="@+id/log_in"
-            android:layout_width="150px"
-            android:layout_height="45px"
-            android:text="دخول"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:text="@string/enter"
             android:layout_gravity="center"
-            android:background="@drawable/rosy_dot"
-            android:layout_marginTop="20px"
-            android:textSize="30px"/>
+            android:background="@drawable/green_dot"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/white"
+            android:textSize="14dp"/>
 
     </LinearLayout>
 

@@ -96,8 +96,8 @@ public class ItemListAdapter extends BaseAdapter {
 
 
         holder.itemName.setText(itemsList.get(i).getItemName());
-        holder.itemPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
-//        holder.price.setText(""+itemsList.get(i).getPrice());
+//        holder.itemPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
+        holder.price.setText(""+itemsList.get(i).getPrice());
 
         return view;
     }

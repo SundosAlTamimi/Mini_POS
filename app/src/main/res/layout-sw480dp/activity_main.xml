@@ -11,12 +11,13 @@
     <LinearLayout
         android:id="@+id/back"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/right_linear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/top_linear"
@@ -26,7 +27,7 @@
         android:background="@drawable/hor_shape_red"
         app:layout_constraintEnd_toStartOf="@+id/right_linear"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHeight_percent="0.23"
+        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -55,7 +56,7 @@
             android:gravity="center"
             android:text="@string/categories"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="23sp" />
 
         <GridView
             android:id="@+id/categories"
@@ -83,25 +84,27 @@
 
         <ImageView
             android:id="@+id/save"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginVertical="7dp"
             android:padding="2dp"
             android:background="@drawable/pronze_dot"
             android:src="@android:drawable/ic_menu_save" />
 
         <ImageView
             android:id="@+id/search"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
-            android:layout_marginVertical="5dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginVertical="7dp"
             android:padding="2dp"
             android:background="@drawable/pronze_dot"
             android:src="@android:drawable/ic_menu_search" />
 
         <ImageView
             android:id="@+id/clear"
-            android:layout_width="23dp"
-            android:layout_height="23dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginVertical="7dp"
             android:padding="2dp"
             android:background="@drawable/pronze_dot"
             android:src="@android:drawable/ic_menu_close_clear_cancel" />
@@ -134,7 +137,7 @@
                 android:gravity="center"
                 android:text="@string/item_no"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -143,7 +146,7 @@
                 android:gravity="center"
                 android:text="@string/item_name"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -152,7 +155,7 @@
                 android:gravity="center"
                 android:text="@string/quantity"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -161,7 +164,7 @@
                 android:gravity="center"
                 android:text="@string/price"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -170,7 +173,7 @@
                 android:gravity="center"
                 android:text="@string/total"
                 android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -187,11 +190,51 @@
 
     </LinearLayout>
 
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menu_labels_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        fab:menu_fab_size="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        fab:menu_colorNormal="@color/alpha_orange"
+        fab:menu_colorPressed="@color/alpha_orange"
+        fab:menu_colorRipple="@color/alpha_orange"
+        fab:menu_labels_position="right">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_add_item"
+            style="@style/MenuButtonsLarge"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/ic_menu_add"
+            app:fab_label="@string/add_item" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_function"
+            style="@style/MenuButtonsLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_agenda"
+            app:fab_label="@string/functions" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_settings"
+            style="@style/MenuButtonsLarge"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@android:drawable/ic_menu_manage"
+            app:fab_label="@string/settings" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
     <LinearLayout
         android:id="@+id/bottom_linear"
         android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -218,7 +261,7 @@
                 android:gravity="center"
                 android:text="@string/total_no_tax"
                 android:textColor="@color/red1"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tax"
@@ -228,7 +271,7 @@
                 android:gravity="center"
                 android:text="@string/tax_value"
                 android:textColor="@color/red1"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/sum_after_tax"
@@ -238,50 +281,9 @@
                 android:gravity="center"
                 android:text="@string/net_sales"
                 android:textColor="@color/red1"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
     </LinearLayout>
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/menu_labels_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        fab:menu_fab_size="mini"
-        fab:menu_colorNormal="@color/alpha_orange"
-        fab:menu_colorPressed="@color/alpha_orange"
-        fab:menu_colorRipple="@color/alpha_orange"
-        fab:menu_labels_position="right">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_add_item"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_menu_add"
-            app:fab_label="@string/add_item" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_function"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_agenda"
-            app:fab_label="@string/functions" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_settings"
-            style="@style/MenuButtonsSmall"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@android:drawable/ic_menu_manage"
-            app:fab_label="@string/settings" />
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

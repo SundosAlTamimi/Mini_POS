@@ -9,6 +9,13 @@
     </style>
 
     <style name="MenuButtonsSmall">
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">@color/alpha_orange</item>
+        <item name="fab_colorPressed">@color/alpha_orange</item>
+        <item name="fab_colorRipple">@color/alpha_orange</item>
+    </style>
+
+    <style name="MenuButtonsLarge">
         <item name="fab_size">normal</item>
         <item name="fab_colorNormal">@color/alpha_orange</item>
         <item name="fab_colorPressed">@color/alpha_orange</item>

@@ -1,16 +1,34 @@
 package com.falconssoft.minipos;
 
 import android.app.DatePickerDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.falconssoft.minipos.Modle.Categories;
+import com.falconssoft.minipos.Modle.Items;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -19,6 +37,8 @@ public class CashReport extends AppCompatActivity {
 
     private LinearLayout linear1, linear2, back, alpha;
     private EditText dateField, salesNoTax, tax, salesAfterTax;
+    private String salsNoTx , tx , salsWthTx;
+    String dDate;
 
     DatabaseHandler DHandler;
     private Calendar myCalendar;
@@ -45,6 +65,24 @@ public class CashReport extends AppCompatActivity {
                 new DatePickerDialog(CashReport.this, openDatePickerDialog(), myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        dateField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dDate = s.toString();
+                new JSONTask().execute();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -126,7 +164,7 @@ public class CashReport extends AppCompatActivity {
         }
     }
 
-    void init(){
+    void init() {
         linear1 = findViewById(R.id.linear1);
         linear2 = findViewById(R.id.linear2);
         back = findViewById(R.id.back);
@@ -135,5 +173,104 @@ public class CashReport extends AppCompatActivity {
         salesNoTax = findViewById(R.id.sales_no_tax);
         tax = findViewById(R.id.tax);
         salesAfterTax = findViewById(R.id.sales_after_tax);
+    }
+
+    private class JSONTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            URLConnection connection = null;
+            BufferedReader reader = null;
+            String finalJson = null;
+
+            try {
+                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=3&D_DATE='" + dDate + "'");
+
+                Log.e("dDate", "********"+ dDate);
+
+                URLConnection conn = url.openConnection();
+                conn.setDoOutput(true);
+
+                reader = new BufferedReader(new
+                        InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                // Read Server Response
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                finalJson = sb.toString();
+
+                JSONObject parentObject = new JSONObject(finalJson);
+
+                salsNoTx= "";
+                tx= "";
+                salsWthTx = "";
+
+                try {
+                    JSONArray parentArrayCash = parentObject.getJSONArray("CASH_REPORT");
+
+                    JSONObject innerObject = parentArrayCash.getJSONObject(0);
+
+                    salsNoTx= ""+innerObject.getDouble("NET_TOTAL");
+                    tx= ""+innerObject.getDouble("NET_TAX");
+                    salsWthTx = ""+innerObject.getDouble("NET_TOTAL_WITH_TAX");
+
+                } catch (JSONException e) {
+                    Log.e("Import CATEGORIES", e.getMessage().toString());
+                }
+
+
+            } catch (MalformedURLException e) {
+                Log.e("CATEGORIES", "********ex1");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.e("CATEGORIES", e.getMessage().toString());
+                e.printStackTrace();
+
+            } catch (JSONException e) {
+                Log.e("CATEGORIES", "********ex3  " + e.toString());
+                e.printStackTrace();
+            } finally {
+                Log.e("CATEGORIES", "********finally");
+                if (connection != null) {
+                    Log.e("CATEGORIES", "********ex4");
+                    // connection.disconnect();
+                }
+                try {
+                    if (reader != null) {
+                        reader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return finalJson;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result != null) {
+                Log.e("result", "*****************" + result);
+
+                salesNoTax.setText(salsNoTx);
+                tax.setText(tx);
+                salesAfterTax.setText(salsWthTx);
+
+            } else {
+                Toast.makeText(CashReport.this, "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

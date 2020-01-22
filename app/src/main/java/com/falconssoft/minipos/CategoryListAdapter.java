@@ -61,7 +61,7 @@ public class CategoryListAdapter extends BaseAdapter {
 
 
         holder.catName.setText(itemsList.get(i).getCatName());
-        holder.catPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
+//        holder.catPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
 
         return view;
     }

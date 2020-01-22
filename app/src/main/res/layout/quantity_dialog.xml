@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="500px"
-    android:layout_height="200px"
+    android:layout_width="300dp"
+    android:layout_height="170dp"
     android:background="@color/cream"
     android:gravity="center"
-    android:padding="40px"
+    android:padding="30dp"
     android:id="@+id/qty_back"
     android:orientation="vertical">
 
@@ -12,40 +12,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="5px"
+        android:padding="5dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/priceText"
-            android:layout_width="150px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/quantity"
             android:textColor="@color/black"
-            android:textSize="34px"/>
-
+            android:textSize="20sp"/>
 
         <EditText
             android:id="@+id/quantity_dialog_qty"
-            android:layout_width="170px"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="6px"
             android:paddingHorizontal="10px"
             android:background="@drawable/shape2"
             android:gravity="center"
+            android:inputType="numberDecimal"
             android:textColor="@color/black"
-            android:textSize="28px" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/quantity_dialog_done"
-        android:layout_width="100px"
-        android:layout_height="60px"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
         android:text="@string/done"
         android:layout_gravity="center"
         android:background="@drawable/green_dot"
-        android:layout_marginTop="15px"
+        android:layout_marginTop="15dp"
         android:textColor="@color/white"
-        android:textSize="26px"/>
-
+        android:textSize="16sp"/>
 </LinearLayout>
