@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.fab_settings:
                     settingDialog();
-                    break; 
+                    break;
             }
 
         }
