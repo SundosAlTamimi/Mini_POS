@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="400dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="@drawable/bac_hold_button"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:layout_weight="1.4"
+        android:elevation="@dimen/cardview_default_elevation"
+        app:cardBackgroundColor="@color/whites"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bac_voucher"
+            android:orientation="horizontal">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/showHold"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/bac_hold_button"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/red1"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Voucher"
+                        android:textAlignment="center"
+                        android:textColor="@color/greenS"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <Button
+                        android:id="@+id/clear"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/ic_delete_24dp"
+                        android:backgroundTint="@color/red"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@color/greenGray"
+                    android:layoutDirection="locale"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/item_no"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="12sp" />-->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:gravity="center"
+                        android:text="@string/item_name"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:gravity="center"
+                        android:text="@string/quantity"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/price"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/total"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/kam"
+                    android:visibility="invisible" />
+
+                <ListView
+                    android:id="@+id/listHold"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2">
+
+                </ListView>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="3dp"
+                    android:background="@color/greenS" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5"
+                    android:background="@color/greenLite"
+                    android:padding="5dp">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="@string/net_sales_before_tax"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/sum_no_tax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="0.00"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="@string/tax_value"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tax"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="0.00"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView15"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="@string/total"
+                            android:textColor="@color/greenS"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/sum_after_tax"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="2dp"
+                            android:text="0.00"
+                            android:textAlignment="center"
+                            android:textColor="@color/greenS"
+                            android:textSize="12sp" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="3dp"
+                    android:layout_weight="3"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Button
+                        android:id="@+id/save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bac_save_button"
+                        android:text="Save"
+                        android:textColor="@color/whites" />
+
+
+                    <Button
+                        android:id="@+id/holdButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bac_hold_button"
+                        android:text="Hold"
+                        android:textColor="@color/whites" />
+
+                    <Button
+                        android:id="@+id/voidLastButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bac_delete_button"
+                        android:text="Void"
+                        android:textColor="@color/whites" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        <Button
+            android:id="@+id/done_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="0"
+            android:backgroundTint="@color/greenS"
+            android:background="@drawable/ic_done_black_24dp" />
+
+</RelativeLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

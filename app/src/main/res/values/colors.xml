@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#FA235A33</color>
+    <color name="colorPrimary">#09a168</color>
+    <color name="colorPrimaryDark">#09a168</color>
+    <color name="colorAccent">#09a168</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#C40E0000</color>
     <color name="gray">#C4413D3D</color>
-    <color name="red">#C4DF2121</color>
+    <color name="red">#DFDF2121</color>
     <color name="orange">#FF5722</color>
     <color name="green">#FA235A33</color>
 
+    <color name="kam">#7B241C</color>
+<color name="graySG">#eeeeee</color>
+    <color name="greenS">#09a168</color>
+    <color name="greenL">#C1F5F8F7</color>
+<color name="whites">#ffffff</color>
+    <color name="whitesL">#B5FFFFFF</color>
+<color name="greenGray">#f1f1f1</color>
+<color name="redS">#b16f79</color>
+    <color name="greenLite">#f8f8f8</color>
+    <color name="Hold">#e9c89d</color>
+    <color name="HoldL">#60E9C89D</color>
 
-
-
+    <color name="grayGr">#e7f8f3</color>
 
 
     <!--theme 2-->

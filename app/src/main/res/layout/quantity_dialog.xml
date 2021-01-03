@@ -1,50 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="170dp"
-    android:background="@color/cream"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settings_back"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bac_save_button"
     android:gravity="center"
-    android:padding="30dp"
-    android:id="@+id/qty_back"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:padding="0dp">
 
-        <TextView
-            android:id="@+id/priceText"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/quantity"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
 
-        <EditText
-            android:id="@+id/quantity_dialog_qty"
-            android:layout_width="100dp"
+
+        <Button
+            android:id="@+id/quantity_dialog_done"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="6px"
-            android:paddingHorizontal="10px"
-            android:background="@drawable/shape2"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bac_save_button"
+            android:drawableStart="@drawable/ic_bubble_chart_black_24dp"
+            android:drawablePadding="3dp"
             android:gravity="center"
-            android:inputType="numberDecimal"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:padding="10dp"
+            android:text="@string/done"
+            android:textColor="@color/whitesL"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/qty_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bac_save_button"
+            android:drawableStart="@drawable/ic_reply_all_black_24dp"
+            android:drawablePadding="3dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/back"
+            android:textColor="@color/whitesL"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/quantity_dialog_done"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:text="@string/done"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/closeDialogLiner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@drawable/green_dot"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:layout_weight="1"
+        android:background="@color/whites"
+        android:elevation="@dimen/cardview_default_elevation"
+        app:cardBackgroundColor="@color/whites"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="10dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_assessment_black_24dp"
+                android:gravity="center|start"
+                android:padding="3dp"
+                android:text="@string/edit_qty"
+                android:textAllCaps="false"
+                android:textColor="@color/greenS"
+                android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/priceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="@string/quantity"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/quantity_dialog_qty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bac_search"
+                android:gravity="center"
+                android:padding="5dp"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

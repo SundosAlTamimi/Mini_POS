@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/setting"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/settings" />
+    <item android:id="@+id/add_item"
+        android:icon="@drawable/ic_add_circle_black_24dp"
+        android:title="@string/add_item"
+         />
+    <!--android:showAsAction="ifRoom"-->
+    <item android:id="@+id/CashReport"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        android:title="@string/cash_report" />
+
+    <item android:id="@+id/SalesReport"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        android:title="@string/sales_report" />
+    <item android:id="@+id/CloseDay"
+        android:icon="@drawable/ic_assessment_black_24dp"
+        android:title="@string/close_day" />
+</menu>
+

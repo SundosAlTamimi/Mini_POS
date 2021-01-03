@@ -1,5 +1,6 @@
 package com.falconssoft.minipos;
 
+import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,12 +14,14 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,7 +43,13 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.azoft.carousellayoutmanager.CarouselLayoutManager;
+import com.azoft.carousellayoutmanager.CarouselZoomPostLayoutListener;
+import com.azoft.carousellayoutmanager.CenterScrollListener;
 import com.falconssoft.minipos.Modle.Categories;
 import com.falconssoft.minipos.Modle.CloseDay;
 import com.falconssoft.minipos.Modle.Items;
@@ -55,33 +65,35 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+import static com.falconssoft.minipos.GlobelFunction.ipAddress;
+import static com.falconssoft.minipos.GlobelFunction.searchItemList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private GridView cats;
-    private CategoryListAdapter catAdapter;
-    private ItemListAdapter itemsAdapter;
+    private GridView listItemGrid;
+    private ItemListAdapter itemListAdapter;
+    private CategoryItemListAdapter categoryItemListAdapter;
     public static OrderedListAdapter orderedItemsAdapter;
-    private HorizontalListView listView;
+    private HorizontalListView categoryListView;
     private ListView orderedList;
     public static ListView orderedListB;
-    private Button saveSettings, savePay, priceOk, qtyOk;
-    private ImageView save, search, clear;
+    private Button saveSettings, savePay, priceOk, qtyOk, clear, cancelButton;
+    private Button save, search;
     private static TextView sumNoTax, tax, sumAfterTax;
-    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, priceBack, qtyBack, functionsBack;
+    private LinearLayout topLinear, rightLinear, back, settingsBack, reportsBack, itemsBack, saveBack, functionsBack;
     private com.github.clans.fab.FloatingActionMenu menuLabelsRight;
     private com.github.clans.fab.FloatingActionButton fabAddItem, fabFunctions, fabSettings;
-    ItemGridAdapter gridAdapter;
+    ItemListAdapter gridAdapter;
     TextView required;
     String posNo, companyNo;
+    int lastPosition=0;
 
-    TextView closeDay, newDay, totalCashText;
+    TextView closeDay, newDay, totalCashText,priceBack, qtyBack;
+
+    public static List<List<Items>> holdVoucherList;
 
     String totalCash;
     ArrayList<Items> subItems;
@@ -91,9 +103,16 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> itemDetail;
     String searchQuery;
     GridView itemsGrid;
-
+    //    Button holdMButton ;
     String today, tomorrow;
     String voucherNo;
+    Toolbar toolbar;
+    TextView catName, showHold;
+    EditText itemCatSearch;
+    String searchQItem = "";
+    GlobelFunction globelFunction;
+    Button voidLastButton, holdButton;
+    RecyclerView recyclerViews;
 
     int cPrice = 0, cQty = 0;
     static double sum = 0, sumWithTax = 0, taxValue = 0, totalTax = 0, due = 0;
@@ -106,16 +125,20 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Items> orderedItems;
 
     public static int theme = 9;
+    private CarouselLayoutManager layoutManagerd;
+    private List<String> picforbar;
+    LinearLayout linerRec;
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_2);
 
 
         DHandler = new DatabaseHandler(MainActivity.this);
-        if(DHandler.getSettings()!=null) {
+        if (DHandler.getSettings() != null) {
             posNo = DHandler.getSettings().getPosNo();
             companyNo = DHandler.getSettings().getCompanyID();
         }
@@ -124,7 +147,16 @@ public class MainActivity extends AppCompatActivity {
         required = new EditText(MainActivity.this);
 
         init();
-        orderedListB=orderedList;
+
+        holdVoucherList = new ArrayList<>();
+        picforbar = new ArrayList<>();
+
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        globelFunction = new GlobelFunction();
+
+        globelFunction.GlobelFunctionSetting(DHandler);
+        orderedListB = orderedList;
         items = new ArrayList<>();
         subItems = new ArrayList<>();
         categories = new ArrayList<>();
@@ -132,73 +164,117 @@ public class MainActivity extends AppCompatActivity {
         itemNo = new ArrayList<>();
         itemDetail = new ArrayList<>();
 
-        search.setOnClickListener(onClickListener);
+//        search.setOnClickListener(onClickListener);
         clear.setOnClickListener(onClickListener);
         save.setOnClickListener(onClickListener);
-        fabAddItem.setOnClickListener(onClickListener);
-        fabFunctions.setOnClickListener(onClickListener);
-        fabSettings.setOnClickListener(onClickListener);
+        showHold.setOnClickListener(onClickListener);
+        voidLastButton.setOnClickListener(onClickListener);
+        holdButton.setOnClickListener(onClickListener);
+        cancelButton.setOnClickListener(onClickListener);
+//        fabAddItem.setOnClickListener(onClickListener);
+//        fabFunctions.setOnClickListener(onClickListener);
+//        fabSettings.setOnClickListener(onClickListener);
 
         new JSONTask().execute();
-//        categories.add(new Categories("1", "بطاطا", R.drawable.botato, 0));
-//        categories.add(new Categories("2", "برجر", R.drawable.burgerr, 0));
-//        categories.add(new Categories("3", "سمك", R.drawable.fish, 0));
-//        categories.add(new Categories("5", "فواكه", R.drawable.watermelon, 0));
-//        categories.add(new Categories("4", "وجبات", R.drawable.corden, 0));
-//        categories.add(new Categories("6", "سلطات", R.drawable.salad, 0));
-//        categories.add(new Categories("7", "ليمون", R.drawable.limon, 0));
-//        categories.add(new Categories("8", "فواكه", R.drawable.fruit, 0));
-
-
         orderedItemsAdapter = new OrderedListAdapter(MainActivity.this, orderedItems);
         orderedList.setAdapter(orderedItemsAdapter);
         orderedList.setOnItemLongClickListener(onItemLongClickListener);
 
-//        items.add(new Items("1", "بطاطا", 10, R.drawable.botato, "خضار", 1));
-//        items.add(new Items("2", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
-//        items.add(new Items("3", "سمك", 10, R.drawable.fish, "اسماك", 1));
-//        items.add(new Items("4", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
-//        items.add(new Items("5", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
-//        items.add(new Items("6", "سلطة", 10, R.drawable.salad, "خضار", 1));
-//        items.add(new Items("7", "ليمون", 10, R.drawable.limon, "فواكه", 1));
-//        items.add(new Items("8", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-//        items.add(new Items("9", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
-//        items.add(new Items("10", "برجر", 10, R.drawable.burgerr, "لحوم", 1));
-//        items.add(new Items("11", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-//        items.add(new Items("12", "سمك", 10, R.drawable.fish, "اسماك", 1));
-//        items.add(new Items("13", "كوردن بلو", 10, R.drawable.corden, "لحوم", 1));
-//        items.add(new Items("14", "سلطة", 10, R.drawable.salad, "خضار", 1));
-//        items.add(new Items("15", "ليمون", 10, R.drawable.limon, "فواكه", 1));
-//        items.add(new Items("16", "فراولة", 10, R.drawable.fruit, "فواكه", 1));
-//        items.add(new Items("17", "بطيخ", 10, R.drawable.watermelon, "فواكه", 1));
+        itemCatSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterIf(s.toString());
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        showHold.setText("" + holdVoucherList.size());
+        picforbar.add("تعديل فاتورة");
+        picforbar.add("اضافة فاتورة");
+        picforbar.add("طباعة فاتورة");
+
+        picforbar.add(" تعديل سند قبض");
+        picforbar.add("اضافة سند قبض");
+        picforbar.add("طباعة سند قبض");
+
+        picforbar.add("اعدادات");
+
+        linerRec.setVisibility(View.GONE);
 
         startAnimation();
 
-        if (DHandler.getSettings() == null)//.getIpAddress()
-            DHandler.addSettings(new Settings("", "", 9, 0, 0, "", 0, ""));
-        else {
-            setThemeNo(DHandler.getSettings().getThemeNo());
-            theme = DHandler.getSettings().getThemeNo();
+//        if (DHandler.getSettings() == null)//.getIpAddress()
+//            DHandler.addSettings(new Settings("", "", 9, 0, 0, "", 0, ""));
+//        else {
+//            setThemeNo(DHandler.getSettings().getThemeNo());
+//            theme = DHandler.getSettings().getThemeNo();
+//        }
+
+    }
+
+
+    void filterIf(String s) {
+
+        if (!s.equals("")) {
+//                    filter(items, s.toString(), s.toString(), listItemGrid);
+            searchQItem = s;
+            itemCatSearchFilter(s);
+        } else {
+            searchQItem = "";
+            fillSubListItem(lastPosition);
+            itemListAdapter = new ItemListAdapter(MainActivity.this, subItems);
+
+            listItemGrid.setAdapter(itemListAdapter);
         }
 
     }
 
+    public void itemCatSearchFilter(String itemName) {
+
+        ArrayList<Items> tempList = new ArrayList<>();
+        for (int i = 0; i < subItems.size(); i++) {
+
+            if (subItems.get(i).getItemName().contains(itemName)) {
+                Items itemsM = new Items();
+                itemsM = subItems.get(i);
+                tempList.add(itemsM);
+            }
+
+        }
+        subItems=tempList;
+        itemListAdapter = new ItemListAdapter(MainActivity.this, subItems);
+
+        listItemGrid.setAdapter(itemListAdapter);
+
+    }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
+        @SuppressLint("SetTextI18n")
         @Override
         public void onClick(View v) {
 
             switch (v.getId()) {
                 case R.id.save:
-                    if (orderedItems.size() != 0)
+                    if (orderedItems.size() != 0) {
                         saveDialog();
-                    else
+                    } else
                         Toast.makeText(MainActivity.this, getResources().getString(R.string.no_items_message), Toast.LENGTH_LONG).show();
                     break;
 
                 case R.id.search:
-                    gridAdapter = new ItemGridAdapter(MainActivity.this, items);
-                    itemsDialog();
+//                    gridAdapter = new ItemGridAdapter(MainActivity.this, items);
+//                    itemsDialog();
                     break;
 
                 case R.id.clear:
@@ -230,10 +306,72 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.fab_settings:
                     settingDialog();
                     break;
+
+                case R.id.voidLastButton:
+                    voidLastItemFromOrder();
+                    break;
+
+                case R.id.showHold:
+
+                    showAllDataAccount();
+
+                    Toast.makeText(MainActivity.this, "hold", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.cancel_button:
+
+                    linerRec.setVisibility(View.GONE);
+
+                    break;
+                case R.id.holdButton:
+                    if (orderedItems.size() != 0) {
+//                        holdMButton.setVisibility(View.VISIBLE);
+//                        insertImage();
+                        orderedItems.get(0).setNetWithTax(Double.parseDouble(sumAfterTax.getText().toString()));
+                        orderedItems.get(0).setNetBeforeTax(Double.parseDouble(sumNoTax.getText().toString()));
+                        orderedItems.get(0).setTaxValue(tax.getText().toString());
+                        holdVoucherList.add(new ArrayList<Items>(orderedItems));
+                        showHold.setText("" + holdVoucherList.size());
+                        saveVoucher("1");
+                        clearFun();
+                    } else {
+                        Toast.makeText(MainActivity.this, "no item", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+//                case R.id.addNewItem:
+//                    Intent intentAdd = new Intent(MainActivity.this, ItemCard.class);
+//                    startActivity(intentAdd);
+//                    break;
             }
 
         }
     };
+
+    void voidLastItemFromOrder() {
+
+        if (orderedItems.size() != 0) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(getResources().getString(R.string.delete_message_for_item));
+            builder.setTitle(getResources().getString(R.string.delete_last_item));
+            builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    itemNo.remove(itemNo.size() - 1);
+                    orderedItems.remove((orderedItems.size() - 1));
+                    orderedItemsAdapter.notifyDataSetInvalidated();
+                    reCalculate(MainActivity.this);
+
+                }
+            });
+            builder.show();
+
+        } else {
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.no_items_message), Toast.LENGTH_LONG).show();
+        }
+
+    }
+
 
     AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -241,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (parent.getId()) {
 
-                case R.id.listview:
+                case R.id.itemListView:
                     boolean found = false;
                     int position1 = position;
                     if (orderedItems.size() != 0) {//.indexOf
@@ -252,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                             double qty = orderedItems.get(i).getQty(), net = orderedItems.get(i).getNet(), netWithTax = orderedItems.get(i).getNetWithTax();
                             orderedItems.get(i).setQty(++qty);
                             orderedItems.get(i).setNet(net + subItems.get(position1).getPrice());
-                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(subItems.get(position1).getPrice() , subItems.get(position1).getTaxValue()));
+                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(subItems.get(position1).getPrice(), subItems.get(position1).getTaxValue()));
 
                         }
                     }
@@ -266,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
                                     , subItems.get(position1).getCategory()
                                     , 1
                                     , (subItems.get(position1).getPrice())
-                                    , calculateTax(subItems.get(position1).getPrice() , subItems.get(position1).getTaxValue())
+                                    , calculateTax(subItems.get(position1).getPrice(), subItems.get(position1).getTaxValue())
                                     , subItems.get(position1).getTaxValue()
                                     , voucherNo
                                     , 0
@@ -282,13 +420,21 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
 
-                case R.id.categories:
-                    subItems.clear();
-                    for (int i = 0; i < items.size(); i++) {
-                        if (categories.get(position).getCatName().equals(items.get(i).getCategory()))
-                            subItems.add(items.get(i));
-                    }
-                    itemsAdapter.notifyDataSetChanged();
+                case R.id.categoriList:
+
+                    Log.e("categoriList", "" + categories.get(position).getCatName());
+//                    for (int i = 0; i < items.size(); i++) {
+//                        if (categories.get(position).getCatName().equals(items.get(i).getCategory())) {
+////                            if(items.get(i).getIsActive().equals("1")) {
+//                                subItems.add(items.get(i));
+////                            }
+//                        }
+//                    }
+//                    itemListAdapter.notifyDataSetChanged();
+                    lastPosition=position;
+                    fillSubListItem(position);
+                    catName.setText(categories.get(position).getCatName());
+                    filterIf(searchQItem);
                     break;
 
                 case R.id.items_grid:
@@ -301,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                             double qty = orderedItems.get(i).getQty(), net = orderedItems.get(i).getNet(), netWithTax = orderedItems.get(i).getNetWithTax();
                             orderedItems.get(i).setQty(++qty);
                             orderedItems.get(i).setNet(net + orderedItems.get(i).getPrice());
-                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(orderedItems.get(i).getPrice() , orderedItems.get(i).getTaxValue()));
+                            orderedItems.get(i).setNetWithTax(netWithTax + calculateTax(orderedItems.get(i).getPrice(), orderedItems.get(i).getTaxValue()));
                         }
                     }
 
@@ -314,7 +460,7 @@ public class MainActivity extends AppCompatActivity {
                                     , gridItems.get(position2).getCategory()
                                     , 1
                                     , gridItems.get(position2).getPrice()
-                                    , calculateTax(gridItems.get(position2).getPrice() , gridItems.get(position2).getTaxValue())
+                                    , calculateTax(gridItems.get(position2).getPrice(), gridItems.get(position2).getTaxValue())
                                     , subItems.get(position2).getTaxValue()
                                     , voucherNo
                                     , 0
@@ -328,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.item_added_message), Toast.LENGTH_LONG).show();
                     break;
+
 
             }
         }
@@ -367,16 +514,26 @@ public class MainActivity extends AppCompatActivity {
                                 builder.show();
 
                             } else if (which == 1) {
-                                if (DHandler.getSettings().getControlPrice() == 1)
-                                    priceDialog(position);
-                                else
+                                try {
+                                    Log.e("Control",""+globelFunction.PriceControl);
+                                    if (globelFunction.PriceControl == 1) {
+                                        priceDialog(position);
+                                    } else
+                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_price_message), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
                                     Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_price_message), Toast.LENGTH_LONG).show();
+                                }
 
                             } else {
-                                if (DHandler.getSettings().getControlQty() == 1)
-                                    qtyDialog(position);
-                                else
+                                try {
+                                    Log.e("Control",""+globelFunction.QtyControl);
+                                    if (globelFunction.QtyControl == 1)
+                                        qtyDialog(position);
+                                    else
+                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_qty_message), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
                                     Toast.makeText(MainActivity.this, getResources().getString(R.string.cant_edit_qty_message), Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                     });
@@ -387,17 +544,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    Double calculateTax(Double value , String taxValue){
+    void fillSubListItem(int position){
+        subItems.clear();
+        for (int i = 0; i < items.size(); i++) {
+            if (categories.get(position).getCatName().equals(items.get(i).getCategory())) {
+//                            if(items.get(i).getIsActive().equals("1")) {
+                subItems.add(items.get(i));
+//                            }
+            }
+        }
 
-        Double endValue ;
+    }
+    Double calculateTax(Double value, String taxValue) {
+
+        Double endValue;
         Double taxValu = Double.parseDouble(taxValue);
 
-        if (DHandler.getSettings().getTaxCalcKind() == 0) {
-            endValue = value + (value * taxValu / 100) ;
+        try {
+            if (DHandler.getSettings().getTaxCalcKind() == 0) {
+                endValue = value + (value * taxValu / 100);
 
-        } else {
-            endValue = value + ((value * taxValu / 100 ) / (1 + (taxValu / 100)));
+            } else {
+                endValue = value + ((value * taxValu / 100) / (1 + (taxValu / 100)));
 
+            }
+        } catch (Exception e) {
+            endValue = value + (value * taxValu / 100);
         }
 
         return endValue;
@@ -409,26 +581,33 @@ public class MainActivity extends AppCompatActivity {
         sumWithTax = 0;
         totalTax = 0;
 
+        GlobelFunction globelFunction = new GlobelFunction();
+
         for (int i = 0; i < orderedItems.size(); i++) {
 
             sum += orderedItems.get(i).getNet();
 
             double tax = Double.parseDouble(orderedItems.get(i).getTaxValue());
-            if (DHandler.getSettings().getTaxCalcKind() == 0) {
+            try {
+                if (DHandler.getSettings().getTaxCalcKind() == 0) {
 
-                totalTax += orderedItems.get(i).getNet() * tax / 100 ;
+                    totalTax += orderedItems.get(i).getNet() * tax / 100;
+                    sumWithTax += orderedItems.get(i).getNet() + (orderedItems.get(i).getNet() * tax / 100);
+                } else {
+                    totalTax += (orderedItems.get(i).getNet() * tax / 100) / (1 + (tax / 100));
+                    sumWithTax += orderedItems.get(i).getNet() + ((orderedItems.get(i).getNet() * tax / 100) / (1 + (tax / 100)));
+                }
+            } catch (Exception e) {
+                totalTax += orderedItems.get(i).getNet() * tax / 100;
                 sumWithTax += orderedItems.get(i).getNet() + (orderedItems.get(i).getNet() * tax / 100);
-            } else {
-                totalTax += (orderedItems.get(i).getNet() * tax / 100 ) / (1 + (tax / 100));
-                sumWithTax += orderedItems.get(i).getNet() + ((orderedItems.get(i).getNet() * tax / 100 ) / (1 + (tax / 100)));
             }
         }
 //        taxValue = 2;
 //        due = sum + (sum * taxValue / 100);
 
-        sumNoTax.setText(context.getResources().getString(R.string.total_no_tax) + " : " + sum);
-        tax.setText(context.getResources().getString(R.string.tax_value) + " : " + totalTax);
-        sumAfterTax.setText(context.getResources().getString(R.string.net_sales) + " : " + sumWithTax);
+        sumNoTax.setText("" + globelFunction.DecimalFormat("" + sum));
+        tax.setText("" + globelFunction.DecimalFormat("" + totalTax));
+        sumAfterTax.setText("" + globelFunction.DecimalFormat("" + sumWithTax));
 
     }
 
@@ -470,12 +649,12 @@ public class MainActivity extends AppCompatActivity {
         itemsBack = itemsDialog.findViewById(R.id.items_back);
         itemsGrid = itemsDialog.findViewById(R.id.items_grid);
 
-        setDialogTheme(theme, itemsBack, new Button(MainActivity.this));
+//        setDialogTheme(theme, itemsBack, new Button(MainActivity.this));
 
         searchQuery = "";
         gridItems = items;
 
-        gridAdapter = new ItemGridAdapter(MainActivity.this, gridItems);
+        gridAdapter = new ItemListAdapter(MainActivity.this, gridItems);
         itemsGrid.setAdapter(gridAdapter);
 
         ArrayList<String> catList = new ArrayList<>();
@@ -494,7 +673,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                filter(items, searchQuery, cat.getSelectedItem().toString(), itemsGrid);
+//                filter(items, searchQuery, cat.getSelectedItem().toString(), itemsGrid);
             }
 
             @Override
@@ -513,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String query) {
 
                 searchQuery = query;
-                filter(items, searchQuery, cat.getSelectedItem().toString(), itemsGrid);
+//                filter(items, searchQuery, cat.getSelectedItem().toString(), itemsGrid);
 
                 return false;
             }
@@ -525,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void priceDialog(final int position) {
-        priceDialog = new Dialog(MainActivity.this);
+        priceDialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         priceDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         priceDialog.setCancelable(false);
         priceDialog.setContentView(R.layout.price_dialog);
@@ -535,7 +714,8 @@ public class MainActivity extends AppCompatActivity {
         final EditText price = priceDialog.findViewById(R.id.price);
         priceOk = priceDialog.findViewById(R.id.ok);
 
-        setDialogTheme(theme, priceBack, priceOk);
+        priceDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+//        setDialogTheme(theme, priceBack, priceOk);
 
         price.setText("" + orderedItems.get(position).getPrice());
 
@@ -545,9 +725,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!price.getText().toString().equals("")) {
 
                     orderedItems.get(position).setPrice(Double.parseDouble(price.getText().toString()));
-                    orderedItems.get(position).setNet(orderedItems.get(position).getQty() * Double.parseDouble(price.getText().toString()));
+                    orderedItems.get(position).setNet(orderedItems.get(position).getQty() * orderedItems.get(position).getPrice());
+                    reCalculate(MainActivity.this);
                     orderedItemsAdapter.notifyDataSetChanged();
-
                     priceDialog.dismiss();
                 }
             }
@@ -557,10 +737,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void qtyDialog(final int position) {
-        final Dialog qtyDialog = new Dialog(MainActivity.this);
+        final Dialog qtyDialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         qtyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         qtyDialog.setContentView(R.layout.quantity_dialog);
 
+        qtyDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         qtyBack = qtyDialog.findViewById(R.id.qty_back);
         final EditText qty = qtyDialog.findViewById(R.id.quantity_dialog_qty);
         qtyOk = qtyDialog.findViewById(R.id.quantity_dialog_done);
@@ -574,7 +755,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        setDialogTheme(theme, qtyBack, qtyOk);
+//        setDialogTheme(theme, qtyBack, qtyOk);
 
         qtyOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -584,7 +765,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (quantity > 0) {
                         orderedItems.get(position).setQty(quantity);
-                        orderedItems.get(position).setNet(quantity * 10);
+                        orderedItems.get(position).setNet(quantity* orderedItems.get(position).getPrice());
                         orderedItemsAdapter.notifyDataSetChanged();
                         reCalculate(MainActivity.this);
                         qtyDialog.dismiss();
@@ -599,24 +780,28 @@ public class MainActivity extends AppCompatActivity {
         qtyDialog.show();
     }
 
-    public void filter(ArrayList<Items> items, String item, String category, GridView itemsGrid) {
 
-        ArrayList<Items> tempList = new ArrayList<>();
-        for (int k = 0; k < items.size(); k++) {
-//            Log.e("******", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
-            if (
-                    ((items.get(k).getItemName()).toUpperCase().contains(item.toUpperCase()) || item.equals("")) &&
-                            ((items.get(k).getCategory()).equals(category) || category.equals(""))) {
-                tempList.add(items.get(k));
-//                Log.e("******2", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
-            }
-        }
-
-        gridItems = tempList;
-//        Log.e("******3", "   " + gridItems.size());
-        gridAdapter = new ItemGridAdapter(MainActivity.this, gridItems);
-        itemsGrid.setAdapter(gridAdapter);
-    }
+//    public void filter(ArrayList<Items> items, String item, String category, GridView itemsGrid) {
+//
+//        ArrayList<Items> tempList = new ArrayList<>();
+//        tempList.clear();
+//        for (int k = 0; k < items.size(); k++) {
+////            Log.e("******", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
+//            if (
+//                    ((items.get(k).getItemName()).toUpperCase().contains(item.toUpperCase()) || item.equals("")));/* &&
+//                            ((items.get(k).getCategory()).equals(category) || category.equals("")))*/ {
+//                Items items1=new Items();
+//                  items1=items.get(k);
+//                tempList.add(items1);
+////                Log.e("******2", items.get(k).getCategory() + "   " + category + " ---- " + items.get(k).getItemName() + "   " + item);
+//            }
+//        }
+//
+////        gridItems = tempList;
+//        Log.e("******3", "   " + tempList.size());
+//        gridAdapter = new ItemListAdapter(MainActivity.this, tempList);
+//        itemsGrid.setAdapter(gridAdapter);
+//    }
 
     public void functionsDialog() {
         functionsDialog = new Dialog(MainActivity.this);
@@ -629,8 +814,8 @@ public class MainActivity extends AppCompatActivity {
         Button reports = functionsDialog.findViewById(R.id.reports);
         Button dayClose = functionsDialog.findViewById(R.id.day_close);
 
-        setDialogTheme(theme, functionsBack, reports);
-        setDialogTheme(theme, functionsBack, dayClose);
+//        setDialogTheme(theme, functionsBack, reports);
+//        setDialogTheme(theme, functionsBack, dayClose);
 
         reports.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -661,7 +846,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout cashR = reportsDialog.findViewById(R.id.cash_report);
         LinearLayout salesR = reportsDialog.findViewById(R.id.sales_report);
 
-        setDialogTheme(theme, reportsBack, new Button(MainActivity.this));
+//        setDialogTheme(theme, reportsBack, new Button(MainActivity.this));
 
         cashR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -683,13 +868,13 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     public void closeDayDialog() {
-        final Dialog closeDialog = new Dialog(MainActivity.this);
+        final Dialog closeDialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         closeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         closeDialog.setCancelable(false);
         closeDialog.setContentView(R.layout.close_day_dialog);
         closeDialog.setCanceledOnTouchOutside(true);
-
-        LinearLayout closeDialogLiner = closeDialog.findViewById(R.id.closeDialogLiner);
+        closeDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        CardView closeDialogLiner = closeDialog.findViewById(R.id.closeDialogLiner);
 
 
         final Button close;
@@ -698,7 +883,6 @@ public class MainActivity extends AppCompatActivity {
         newDay = closeDialog.findViewById(R.id.newDay);
         totalCashText = closeDialog.findViewById(R.id.totalCash);
 
-        setDialogTheme(theme, closeDialogLiner, close);
 
         new JSONTask2().execute();
 
@@ -709,9 +893,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 CloseDay closeDay = new CloseDay(today, "1", Double.parseDouble(totalCash), companyNo);
-                new Export(closeDay.getJSONObject(), "Close_Day");
+                new Export(closeDay.getJSONObject(), "Close_Day",MainActivity.this);
 
-                Intent intent = new Intent(MainActivity.this , LogIn.class);
+                Intent intent = new Intent(MainActivity.this, LogIn.class);
                 startActivity(intent);
 
                 closeDialog.dismiss();
@@ -722,50 +906,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void settingDialog() {
-        settingsDialog = new Dialog(MainActivity.this);
+        settingsDialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         settingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         settingsDialog.setCancelable(false);
         settingsDialog.setContentView(R.layout.settings_dialog);
-        settingsDialog.setCanceledOnTouchOutside(true);
+        settingsDialog.setCanceledOnTouchOutside(false);
+
+        settingsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
 
         settingsBack = settingsDialog.findViewById(R.id.settings_back);
         final EditText ip = settingsDialog.findViewById(R.id.ip);
         final EditText company = settingsDialog.findViewById(R.id.company);
         final EditText companyID = settingsDialog.findViewById(R.id.company_id);
         final EditText posNo = settingsDialog.findViewById(R.id.pos_no);
-        CheckBox price = settingsDialog.findViewById(R.id.price);
-        CheckBox qty = settingsDialog.findViewById(R.id.qty);
-        RadioGroup taxCalcKind = settingsDialog.findViewById(R.id.tax_type);
-        RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
+        final CheckBox price = settingsDialog.findViewById(R.id.price);
+        final CheckBox qty = settingsDialog.findViewById(R.id.qty);
+        final RadioGroup taxCalcKind = settingsDialog.findViewById(R.id.tax_type);
+        final RadioButton exclude = settingsDialog.findViewById(R.id.exclude);
         RadioButton include = settingsDialog.findViewById(R.id.include);
 
-
-        ImageView creamDot = settingsDialog.findViewById(R.id.cream_dot);
-        ImageView rosyDot = settingsDialog.findViewById(R.id.rosy_dot);
-        ImageView skyDot = settingsDialog.findViewById(R.id.sky_dot);
-        ImageView pronzeDot = settingsDialog.findViewById(R.id.pronze_dot);
-        ImageView grayDot = settingsDialog.findViewById(R.id.gray_dot);
-        ImageView redDot = settingsDialog.findViewById(R.id.red_dot);
-        ImageView greenDot = settingsDialog.findViewById(R.id.green_dot);
-        ImageView blueDot = settingsDialog.findViewById(R.id.blue_dot);
-
+        Button cancel = settingsDialog.findViewById(R.id.cancel);
         saveSettings = settingsDialog.findViewById(R.id.save);
 
-        setDialogTheme(theme, settingsBack, saveSettings);
+//        setDialogTheme(theme, settingsBack, saveSettings);
 
-        if (DHandler.getSettings() != null) {
+        Settings settings = DHandler.getSettings();
+
+        if (settings != null) {
 
             ip.setText(DHandler.getSettings().getIpAddress());
             company.setText(DHandler.getSettings().getCompanyName());
+            companyID.setText(DHandler.getSettings().getCompanyID());
+            posNo.setText(DHandler.getSettings().getPosNo());
+
 
             if (DHandler.getSettings().getControlPrice() == 1) {
                 price.setChecked(true);
-                cPrice = 1;
             }
 
             if (DHandler.getSettings().getControlQty() == 1) {
                 qty.setChecked(true);
-                cQty = 1;
             }
 
             if (DHandler.getSettings().getTaxCalcKind() == 0)
@@ -774,85 +955,41 @@ public class MainActivity extends AppCompatActivity {
                 include.setChecked(true);
         }
 
-        price.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked)
-                    cPrice = 1;
-                else
-                    cPrice = 0;
-            }
-        });
+        final int[] taxKind = {0};
 
-        qty.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (isChecked)
-                    cQty = 1;
-                else
-                    cQty = 0;
-            }
-        });
-
-        final int taxKind = taxCalcKind.getCheckedRadioButtonId() == R.id.exclude ? 0 : 1;
-
-
-        View.OnClickListener onClickListener = new View.OnClickListener() {
+        cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView imageView = (ImageView) v;
-
-                switch (imageView.getId()) {
-
-                    case R.id.rosy_dot:
-                        theme = 2;
-                        break;
-                    case R.id.green_dot:
-                        theme = 3;
-                        break;
-                    case R.id.gray_dot:
-                        theme = 4;
-                        break;
-                    case R.id.red_dot:
-                        theme = 5;
-                        break;
-                    case R.id.pronze_dot:
-                        theme = 6;
-                        break;
-                    case R.id.sky_dot:
-                        theme = 7;
-                        break;
-                    case R.id.blue_dot:
-                        theme = 8;
-                        break;
-                    case R.id.cream_dot:
-                        theme = 9;
-                        break;
-                }
-
-                setThemeNo(theme);
-                setDialogTheme(theme, settingsBack, saveSettings);
-                DHandler.updateTheme(theme);
+                settingsDialog.dismiss();
             }
-        };
-
-        creamDot.setOnClickListener(onClickListener);
-        rosyDot.setOnClickListener(onClickListener);
-        skyDot.setOnClickListener(onClickListener);
-        pronzeDot.setOnClickListener(onClickListener);
-        grayDot.setOnClickListener(onClickListener);
-        redDot.setOnClickListener(onClickListener);
-        greenDot.setOnClickListener(onClickListener);
-        blueDot.setOnClickListener(onClickListener);
-
+        });
         saveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                DHandler.deleteSettings();
+                if (price.isChecked()) {
+                    cPrice = 1;
+                } else {
+                    cPrice = 0;
+                }
 
-                DHandler.updateSettings(new Settings(ip.getText().toString(), company.getText().toString(), theme, cPrice, cQty, companyID.getText().toString(), taxKind, posNo.getText().toString()));
+                if (qty.isChecked()) {
+                    cQty = 1;
+                } else {
+                    cQty = 0;
+                }
+
+
+                if (exclude.isChecked()) {
+                    taxKind[0] = 0;
+                } else {
+                    taxKind[0] = 1;
+                }
+
+                DHandler.addSettings(new Settings(company.getText().toString(),ip.getText().toString(),
+                        theme, cPrice, cQty, companyID.getText().toString(), taxKind[0], posNo.getText().toString()));
                 settingsDialog.dismiss();
             }
         });
@@ -861,22 +998,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveDialog() {
-        saveDialog = new Dialog(MainActivity.this);
+        saveDialog = new Dialog(MainActivity.this, R.style.Theme_Dialog);
         saveDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         saveDialog.setCancelable(false);
         saveDialog.setContentView(R.layout.pay_dialog);
         saveDialog.setCanceledOnTouchOutside(true);
-
+        saveDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         saveBack = saveDialog.findViewById(R.id.save_back);
         required = saveDialog.findViewById(R.id.required);
         final EditText payed = saveDialog.findViewById(R.id.payed);
         final TextView remaining = saveDialog.findViewById(R.id.remaining);
         savePay = saveDialog.findViewById(R.id.pay);
 
-        setDialogTheme(theme, saveBack, savePay);
+//        setDialogTheme(theme, saveBack, savePay);
 
-        required.setText("" + sumWithTax);
-        payed.setText("" + sumWithTax);
+        GlobelFunction globelFunction = new GlobelFunction();
+        required.setText("" + globelFunction.DecimalFormat("" + sumWithTax));
+        payed.setText("" + globelFunction.DecimalFormat("" + sumWithTax));
 
         payed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -907,35 +1045,35 @@ public class MainActivity extends AppCompatActivity {
         savePay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                new Export(orderedItems.get(0).getJSONObject2(), "Sales_Master");
-
-                try {
-                    JSONArray jsonArray = new JSONArray();
-                    for (int i = 0; i < orderedItems.size(); i++) {
-                        jsonArray.put(orderedItems.get(i).getJSONObject3());
-                    }
-
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("Sales_Details", jsonArray);
-                    new Export(jsonObject, "Sales_Details");
-
-//                    new JSONTask2().execute();
-
-                    Intent intent=new Intent(MainActivity.this,BluetoothConnectMenu.class);
-                    intent.putExtra("printKey", "0");
-                    startActivity(intent);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                itemDetail.add(sumNoTax.getText().toString().substring(sumNoTax.getText().toString().indexOf(":")+1,sumNoTax.getText().toString().length()));
-                itemDetail.add(tax.getText().toString().substring(tax.getText().toString().indexOf(":")+1,tax.getText().toString().length()));
-                itemDetail.add(sumAfterTax.getText().toString().substring(sumAfterTax.getText().toString().indexOf(":")+1,sumAfterTax.getText().toString().length()));
-//                orderedItems.clear();
-                orderedItemsAdapter.notifyDataSetChanged();
-                reCalculate(MainActivity.this);
+                saveVoucher("0");
+//                new Export(orderedItems.get(0).getJSONObject2(), "Sales_Master");
+//
+//                try {
+//                    JSONArray jsonArray = new JSONArray();
+//                    for (int i = 0; i < orderedItems.size(); i++) {
+//                        jsonArray.put(orderedItems.get(i).getJSONObject3());
+//                    }
+//
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("Sales_Details", jsonArray);
+//                    new Export(jsonObject, "Sales_Details");
+//
+////                    new JSONTask2().execute();
+//
+//                    Intent intent=new Intent(MainActivity.this,BluetoothConnectMenu.class);
+//                    intent.putExtra("printKey", "0");
+//                    startActivity(intent);
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                itemDetail.add(sumNoTax.getText().toString().substring(sumNoTax.getText().toString().indexOf(":")+1,sumNoTax.getText().toString().length()));
+//                itemDetail.add(tax.getText().toString().substring(tax.getText().toString().indexOf(":")+1,tax.getText().toString().length()));
+//                itemDetail.add(sumAfterTax.getText().toString().substring(sumAfterTax.getText().toString().indexOf(":")+1,sumAfterTax.getText().toString().length()));
+////                orderedItems.clear();
+//                orderedItemsAdapter.notifyDataSetChanged();
+//                reCalculate(MainActivity.this);
 
                 saveDialog.dismiss();
             }
@@ -945,246 +1083,55 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void setThemeNo(int themeNo) {
 
-        switch (themeNo) {
-            case 2:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.rosy1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_rosy));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
+    void saveVoucher(String vStatus) {
 
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.rosy_blue));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.rosy_blue));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.rosy_blue));
+        orderedItems.get(0).setVoucherStatus(vStatus);
+        orderedItems.get(0).setVoucherDate(globelFunction.DateInToday());
 
-                fabAddItem.setColorNormal(getResources().getColor(R.color.rosy_blue));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.rosy_blue));
+        new Export(orderedItems.get(0).getJSONObject2(), "Sales_Master",MainActivity.this);
 
-                fabFunctions.setColorNormal(getResources().getColor(R.color.rosy_blue));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.rosy_blue));
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < orderedItems.size(); i++) {
+                orderedItems.get(i).setVoucherStatus(vStatus);
+                orderedItems.get(i).setVoucherDate(globelFunction.DateInToday());
+                jsonArray.put(orderedItems.get(i).getJSONObject3());
+            }
 
-                fabSettings.setColorNormal(getResources().getColor(R.color.rosy_blue));
-                fabSettings.setColorPressed(getResources().getColor(R.color.rosy_blue));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Sales_Details", jsonArray);
+            new Export(jsonObject, "Sales_Details",MainActivity.this);
 
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
+//                    new JSONTask2().execute();
 
-            case 3:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.green1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_green));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
+//            Intent intent=new Intent(MainActivity.this,BluetoothConnectMenu.class);
+//            intent.putExtra("printKey", "0");
+//            startActivity(intent);
 
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.iguana_green));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.iguana_green));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.iguana_green));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.iguana_green));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.iguana_green));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.iguana_green));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.iguana_green));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.iguana_green));
-                fabSettings.setColorPressed(getResources().getColor(R.color.iguana_green));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                break;
-
-            case 4:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.gray1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_gray));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.gray_orange));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.gray_orange));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.gray_orange));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.gray_orange));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.gray_orange));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_orange));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_orange));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.gray_orange));
-                fabSettings.setColorPressed(getResources().getColor(R.color.gray_orange));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                break;
-
-            case 5:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.red1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_red));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.red_black));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.red_black));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.red_black));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
-                fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                break;
-
-            case 6:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.pronz1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_pronz));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.red_black));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.red_black));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.red_black));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.red_black));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.red_black));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.red_black));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.red_black));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.red_black));
-                fabSettings.setColorPressed(getResources().getColor(R.color.red_black));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                break;
-
-            case 7:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.sky1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_sky));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.sky_brown));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.sky_brown));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.sky_brown));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.sky_brown));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabSettings.setColorPressed(getResources().getColor(R.color.sky_brown));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                break;
-
-            case 8:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.blue1));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_blue));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.gray_blue));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.gray_blue));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.gray_blue));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.gray_blue));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.gray_blue));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.gray_blue));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.gray_blue));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.gray_blue));
-                fabSettings.setColorPressed(getResources().getColor(R.color.gray_blue));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                break;
-
-            case 9:
-                rightLinear.setBackgroundColor(getResources().getColor(R.color.cream_rosy));
-                topLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.hor_shape_sky));
-                back.setBackgroundColor(getResources().getColor(R.color.cream));
-
-                menuLabelsRight.setMenuButtonColorNormal(getResources().getColor(R.color.gray));
-                menuLabelsRight.setMenuButtonColorPressed(getResources().getColor(R.color.gray));
-                menuLabelsRight.setMenuButtonColorRipple(getResources().getColor(R.color.gray));
-
-                fabAddItem.setColorNormal(getResources().getColor(R.color.sky_brown));
-                fabAddItem.setColorPressed(getResources().getColor(R.color.sky_brown));
-
-                fabFunctions.setColorNormal(getResources().getColor(R.color.beetle_green));
-                fabFunctions.setColorPressed(getResources().getColor(R.color.beetle_green));
-
-                fabSettings.setColorNormal(getResources().getColor(R.color.cream_rosy));
-                fabSettings.setColorPressed(getResources().getColor(R.color.cream_rosy));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                clear.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
-
-
-        }
-    }
-
-    void setDialogTheme(int themeNo, LinearLayout dialogBack, Button button) {
-
-        switch (themeNo) {
-            case 2:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
-
-            case 3:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                break;
-
-            case 4:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                break;
-
-            case 5:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                break;
-
-            case 6:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                break;
-
-            case 7:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                break;
-
-            case 8:
-                dialogBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
-                button.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                break;
-
-            case 9:
-                dialogBack.setBackgroundColor(getResources().getColor(R.color.cream));
-                button.setBackground(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
+            clearFun();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
+        itemDetail.add(sumNoTax.getText().toString());
+        itemDetail.add(tax.getText().toString());
+        itemDetail.add(sumAfterTax.getText().toString());
+//                orderedItems.clear();
+        orderedItemsAdapter.notifyDataSetChanged();
+        reCalculate(MainActivity.this);
+
+
     }
-    void clearFun(){
-     orderedItems.clear();
-      itemNo.clear();
-       orderedItemsAdapter.notifyDataSetChanged();
+
+
+    void clearFun() {
+        orderedItems.clear();
+        itemNo.clear();
+        orderedItemsAdapter.notifyDataSetChanged();
+        tax.setText("0.0");
+        sumNoTax.setText("0.0");
+        sumAfterTax.setText("0.0");
 
     }
 
@@ -1197,18 +1144,22 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
+//        if(linerRec.getVisibility()==View.VISIBLE){
+//            linerRec.setVisibility(View.GONE);
+//        }else {
         Intent intent = new Intent(MainActivity.this, LogIn.class);
         startActivity(intent);
+//        }
     }
 
     void init() {
 
         save = findViewById(R.id.save);
-        search = findViewById(R.id.search);
+//        search = findViewById(R.id.search);
         clear = findViewById(R.id.clear);
-
-        cats = findViewById(R.id.categories);
-        listView = findViewById(R.id.listview);
+        itemCatSearch = findViewById(R.id.itemCatSearch);
+        listItemGrid = findViewById(R.id.itemListView);
+        categoryListView = findViewById(R.id.categoriList);
         orderedList = findViewById(R.id.list);
         topLinear = findViewById(R.id.top_linear);
         rightLinear = findViewById(R.id.right_linear);
@@ -1219,11 +1170,375 @@ public class MainActivity extends AppCompatActivity {
         sumAfterTax = findViewById(R.id.sum_after_tax);
 
         menuLabelsRight = findViewById(R.id.menu_labels_right);
-        fabAddItem = findViewById(R.id.fab_add_item);
-        fabFunctions = findViewById(R.id.fab_function);
-        fabSettings = findViewById(R.id.fab_settings);
+        catName = findViewById(R.id.catName);
+        voidLastButton = findViewById(R.id.voidLastButton);
+        holdButton = findViewById(R.id.holdButton);
+        showHold = findViewById(R.id.showHold);
+        recyclerViews = findViewById(R.id.recyclerViews);
+        linerRec = findViewById(R.id.linerRec);
+        cancelButton = findViewById(R.id.cancel_button);
+//         holdMButton = findViewById(R.id.holdMButton);
+//        holdMButton.setVisibility(View.GONE);
+//        fabAddItem = findViewById(R.id.fab_add_item);
+//        fabFunctions = findViewById(R.id.fab_function);
+//        fabSettings = findViewById(R.id.fab_settings);
     }
 
+
+    void showAllDataAccount() {
+        showHold.setText("" + holdVoucherList.size());
+        linerRec.setVisibility(View.VISIBLE);
+        layoutManagerd = new CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, true);
+
+        recyclerViews.setLayoutManager(layoutManagerd);
+        recyclerViews.setHasFixedSize(true);
+        recyclerViews.addOnScrollListener(new CenterScrollListener());
+        layoutManagerd.setPostLayoutListener(new CarouselZoomPostLayoutListener());
+        recyclerViews.setAdapter(new TestAdapterForbar(this, holdVoucherList));
+        recyclerViews.requestFocus();
+        recyclerViews.scrollToPosition(6);
+        recyclerViews.requestFocus();
+
+
+    }
+
+    public void fillList(ListView holdList, List<Items> list) {
+
+        OrderedListAdapterHold orderedItemsAdapter = new OrderedListAdapterHold(MainActivity.this, list);
+        holdList.setAdapter(orderedItemsAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menue_more, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Toast.makeText(this, "Selected Item: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case R.id.setting:
+                settingDialog();
+                // do your code
+                return true;
+            case R.id.add_item:
+                // do your code
+                Intent intent = new Intent(MainActivity.this, ItemCard.class);
+                startActivity(intent);
+                return true;
+            case R.id.CashReport:
+                Intent cashIntent = new Intent(MainActivity.this, CashReport.class);
+                startActivity(cashIntent);
+                // do your code
+                return true;
+            case R.id.SalesReport:
+                Intent salesIntent = new Intent(MainActivity.this, SalesReport.class);
+                startActivity(salesIntent);
+                // do your code
+                return true;
+            case R.id.CloseDay:
+                closeDayDialog();
+                // do your code
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    static class CViewHolderForbar extends RecyclerView.ViewHolder {
+
+        ListView holdList;
+        TextView BTax, ATax, tax;
+        Button clear, doneButton;
+
+        public CViewHolderForbar(View itemView) {
+            super(itemView);
+//            ItemName = itemView.findViewById(R.id.textbar);
+//            layBar = itemView.findViewById(R.id.layBar);
+//            itemImage = itemView.findViewById(R.id.imgbar);
+
+            holdList = itemView.findViewById(R.id.listHold);
+            BTax = itemView.findViewById(R.id.sum_no_tax);
+            ATax = itemView.findViewById(R.id.sum_after_tax);
+            tax = itemView.findViewById(R.id.tax);
+            clear = itemView.findViewById(R.id.clear);
+            doneButton = itemView.findViewById(R.id.done_button);
+
+        }
+    }
+
+    class TestAdapterForbar extends RecyclerView.Adapter<CViewHolderForbar> {
+        Context context;
+        List<List<Items>> list;
+//DatabaseHandler db;
+
+        public TestAdapterForbar(Context context, List<List<Items>> list) {
+            this.context = context;
+            this.list = list;
+//        db=new DatabaseHandler(this.context);
+        }
+
+
+        @Override
+        public CViewHolderForbar onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View view = LayoutInflater.from(context).inflate(R.layout.voucher_in_recycle_list, viewGroup, false);
+            return new CViewHolderForbar(view);
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onBindViewHolder(final CViewHolderForbar cViewHolder, final int i) {
+
+            fillList(cViewHolder.holdList, list.get(i));
+
+            cViewHolder.BTax.setText(""+list.get(i).get(0).getNetBeforeTax());
+            cViewHolder.ATax.setText(""+list.get(i).get(0).getNetWithTax());
+            cViewHolder.tax.setText(""+list.get(i).get(0).getTaxValue());
+            Log.e("holdTTT", "" + i);
+
+
+            cViewHolder.doneButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (orderedItems.size() != 0) {
+//                        holdVoucherList.add(new ArrayList<Items>(orderedItems));
+//                        clearFun();
+//                        orderedItems=(new ArrayList<>(holdVoucherList.get(i)));
+//                        fillItemNo();
+//                        orderedItemsAdapter = new OrderedListAdapter(MainActivity.this, orderedItems);
+//                        orderedList.setAdapter(orderedItemsAdapter);
+//                        holdVoucherList.remove(i);
+//                        showHold.setText("" + holdVoucherList.size());
+//                        reCalculate(context);
+//                        linerRec.setVisibility(View.GONE);
+
+                        returnVoucherHold(0, i, context);
+
+                    } else {
+                        returnVoucherHold(1, i, context);
+
+                    }
+
+                }
+            });
+
+            cViewHolder.clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("holdTTT", "" + i);
+
+                    holdVoucherList.remove(i);
+
+                    showAllDataAccount();
+                }
+            });
+//            cViewHolder.ItemName.setText(list.get(i));
+//            cViewHolder.layBar.setTag("" + i);
+
+//            switch (i){
+//
+//                case 0:
+//
+////                    DrawableCompat.setTint(
+////                            DrawableCompat.wrap(cViewHolder.itemImage.getDrawable()),
+////                            ContextCompat.getColor(context, R.color.Orange)
+////                    );
+//
+//                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.Orange));
+//                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.Orange));
+//
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_edit_black_24dp));
+//
+//                    break;
+//                case 1:
+//                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.Orange));
+//                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.Orange));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_add_black_24dp));
+//                    break;
+//                case 2:
+//                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.Orange));
+//                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.Orange));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_print_black_24dp));
+//                    break;
+//                case 3:
+////                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.dark_blue));
+////                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.dark_blue));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_edit_black_24dp));
+//                    break;
+//                case 4:
+////                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.dark_blue));
+////                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.dark_blue));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_add_black_24dp));
+//                    break;
+//                case 5:
+////                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.dark_blue));
+////                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.dark_blue));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_print_black_24dp));
+//                    break;
+//
+//                case 6:
+//                    cViewHolder.itemImage.setColorFilter(ContextCompat.getColor(context, R.color.blue_ice));
+//                    cViewHolder.itemImage.setBorderColor(context.getResources().getColor(R.color.blue_ice));
+//                    cViewHolder.itemImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_settings_black_24dp));
+//                    break;
+//
+//            }
+
+
+            final boolean[] longIsOpen = {false};
+//            cViewHolder.layBar.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+////                    picforbar.add("تعديل فاتورة");
+////                    picforbar.add("اضافة فاتورة");
+////                    picforbar.add("طباعة فاتورة");
+////
+////                    picforbar.add(" تعديل سند قبض");
+////                    picforbar.add("اضافة سند قبض");
+////                    picforbar.add("طباعة سند قبض");
+////
+////                    picforbar.add("اعدادات");
+//
+//
+////                    switch (i){
+////                        case 0://تعديل فاتورة
+////                            finish();
+////                            Intent editIntent=new Intent(MainActivityOn.this,MakeVoucher.class);
+////                            editIntent.putExtra("EDIT_VOUCHER","EDIT_VOUCHER");
+////                            // ChequeInfo
+//////                            editeIntent.putExtra("ChequeInfo",chequeInfo);
+////                            startActivity(editIntent);
+////                            break;
+////                        case 1://اضافة فاتورة
+////                            finish();
+////                            Intent AddVocher= new Intent(MainActivityOn.this,MakeVoucher.class);
+////                            startActivity(AddVocher);
+////                            break;
+////                        case 2://طباعة فاتورة
+////                            finish();
+////                            Intent PrintVoucherIntent= new Intent(MainActivityOn.this, PrintVoucher.class);
+////                            startActivity(PrintVoucherIntent);
+////                            break;
+////                        case 3://تعديل سند قبض
+////                            finish();
+////                            Intent editRecIntent=new Intent(MainActivityOn.this,Receipt.class);
+////                            editRecIntent.putExtra("EDIT_REC","EDIT_REC");
+////                            // ChequeInfo
+//////                            editeIntent.putExtra("ChequeInfo",chequeInfo);
+////                            startActivity(editRecIntent);
+////                            break;
+////                        case 4://اضافة سند قبض
+////                            finish();
+////                            Intent receipt= new Intent(MainActivityOn.this, Receipt.class);
+////                            startActivity(receipt);
+////                            break;
+////                        case 5://طباعة سند قبض
+////                            finish();
+////                            Intent PrintRecCashIntent= new Intent(MainActivityOn.this, PrintRecCash.class);
+////                            startActivity(PrintRecCashIntent);
+////                            break;
+////
+////                        case 6://اعدادات
+////                            finish();
+////                            Intent SettingIntent= new Intent(MainActivityOn.this, AppSetting.class);
+////                            startActivity(SettingIntent);
+////                            break;
+////                    }
+//
+//                }
+//            });
+
+            //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+//            return Integer.MAX_VALUE;
+        }
+    }
+
+    void fillItemNo() {
+        for (int i = 0; i < orderedItems.size(); i++) {
+            String itemN = orderedItems.get(i).getItemNo();
+            itemNo.add(itemN);
+        }
+
+    }
+
+    void returnVoucherHold(int flag, int i, Context context) {
+
+        if (flag == 0) {
+            holdVoucherList.add(new ArrayList<Items>(orderedItems));
+        }
+        clearFun();
+        orderedItems = (new ArrayList<>(holdVoucherList.get(i)));
+        fillItemNo();
+        orderedItemsAdapter = new OrderedListAdapter(MainActivity.this, orderedItems);
+        orderedList.setAdapter(orderedItemsAdapter);
+        holdVoucherList.remove(i);
+        showHold.setText("" + holdVoucherList.size());
+        reCalculate(context);
+        linerRec.setVisibility(View.GONE);
+
+    }
+
+
+//    public Button insertImage(){
+////        imageView.setImageBitmap(StringToBitMap(picItem));
+//        int p1[] = new int[2];
+//        int p2[] = new int[2];
+//        showHold.getLocationInWindow(p2);
+//        holdMButton.getLocationInWindow(p1);
+//        holdMButton.setVisibility(View.VISIBLE);
+//        Log.e("location ",""+p1[0]+"    "+p1[1]);
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50);
+//        holdMButton.setLayoutParams(params);
+//        holdMButton.setX(p1[0]);
+//        holdMButton.setY(p1[1]);
+//
+////        imageMove.addView(imageView);
+//        holdMButton.animate()
+//                .x(p2[0])
+//                .y(p2[1])
+//                .setDuration(1000)
+//                .setListener(new Animator.AnimatorListener() {
+//                    @Override
+//                    public void onAnimationStart(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//
+//                        holdMButton.setVisibility(View.GONE);
+//                        showHold.setText("" + holdVoucherList.size());
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationCancel(Animator animation) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animator animation) {
+//
+//                    }
+//
+//
+//                })
+//                .start();
+//
+//        return holdMButton;
+//    }
 
     private class JSONTask extends AsyncTask<String, String, String> {
 
@@ -1239,7 +1554,7 @@ public class MainActivity extends AppCompatActivity {
             String finalJson = null;
 
             try {
-                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=1");
+                URL url = new URL("http://"+ipAddress+"/miniPOS/import.php?FLAG=1");
 
                 URLConnection conn = url.openConnection();
                 conn.setDoOutput(true);
@@ -1282,7 +1597,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     JSONArray parentArrayMaxes = parentObject.getJSONArray("ITEMS");
-
+                    searchItemList.clear();
                     for (int i = 0; i < parentArrayMaxes.length(); i++) {
                         JSONObject innerObject = parentArrayMaxes.getJSONObject(i);
 
@@ -1297,9 +1612,12 @@ public class MainActivity extends AppCompatActivity {
                         item.setPrice(innerObject.getDouble("SALE_PRICE"));
                         item.setDescription(innerObject.getString("ITEMDESC"));
                         item.setPic(innerObject.getInt("ITEM_PIC"));
-
-                        subItems.add(item);
-                        items.add(item);
+                        item.setIsActive(innerObject.getString("IS_ACTIVE"));
+                        if(item.getIsActive().equals("1")) {
+                            subItems.add(item);
+                            items.add(item);
+                        }
+                        searchItemList.add(item);
                     }
 
                 } catch (JSONException e) {
@@ -1366,15 +1684,17 @@ public class MainActivity extends AppCompatActivity {
             if (result != null) {
                 Log.e("result", "*****************" + result);
 
-                catAdapter = new CategoryListAdapter(MainActivity.this, categories);
-                cats.setAdapter(catAdapter);
+                itemListAdapter = new ItemListAdapter(MainActivity.this, subItems);
+                listItemGrid.setAdapter(itemListAdapter);
 
-                cats.setOnItemClickListener(onItemClickListener);
+                listItemGrid.setOnItemClickListener(onItemClickListener);
 
-                itemsAdapter = new ItemListAdapter(MainActivity.this, subItems);
-                listView.setAdapter(itemsAdapter);
+                categoryItemListAdapter = new CategoryItemListAdapter(MainActivity.this, categories);
+                categoryListView.setAdapter(categoryItemListAdapter);
 
-                listView.setOnItemClickListener(onItemClickListener);
+                categoryListView.setOnItemClickListener(onItemClickListener);
+
+                Log.e("categories", "" + categories.size());
 
 
             } else {
@@ -1397,7 +1717,7 @@ public class MainActivity extends AppCompatActivity {
             String finalJson = null;
 
             try {
-                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=2");
+                URL url = new URL("http://"+ipAddress+"/miniPOS/import.php?FLAG=2");
 
                 URLConnection conn = url.openConnection();
                 conn.setDoOutput(true);

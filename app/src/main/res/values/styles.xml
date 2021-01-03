@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/greenS</item>
+        <item name="colorPrimaryDark">@color/greenS</item>
+        <item name="colorAccent">@color/greenS</item>
     </style>
 
     <style name="MenuButtonsSmall">
@@ -44,6 +44,18 @@
         <item name="android:buttonStyle">@drawable/edit_button</item>
         <item name="android:topBright">@drawable/bac</item>
         <item name="android:topDark">@drawable/bac</item>
+    </style>
+
+    <style name="MyActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">#FFFDFA</item>
+    </style>
+
+    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
+
+        <item name="android:windowMinWidthMajor">60%</item>
+        <item name="android:windowMinWidthMinor">60%</item>
+        <!--<item name="android:windowEnterAnimation">@anim/top_bottom</item>-->
+        <!--<item name="android:windowExitAnimation">@anim/left</item>-->
     </style>
 
 </resources>

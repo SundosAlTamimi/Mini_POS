@@ -18,6 +18,7 @@ public class Items {
     private int pic;
     private double qty;
     private double net;
+    private double netBeforeTax;
     private double netWithTax;
     private String companyYear;
     private String companyNo;
@@ -25,6 +26,10 @@ public class Items {
     private int voucherKind;
     private String voucherDate;
     private String posNo;
+    private  String voucherStatus;
+    private String isActive;
+    private String serial;
+
 
     public Items(String itemNo, String itemName, double price, String category, double qty, double net, double netWithTax, String taxValue, String voucherNo, int voucherKind, String voucherDate, String companyNo, String posNo) { // orders
         this.itemNo = itemNo;
@@ -42,7 +47,7 @@ public class Items {
         this.netWithTax = netWithTax;
     }
 
-    public Items(String itemNo, String barcode,  String itemName, String itemNameE, double price, String category, String subCategory, String taxValue, String description, int pic, String companyNo) { // item card
+    public Items(String itemNo, String barcode,  String itemName, String itemNameE, double price, String category, String subCategory, String taxValue, String description, int pic, String companyNo,String isActive) { // item card
         this.itemNo = itemNo;
         this.barcode = barcode;
         this.itemName = itemName;
@@ -54,6 +59,7 @@ public class Items {
         this.description = description;
         this.pic = pic;
         this.companyNo = companyNo;
+        this.isActive =isActive;
     }
 
     public Items() {
@@ -180,7 +186,69 @@ public class Items {
         this.netWithTax = netWithTax;
     }
 
+    public String getVoucherStatus() {
+        return voucherStatus;
+    }
 
+    public void setVoucherStatus(String voucherStatus) {
+        this.voucherStatus = voucherStatus;
+    }
+
+    public String getVoucherNo() {
+        return voucherNo;
+    }
+
+    public void setVoucherNo(String voucherNo) {
+        this.voucherNo = voucherNo;
+    }
+
+    public int getVoucherKind() {
+        return voucherKind;
+    }
+
+    public void setVoucherKind(int voucherKind) {
+        this.voucherKind = voucherKind;
+    }
+
+    public String getVoucherDate() {
+        return voucherDate;
+    }
+
+    public void setVoucherDate(String voucherDate) {
+        this.voucherDate = voucherDate;
+    }
+
+    public String getPosNo() {
+        return posNo;
+    }
+
+    public void setPosNo(String posNo) {
+        this.posNo = posNo;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getSerial() {
+        return serial;
+    }
+
+    public void setSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public double getNetBeforeTax() {
+        return netBeforeTax;
+    }
+
+    public void setNetBeforeTax(double netBeforeTax) {
+        this.netBeforeTax = netBeforeTax;
+    }
 
     public JSONObject getJSONObject() { // item card
         JSONObject obj = new JSONObject();
@@ -199,6 +267,8 @@ public class Items {
             obj.put("ITEMDESC","'"+ description + "'");
             obj.put("ITEM_PIC",pic );
             obj.put("INDATE","'"+ "1/1/2020" + "'");
+            obj.put("IS_ACTIVE","'"+ isActive + "'");
+            obj.put("SERIAL","'"+ serial + "'");
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");
@@ -218,6 +288,7 @@ public class Items {
             obj.put("VHF_DATE","'"+ voucherDate + "'");
             obj.put("VHF_KIND","'"+ voucherKind + "'");
             obj.put("INDATE","'"+ voucherDate + "'");
+            obj.put("VOUCHER_STATUS","'"+ voucherStatus + "'");
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");
@@ -242,10 +313,26 @@ public class Items {
             obj.put("TOTAL_WITH_TAX","'"+ netWithTax + "'");
             obj.put("TAX",2);
             obj.put("INDATE","'"+ voucherDate + "'");
+            obj.put("VOUCHER_STATUS","'"+ voucherStatus + "'");
+        } catch (JSONException e) {
+            Log.e("Tag" , "JSONException");
+        }
+        return obj;
+    }
+
+    public JSONObject getJSONObject4() { // master
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("CONO","'"+ companyNo + "'" );
+            obj.put("COYEAR","'"+ companyYear + "'"  );
+            obj.put("ITEMNO","'"+ itemNo + "'" );
+            obj.put("SERIAL","'"+ serial + "'" );
 
         } catch (JSONException e) {
             Log.e("Tag" , "JSONException");
         }
         return obj;
     }
+
 }

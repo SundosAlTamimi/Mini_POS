@@ -12,10 +12,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -23,9 +26,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,9 +43,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.falconssoft.minipos.Modle.Categories;
 import com.falconssoft.minipos.Modle.Items;
+import com.falconssoft.minipos.Modle.Settings;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,50 +63,76 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.falconssoft.minipos.GlobelFunction.CoNo;
+import static com.falconssoft.minipos.GlobelFunction.CoYear;
+import static com.falconssoft.minipos.GlobelFunction.ipAddress;
+
 public class ItemCard extends AppCompatActivity {
 
-    private List<String> taxList = new ArrayList<>();
+    public List<String> taxList = new ArrayList<>();
     private List<String> catList = new ArrayList<>();
     private List<String> subCatList = new ArrayList<>();
 
     private ArrayAdapter<String> taxAdapter, catAdapter, subCatAdapter;
-    private Spinner taxSpinner;
-    private Button catSpinner, subCatSpinner;
-    private ImageView save, search, back;
+    public static Spinner taxSpinner;
+    public static TextView catSpinner, subCatSpinner;
+    public static TextView save, search, back, deleteItem,updateItem;
     private ImageView addCat, addSubCat, itemPic, catPic;
     private LinearLayout linear1, linear2, catLinear, subCatLinear;
-    private RelativeLayout itemCardBack, alpha, relative;
-    private EditText itemNo, barcode, itemNameArabic, itemNameEnglish, salePrice, itemDescription, catName, subCatName;
+    //    private RelativeLayout itemCardBack, alpha, relative;
+    public static EditText itemNo, barcode, itemNameArabic, itemNameEnglish, salePrice, itemDescription, catName, subCatName;
     private TextView catNo, subCatNo;
     private Button saveCat, saveSubCat;
-    Button buttonShowDropDown;
+    TextView buttonShowDropDown;
     PopupWindow popupWindowDogs;
     DatabaseHandler DHandler;
     int picFlag;
     static Bitmap itemBitmapPic, categoryPic;
-    String posNo , companyNo;
+    String posNo, companyNo;
 
     ArabicEncode arabicEncode;
     ScaleAnimation scale;
     int flag = 0;
+    String isActive = "1";
+    CheckBox isActiveCh;
+    GlobelFunction globelFunction;
+    RelativeLayout relative;
+    public static RecyclerView recyclerk;
+    EditText searchEdit;
+
+    public static int isShow = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_card);
+        setContentView(R.layout.item_card_new);
 
         arabicEncode = new ArabicEncode();
         init();
 
-        catLinear.setVisibility(View.INVISIBLE);
-        subCatLinear.setVisibility(View.INVISIBLE);
+        catLinear.setVisibility(View.GONE);
+        subCatLinear.setVisibility(View.GONE);
 
         DHandler = new DatabaseHandler(this);
-        if (DHandler.getSettings().getIpAddress() != null)
-            setThemeNo(DHandler.getSettings().getThemeNo());
+        Settings settings = DHandler.getSettings();
 
-        posNo = DHandler.getSettings().getPosNo();
-        companyNo = DHandler.getSettings().getCompanyID();
+        globelFunction = new GlobelFunction();
+        globelFunction.GlobelFunctionSetting(DHandler);
+//        if (DHandler.getSettings().getIpAddress() != null)
+//            setThemeNo(DHandler.getSettings().getThemeNo());
+
+        try {
+            if (TextUtils.isEmpty(settings.getIpAddress())) {
+                posNo = DHandler.getSettings().getPosNo();///????
+                companyNo = DHandler.getSettings().getCompanyID();
+            } else {
+                posNo = "0";///????
+                companyNo = "1";
+            }
+        } catch (Exception e) {
+            posNo = "0";///????
+            companyNo = "1";
+        }
 
         scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.INFINITE, .5f, ScaleAnimation.RELATIVE_TO_SELF, .8f);
 
@@ -142,18 +175,79 @@ public class ItemCard extends AppCompatActivity {
         subCatLinear.setOnClickListener(null);
 
         back.setOnClickListener(onClickListener);
+        deleteItem.setOnClickListener(onClickListener);
+        updateItem.setOnClickListener(onClickListener);
         save.setOnClickListener(onClickListener);
         catSpinner.setOnClickListener(onClickListener);
         subCatSpinner.setOnClickListener(onClickListener);
-        relative.setOnClickListener(onClickListener);
+//        relative.setOnClickListener(onClickListener);
         addCat.setOnClickListener(onClickListener);
         addSubCat.setOnClickListener(onClickListener);
         saveCat.setOnClickListener(onClickListener);
         saveSubCat.setOnClickListener(onClickListener);
         itemPic.setOnClickListener(onClickListener);
         catPic.setOnClickListener(onClickListener);
+        searchEdit.addTextChangedListener(textWatcher);
+
+
+        itemNo.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_NULL) {
+                    if (!TextUtils.isEmpty(itemNo.getText().toString())) {
+
+                        Items items = new Items();
+                        items.setItemNo(itemNo.getText().toString());
+                        items.setCompanyNo(CoNo);
+                        items.setCompanyYear(CoYear);
+                        Import imports = new Import(items.getJSONObject4(), "GetItemInfo", ItemCard.this);
+
+
+                    } else {
+                        itemNo.setError("Required!");
+                    }
+                }
+
+
+                return false;
+            }
+        });
+
+
+        relative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerk.setVisibility(View.GONE);
+                isShow = 0;
+            }
+        });
+
 
         startAnimation();
+    }
+
+
+    public void fillEditeText(Items items) {
+
+//            taxSpinner.setSelection(0);
+        catName.setText(items.getCategory());
+        itemNo.setText("" + items.getItemNo());
+        subCatName.setText(items.getSubCategory());
+        catSpinner.setText(items.getCategory());
+        subCatSpinner.setText(items.getSubCategory());
+        barcode.setText(items.getBarcode());
+        itemNameArabic.setText(items.getItemName());
+        itemNameEnglish.setText(items.getItemNameE());
+        salePrice.setText("" + items.getPrice());
+        itemDescription.setText(items.getDescription());
+        getPositionOfTax(items.getTaxValue());
+        save.setEnabled(false);
+//            categoryPic=null;
+//            itemBitmapPic=null;
+//            itemPic.setBackground(getResources().getDrawable(R.drawable.ic_image_black_24dp));
+
+
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -163,9 +257,9 @@ public class ItemCard extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.relative:
                     if (flag == 1) {
-                        relative.setVisibility(View.GONE);
-                        catLinear.setVisibility(View.INVISIBLE);
-                        subCatLinear.setVisibility((View.INVISIBLE));
+//                        relative.setVisibility(View.GONE);
+                        catLinear.setVisibility(View.GONE);
+                        subCatLinear.setVisibility((View.GONE));
                         flag = 0;
                     }
                     break;
@@ -178,23 +272,41 @@ public class ItemCard extends AppCompatActivity {
                                         if (!TextUtils.isEmpty(catSpinner.getText().toString())) {
                                             if (!TextUtils.isEmpty(subCatSpinner.getText().toString())) {
 
-                                                Items item = new Items(
-                                                        itemNo.getText().toString(),
-                                                        barcode.getText().toString(),
-                                                        itemNameArabic.getText().toString(),
-                                                        itemNameEnglish.getText().toString(),
-                                                        Double.parseDouble(salePrice.getText().toString()),
-                                                        catSpinner.getText().toString(),
-                                                        subCatSpinner.getText().toString(),
-                                                        taxSpinner.getSelectedItem().toString(),
-                                                        itemDescription.getText().toString(),
-                                                        1,
-                                                        companyNo);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
+                                                builder.setMessage(getResources().getString(R.string.save_message));
+                                                builder.setTitle(getResources().getString(R.string.save));
+                                                builder.setPositiveButton(getResources().getString(R.string.save), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
 
-                                                clear();
-                                                itemNo.setText("" + (Integer.parseInt(item.getItemNo())+1));
+                                                        if (isActiveCh.isChecked()) {
+                                                            isActive = "1";
+                                                        } else {
+                                                            isActive = "0";
+                                                        }
+                                                        Items item = new Items(
+                                                                itemNo.getText().toString(),
+                                                                barcode.getText().toString(),
+                                                                itemNameArabic.getText().toString(),
+                                                                itemNameEnglish.getText().toString(),
+                                                                Double.parseDouble(salePrice.getText().toString()),
+                                                                catSpinner.getText().toString(),
+                                                                subCatSpinner.getText().toString(),
+                                                                taxSpinner.getSelectedItem().toString(),
+                                                                itemDescription.getText().toString(),
+                                                                1,
+                                                                companyNo,
+                                                                isActive);
 
-                                                new Export(item.getJSONObject(), "Add_Item");
+                                                        clear();
+                                                        itemNo.setText("" + (Integer.parseInt(item.getItemNo()) + 1));
+
+
+                                                        new Export(item.getJSONObject(), "Add_Item", ItemCard.this);
+
+                                                    }
+                                                });
+                                                builder.show();
 
                                             } else
                                                 subCatSpinner.setError("Required!");
@@ -229,7 +341,7 @@ public class ItemCard extends AppCompatActivity {
                     popupWindowDogs = popupWindowDogs(subCatList, "حذف المجموعه الفرعيه ", 1);
                     popupWindowDogs.showAsDropDown(v, 0, 0);
                     break;
-                case R.id.item_pic:
+                case R.id.item_image:
 
                     Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     intent.setType("image/*");
@@ -261,26 +373,26 @@ public class ItemCard extends AppCompatActivity {
                     break;
                 case R.id.add_cat:
                     if (flag == 1) {
-                        relative.setVisibility(View.GONE);
-                        catLinear.setVisibility(View.INVISIBLE);
-                        subCatLinear.setVisibility((View.INVISIBLE));
+//                        relative.setVisibility(View.GONE);
+                        catLinear.setVisibility(View.GONE);
+                        subCatLinear.setVisibility((View.GONE));
                         flag = 0;
                     } else {
-                        relative.setVisibility(View.VISIBLE);
-                        subCatLinear.setVisibility((View.INVISIBLE));
+//                        relative.setVisibility(View.VISIBLE);
+                        subCatLinear.setVisibility((View.GONE));
                         catLinear.setVisibility(View.VISIBLE);
                         flag = 1;
                     }
                     break;
                 case R.id.add_sub_cat:
                     if (flag == 1) {
-                        relative.setVisibility(View.GONE);
-                        subCatLinear.setVisibility((View.INVISIBLE));
-                        catLinear.setVisibility(View.INVISIBLE);
+//                        relative.setVisibility(View.GONE);
+                        subCatLinear.setVisibility((View.GONE));
+                        catLinear.setVisibility(View.GONE);
                         flag = 0;
                     } else {
-                        relative.setVisibility(View.VISIBLE);
-                        catLinear.setVisibility(View.INVISIBLE);
+//                        relative.setVisibility(View.VISIBLE);
+                        catLinear.setVisibility(View.GONE);
                         subCatLinear.setVisibility((View.VISIBLE));
                         flag = 1;
                     }
@@ -295,10 +407,10 @@ public class ItemCard extends AppCompatActivity {
                                 posNo,
                                 companyNo);
 
-                        new Export(category.getJSONObject(), "Add_Category");
+                        new Export(category.getJSONObject(), "Add_Category", ItemCard.this);
                         catList.add(catName.getText().toString());
 
-                        catNo.setText(""+(Integer.parseInt(catNo.getText().toString())+1));
+                        catNo.setText("" + (Integer.parseInt(catNo.getText().toString()) + 1));
                         catName.setText("");
                         catPic.setBackgroundDrawable(null);
 
@@ -315,19 +427,199 @@ public class ItemCard extends AppCompatActivity {
                                 posNo,
                                 companyNo);
 
-                        new Export(category.getJSONObject(), "Add_Category");
+                        new Export(category.getJSONObject(), "Add_Category", ItemCard.this);
                         subCatList.add(subCatName.getText().toString());
 
-                        subCatNo.setText(""+(Integer.parseInt(subCatNo.getText().toString())+1));
+                        subCatNo.setText("" + (Integer.parseInt(subCatNo.getText().toString()) + 1));
                         subCatName.setText("");
 
                     } else
                         subCatName.setError("Required!");
                     break;
+                case R.id.deleteItem:
+                    deleteItemFun();
+                    break;
+                case R.id.updateItem:
+                    updateItemFun();
+                    break;
             }
 
         }
     };
+
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                spinnerPhoneSS.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (!TextUtils.isEmpty(s.toString())) {
+                Log.e("SearchPoint", "" + s.toString());
+                if (isShow == 0) {
+                    recyclerk.setVisibility(View.VISIBLE);
+                    isShow = 1;//for search dialog is open or not
+                } else if (isShow == 1) {
+                    recyclerk.setVisibility(View.GONE);
+                    isShow = 1;
+                }
+
+
+                globelFunction.fillSearchCustomerPhoneNo(recyclerk, searchEdit.getText().toString(), ItemCard.this);
+            } else {
+                recyclerk.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+
+    void deleteItemFun() {
+
+        if (!TextUtils.isEmpty(itemNo.getText().toString())) {
+            if (!TextUtils.isEmpty(barcode.getText().toString())) {
+                if (!TextUtils.isEmpty(itemNameArabic.getText().toString())) {
+                    if (!TextUtils.isEmpty(itemNameEnglish.getText().toString())) {
+                        if (!TextUtils.isEmpty(salePrice.getText().toString())) {
+                            if (!TextUtils.isEmpty(catSpinner.getText().toString())) {
+                                if (!TextUtils.isEmpty(subCatSpinner.getText().toString())) {
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
+                                    builder.setMessage(getResources().getString(R.string.delete_message_for_item));
+                                    builder.setTitle(getResources().getString(R.string.delete));
+                                    builder.setPositiveButton(getResources().getString(R.string.delete), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            if (isActiveCh.isChecked()) {
+                                                isActive = "1";
+                                            } else {
+                                                isActive = "0";
+                                            }
+                                            Items item = new Items(
+                                                    itemNo.getText().toString(),
+                                                    barcode.getText().toString(),
+                                                    itemNameArabic.getText().toString(),
+                                                    itemNameEnglish.getText().toString(),
+                                                    Double.parseDouble(salePrice.getText().toString()),
+                                                    catSpinner.getText().toString(),
+                                                    subCatSpinner.getText().toString(),
+                                                    taxSpinner.getSelectedItem().toString(),
+                                                    itemDescription.getText().toString(),
+                                                    1,
+                                                    companyNo,
+                                                    isActive);
+
+
+                                            item.setSerial("0");
+                                            item.setCompanyNo(CoNo);
+                                            item.setCompanyYear(CoYear);
+                                            item.setItemNo(itemNo.getText().toString());
+
+//                                            clear();
+
+//                                            itemNo.setText("" + (Integer.parseInt(item.getItemNo())+1));
+
+
+                                            new Export(item.getJSONObject4(), "Delete_Item", ItemCard.this);
+
+                                        }
+                                    });
+                                    builder.show();
+
+                                } else
+                                    subCatSpinner.setError("Required!");
+                            } else
+                                catSpinner.setError("Required!");
+                        } else
+                            salePrice.setError("Required!");
+                    } else
+                        itemNameEnglish.setError("Required!");
+                } else
+                    itemNameArabic.setError("Required!");
+            } else
+                barcode.setError("Required!");
+        } else
+            itemNo.setError("Required!");
+
+    }
+
+
+    void updateItemFun() {
+
+        if (!TextUtils.isEmpty(itemNo.getText().toString())) {
+            if (!TextUtils.isEmpty(barcode.getText().toString())) {
+                if (!TextUtils.isEmpty(itemNameArabic.getText().toString())) {
+                    if (!TextUtils.isEmpty(itemNameEnglish.getText().toString())) {
+                        if (!TextUtils.isEmpty(salePrice.getText().toString())) {
+                            if (!TextUtils.isEmpty(catSpinner.getText().toString())) {
+                                if (!TextUtils.isEmpty(subCatSpinner.getText().toString())) {
+
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ItemCard.this);
+                                    builder.setMessage(getResources().getString(R.string.update_message_for_item));
+                                    builder.setTitle(getResources().getString(R.string.update));
+                                    builder.setPositiveButton(getResources().getString(R.string.update), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            if (isActiveCh.isChecked()) {
+                                                isActive = "1";
+                                            } else {
+                                                isActive = "0";
+                                            }
+                                            Items item = new Items(
+                                                    itemNo.getText().toString(),
+                                                    barcode.getText().toString(),
+                                                    itemNameArabic.getText().toString(),
+                                                    itemNameEnglish.getText().toString(),
+                                                    Double.parseDouble(salePrice.getText().toString()),
+                                                    catSpinner.getText().toString(),
+                                                    subCatSpinner.getText().toString(),
+                                                    taxSpinner.getSelectedItem().toString(),
+                                                    itemDescription.getText().toString(),
+                                                    1,
+                                                    companyNo,
+                                                    isActive);
+
+
+                                            item.setSerial("0");
+                                            item.setCompanyNo(CoNo);
+                                            item.setCompanyYear(CoYear);
+                                            item.setItemNo(itemNo.getText().toString());
+
+//                                            clear();
+
+//                                            itemNo.setText("" + (Integer.parseInt(item.getItemNo())+1));
+
+
+                                            new Export(item.getJSONObject(), "Update_Item", ItemCard.this);
+
+                                        }
+                                    });
+                                    builder.show();
+
+                                } else
+                                    subCatSpinner.setError("Required!");
+                            } else
+                                catSpinner.setError("Required!");
+                        } else
+                            salePrice.setError("Required!");
+                    } else
+                        itemNameEnglish.setError("Required!");
+                } else
+                    itemNameArabic.setError("Required!");
+            } else
+                barcode.setError("Required!");
+        } else
+            itemNo.setError("Required!");
+
+    }
 
     void clear() {
 
@@ -342,9 +634,23 @@ public class ItemCard extends AppCompatActivity {
         itemNameEnglish.setText("");
         salePrice.setText("");
         itemDescription.setText("");
+        categoryPic = null;
+        itemBitmapPic = null;
+        itemPic.setBackground(getResources().getDrawable(R.drawable.ic_image_black_24dp));
 
-        itemPic.setBackgroundDrawable(getResources().getDrawable(R.drawable.shape2));
+    }
 
+    void clearEditText() {
+
+        taxSpinner.setSelection(0);
+        catName.setText("");
+        subCatName.setText("");
+        barcode.setText("");
+        itemNameArabic.setText("");
+        itemNameEnglish.setText("");
+        salePrice.setText("");
+        itemDescription.setText("");
+        save.setEnabled(true);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -361,14 +667,14 @@ public class ItemCard extends AppCompatActivity {
                 //Get image
 
                 if (picFlag == 0) {
-                    itemPic.setBackgroundDrawable(null);
+                    itemPic.setBackground(null);
                     itemBitmapPic = extras.getParcelable("data");
-                    itemPic.setImageDrawable(new BitmapDrawable(getResources(), itemBitmapPic));
+                    itemPic.setBackground(new BitmapDrawable(getResources(), itemBitmapPic));
 
                 } else {
-                    catPic.setBackgroundDrawable(null);
+                    catPic.setBackground(null);
                     categoryPic = extras.getParcelable("data");
-                    catPic.setImageDrawable(new BitmapDrawable(getResources(), categoryPic));
+                    catPic.setBackground(new BitmapDrawable(getResources(), categoryPic));
                 }
             }
         }
@@ -386,100 +692,6 @@ public class ItemCard extends AppCompatActivity {
         return "";
     }
 
-    void setThemeNo(int themeNo) {
-
-        switch (themeNo) {
-            case 2:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
-                alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
-
-            case 3:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
-                alpha.setBackgroundColor(getResources().getColor(R.color.green3));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                break;
-
-            case 4:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
-                alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                break;
-
-            case 5:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
-                alpha.setBackgroundColor(getResources().getColor(R.color.red3));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                break;
-
-            case 6:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
-                alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                break;
-
-            case 7:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
-                alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                break;
-
-            case 8:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                itemCardBack.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
-                alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                break;
-
-            case 9:
-                catLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
-                subCatLinear.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
-                itemCardBack.setBackgroundColor(getResources().getColor(R.color.cream));
-                alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
-
-                save.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
-                search.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.cream_dot));
-                break;
-
-
-        }
-    }
 
     void startAnimation() {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.down_from_top);
@@ -596,6 +808,23 @@ public class ItemCard extends AppCompatActivity {
         return adapter;
     }
 
+    void getPositionOfTax(String tax) {
+        int position = -1;
+
+        for (int i = 0; i < taxList.size(); i++) {
+            if (taxList.get(i).equals(tax)) {
+                position = i;
+                break;
+            }
+        }
+        Log.e("position", tax + "   " + position);
+        if (position != -1) {
+            taxSpinner.setSelection(position);
+        } else {
+            taxSpinner.setSelection(0);
+        }
+    }
+
     private class JSONTask extends AsyncTask<String, String, String> {
 
         @Override
@@ -611,7 +840,7 @@ public class ItemCard extends AppCompatActivity {
             String finalJson = null;
 
             try {
-                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=0");
+                URL url = new URL("http://" + ipAddress + "/miniPOS/import.php?FLAG=0");
 
                 URLConnection conn = url.openConnection();
                 conn.setDoOutput(true);
@@ -657,9 +886,9 @@ public class ItemCard extends AppCompatActivity {
                         JSONObject innerObject = parentArrayMaxes.getJSONObject(i);
 
                         if (innerObject.getInt("DESC_TYPE") == 0)
-                            catNo.setText("" + (innerObject.getInt("MAX_SERIAL") +1));
+                            catNo.setText("" + (innerObject.getInt("MAX_SERIAL") + 1));
                         else
-                            subCatNo.setText("" + (innerObject.getInt("MAX_SERIAL") +1));
+                            subCatNo.setText("" + (innerObject.getInt("MAX_SERIAL") + 1));
 
                     }
 
@@ -671,19 +900,17 @@ public class ItemCard extends AppCompatActivity {
                 try {
                     JSONArray parentArrayMaxes = parentObject.getJSONArray("MAX_SERIAL_ITEM");
 
-                        JSONObject innerObject = parentArrayMaxes.getJSONObject(0);
+                    JSONObject innerObject = parentArrayMaxes.getJSONObject(0);
 
-                        if (!innerObject.getString("MAX_SERIAL").equals("null"))
-                            itemNo.setText("" + (innerObject.getInt("MAX_SERIAL") +1));
-                        else
-                            itemNo.setText("1");
-
+                    if (!innerObject.getString("MAX_SERIAL").equals("null"))
+                        itemNo.setText("" + (innerObject.getInt("MAX_SERIAL") + 1));
+                    else
+                        itemNo.setText("1");
 
 
                 } catch (JSONException e) {
                     Log.e("Import CATEGORIES", e.getMessage().toString());
                 }
-
 
 
             } catch (MalformedURLException e) {
@@ -733,8 +960,7 @@ public class ItemCard extends AppCompatActivity {
         }
     }
 
-    public String ReturnArabic(String PAR)
-    {
+    public String ReturnArabic(String PAR) {
         String sresult = "";
         char x;
         int[] t = new int[PAR.length()];
@@ -828,7 +1054,7 @@ public class ItemCard extends AppCompatActivity {
                         break;
                     }
                     case 63: {
-                        Log.e("lll" , sresult);
+                        Log.e("lll", sresult);
                         sresult += "?";
                         break;
                     }
@@ -1096,9 +1322,9 @@ public class ItemCard extends AppCompatActivity {
     }
 
     void init() {
-        itemCardBack = findViewById(R.id.item_card_back);
-        relative = findViewById(R.id.relative);
-        alpha = findViewById(R.id.alpha);
+//        itemCardBack = findViewById(R.id.item_card_back);
+//        relative = findViewById(R.id.relative);
+//        alpha = findViewById(R.id.alpha);
         taxSpinner = findViewById(R.id.type_card_tax_percent);
         catSpinner = findViewById(R.id.type_card_group);
         subCatSpinner = findViewById(R.id.type_card_branch_group);
@@ -1129,6 +1355,12 @@ public class ItemCard extends AppCompatActivity {
         save = findViewById(R.id.save);
         search = findViewById(R.id.search);
         back = findViewById(R.id.back);
+        deleteItem = findViewById(R.id.deleteItem);
+        updateItem=findViewById(R.id.updateItem);
+        relative = findViewById(R.id.relative);
+        searchEdit = findViewById(R.id.searchEdit);
+        recyclerk = findViewById(R.id.recyclerk);
+        isActiveCh = findViewById(R.id.isActiveCh);
     }
 
 }

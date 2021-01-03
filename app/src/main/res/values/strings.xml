@@ -3,6 +3,8 @@
 
     <string name="option_type">Select Option</string>
     <string name="delete">Delete</string>
+    <string name="update">Update</string>
+
     <string name="delete_all">Delete All</string>
     <string name="edit">Edit</string>
     <string name="clos">Close</string>
@@ -10,8 +12,8 @@
     <string name="add">Add</string>
 
     <string name="log_in">Log In</string>
-    <string name="user_name">User Name :</string>
-    <string name="password">Password :</string>
+    <string name="user_name">User Name </string>
+    <string name="password">Password </string>
     <string name="enter">Enter</string>
 
     <string name="price">Price</string>
@@ -25,7 +27,7 @@
     <string name="item_name">Item Name</string>
     <string name="total">Total</string>
     <string name="total_no_tax">Total Before Tax</string>
-    <string name="tax_value">Tax Value</string>
+    <string name="tax_value">Tax Percent</string>
     <string name="net_sales">Net Sales</string>
     <string name="categories">Categories</string>
     <string name="add_item">Add Item</string>
@@ -74,20 +76,31 @@
     <string name="company_name">Company Name</string>
     <string name="company_id">Company ID</string>
     <string name="POS_no">POS No</string>
-    <string name="control">Control :</string>
-    <string name="tax_type">Tax Type</string>
+    <string name="control">Control </string>
+    <string name="tax_type">Tax Type  </string>
     <string name="exclude">Exclude</string>
     <string name="include">include</string>
     <string name="theme">Theme</string>
     <string name="save">Save</string>
 
     <string name="delete_message">Are you sure, You want to delete all items ?</string>
+    <string name="save_message">Are you sure, You want to Save This Item ?</string>
+    <string name="delete_message_for_item">Are you sure, You want to delete this items ?</string>
+    <string name="update_message_for_item">Are you sure, You want to update this items ?</string>
     <string name="delete_item_message">Are you sure, You want to delete this item ?</string>
     <string name="delete_category_message">Are you sure, You want to delete this category ?</string>
     <string name="no_items_message">No items !</string>
     <string name="cant_edit_price_message">Can not edit price !</string>
     <string name="cant_edit_qty_message">Can not edit quantity !</string>
     <string name="item_added_message">Item added to menu !</string>
+    <string name="item">Item</string>
+    <string name="add_new_item">Add New Item</string>
+    <string name="All_category">All Category</string>
+    <string name="voucher_no">Voucher No</string>
+    <string name="delete_last_item">Delete Last Item</string>
+    <string name="back">Back</string>
+    <string name="Item_Can_Not_Delete">Item Can Not Be Delete</string>
+    <string name="Item_Can_Not_Update">Item Can Not Be Update</string>
 
 
 </resources>

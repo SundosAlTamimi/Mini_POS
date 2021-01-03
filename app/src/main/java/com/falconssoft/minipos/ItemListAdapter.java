@@ -3,17 +3,15 @@ package com.falconssoft.minipos;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.falconssoft.minipos.Modle.Categories;
 import com.falconssoft.minipos.Modle.Items;
-import com.falconssoft.minipos.R;
 
 import java.util.List;
 
@@ -21,7 +19,6 @@ public class ItemListAdapter extends BaseAdapter {
 
     private Context context;
     private static List<Items> itemsList;
-    private int lastPosition = -1;
 
     public ItemListAdapter(Context context, List<Items> itemsList) {
         this.context = context;
@@ -50,6 +47,30 @@ public class ItemListAdapter extends BaseAdapter {
     public long getItemId(int i) {
         return 0;
     }
+
+//    private class ViewHolder {
+//        TextView catName;
+//        ImageView catPic;
+//    }
+//
+//    @Override
+//    public View getView(final int i, View view, ViewGroup viewGroup) {
+//
+//        final ViewHolder holder = new ViewHolder();
+//        view = View.inflate(context, R.layout.cat_row, null);
+//
+//        holder.catName = (TextView) view.findViewById(R.id.catName);
+//        holder.catPic = (ImageView) view.findViewById(R.id.image);
+//
+//
+//        holder.catName.setText(itemsList.get(i).getCatName());
+////        holder.catPic.setImageDrawable(context.getResources().getDrawable(itemsList.get(i).getPic()));
+//
+//        return view;
+//    }
+
+
+
 
     private class ViewHolder {
         TextView itemName , price;
@@ -101,5 +122,6 @@ public class ItemListAdapter extends BaseAdapter {
 
         return view;
     }
+
 
 }

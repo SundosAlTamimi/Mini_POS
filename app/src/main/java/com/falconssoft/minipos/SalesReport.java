@@ -7,9 +7,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -42,32 +46,48 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import static com.falconssoft.minipos.GlobelFunction.ipAddress;
+
 public class SalesReport extends AppCompatActivity {
 
-    private LinearLayout back, alpha;
+    private LinearLayout  alpha;
     private EditText from, to;
-    private Button preview;
+//    private Button preview;
     DatabaseHandler DHandler;
     private Calendar myCalendar;
     private TableLayout tableLayout;
     private String fromDate, toDate;
 
     ArrayList<Items> items;
-
+    TextView back,preview;
+GlobelFunction globelFunction;
+EditText searchEditText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.detail_sale_report);
+        setContentView(R.layout.detail_sale_report_new);
 
         init();
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        globelFunction=new GlobelFunction();
 
         items = new ArrayList<>();
         DHandler = new DatabaseHandler(this);
-        if (DHandler.getSettings() != null)
-            setThemeNo(DHandler.getSettings().getThemeNo());
+//        if (DHandler.getSettings() != null)
+//            setThemeNo(DHandler.getSettings().getThemeNo());
 
         myCalendar = Calendar.getInstance();
 
+        from.setText(globelFunction.DateInToday());
+        to.setText(globelFunction.DateInToday());
+        fromDate=globelFunction.DateInToday();
+        toDate=globelFunction.DateInToday();
+        globelFunction.GlobelFunctionSetting(DHandler);
         from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,10 +111,30 @@ public class SalesReport extends AppCompatActivity {
         preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                items.clear();
+                searchByNoNameItem();
                 new JSONTask().execute();
 
             }
         });
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchByNoNameItem();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
     }
 
@@ -131,58 +171,81 @@ public class SalesReport extends AppCompatActivity {
         return date;
     }
 
-    void setThemeNo(int themeNo) {
+//    void setThemeNo(int themeNo) {
+//
+//        switch (themeNo) {
+//            case 2:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+//                break;
+//
+//            case 3:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.green3));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
+//                break;
+//
+//            case 4:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
+//                break;
+//
+//            case 5:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.red3));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
+//                break;
+//
+//            case 6:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
+//                break;
+//
+//            case 7:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
+//                break;
+//
+//            case 8:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
+//                break;
+//
+//            case 9:
+//                back.setBackgroundColor(getResources().getColor(R.color.cream));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
+//                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
+//                break;
+//
+//        }
+//    }
 
-        switch (themeNo) {
-            case 2:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
-                alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
 
-            case 3:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
-                alpha.setBackgroundColor(getResources().getColor(R.color.green3));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_dot));
-                break;
 
-            case 4:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
-                alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.gray_dot));
-                break;
+    void searchByNoNameItem(){
+        String itemNoName=searchEditText.getText().toString();
 
-            case 5:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
-                alpha.setBackgroundColor(getResources().getColor(R.color.red3));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.red_dot));
-                break;
+        List<Items>temp=new ArrayList<>();
+        if(!TextUtils.isEmpty(itemNoName)) {
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i).getItemNo().contains(itemNoName)/*||items.get(i).getItemName().contains(itemNoName)*/) {
+                    Items item = new Items();
+                    item = items.get(i);
+                    temp.add(item);
+                }
+            }
+            fillTable(temp);
 
-            case 6:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
-                alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.pronze_dot));
-                break;
-
-            case 7:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
-                alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.sky_dot));
-                break;
-
-            case 8:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
-                alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue_dot));
-                break;
-
-            case 9:
-                back.setBackgroundColor(getResources().getColor(R.color.cream));
-                alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
-                preview.setBackgroundDrawable(getResources().getDrawable(R.drawable.rosy_dot));
-                break;
-
+        }else {
+            fillTable(items);
         }
+
+
     }
 
     private class JSONTask extends AsyncTask<String, String, String> {
@@ -199,7 +262,7 @@ public class SalesReport extends AppCompatActivity {
             String finalJson = null;
 
             try {
-                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=4&FROM_DATE='" + fromDate + "'&TO_DATE='" + toDate + "'");
+                URL url = new URL("http://"+ipAddress+"/miniPOS/import.php?FLAG=4&FROM_DATE='" + fromDate + "'&TO_DATE='" + toDate + "'");
 
 //                Log.e("dDate", "********"+ dDate);
 
@@ -223,6 +286,7 @@ public class SalesReport extends AppCompatActivity {
 
 
                 try {
+                    items.clear();
                     JSONArray parentArraySales = parentObject.getJSONArray("SALES_REPORT");
 
                     for (int i = 0; i < parentArraySales.length(); i++) {
@@ -276,51 +340,60 @@ public class SalesReport extends AppCompatActivity {
             if (result != null) {
                 Log.e("result", "*****************" + result);
 
-                fillTable();
+                searchByNoNameItem();
             } else {
+                searchByNoNameItem();
                 Toast.makeText(SalesReport.this, "Not able to fetch data from server, please check url.", Toast.LENGTH_SHORT).show();
             }
         }
 
-        @SuppressLint("NewApi")
-        void fillTable() {
 
-            tableLayout.removeAllViews();
-            for (int k = 0; k < items.size(); k++) {
+    }
+
+    void fillTable(List<Items>items) {
+
+        tableLayout.removeAllViews();
+        for (int k = 0; k < items.size(); k++) {
 
 //                TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-                TableRow tableRow = new TableRow(SalesReport.this);
+            TableRow tableRow = new TableRow(SalesReport.this);
 //                tableRow.setLayoutParams(tableParams);
 
-                for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
 
-                    TextView textView = new TextView(SalesReport.this);
-                    TableRow.LayoutParams textViewParam = new TableRow.LayoutParams(0, 35, 1f);
-                    textViewParam.setMargins(0, 5, 0, 3);
-                    textView.setTextSize(18);
-                    textView.setGravity(Gravity.CENTER);
-                    textView.setTextColor(SalesReport.this.getColor(R.color.black));
-                    textView.setLayoutParams(textViewParam);
-                    switch (i) {
-                        case 0:
-                            textView.setText(items.get(k).getItemNo());
-                            break;
-                        case 1:
-                            textView.setText("" + items.get(k).getQty());
-                            break;
-                        case 2:
-                            textView.setText("" + items.get(k).getNet());
-                            break;
-                        case 3:
-                            textView.setText("" + items.get(k).getNetWithTax());
-                            break;
-                    }
-                    tableRow.addView(textView);
+                TextView textView = new TextView(SalesReport.this);
+                TableRow.LayoutParams textViewParam = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+                textViewParam.setMargins(0, 5, 0, 3);
+                textView.setTextSize(14);
+                textView.setGravity(Gravity.CENTER);
+                textView.setTextColor(SalesReport.this.getResources().getColor(R.color.black));
+                textView.setLayoutParams(textViewParam);
+                switch (i) {
+                    case 0:
+                        textView.setText(items.get(k).getItemNo());
+                        break;
+                    case 1:
+                        textView.setText("" + items.get(k).getQty());
+                        break;
+                    case 2:
+                        textView.setText("" + items.get(k).getNet());
+                        break;
+                    case 3:
+                        textView.setText("" + items.get(k).getNetWithTax());
+                        break;
                 }
-                tableLayout.addView(tableRow);
-            }
 
+                if(k%2==0){
+                    tableRow.setBackgroundColor(SalesReport.this.getResources().getColor(R.color.greenL));
+
+
+                }
+
+                tableRow.addView(textView);
+            }
+            tableLayout.addView(tableRow);
         }
+
     }
 
 
@@ -331,5 +404,6 @@ public class SalesReport extends AppCompatActivity {
         from = findViewById(R.id.from);
         to = findViewById(R.id.to);
         tableLayout = findViewById(R.id.table);
+        searchEditText=findViewById(R.id.searchEditText);
     }
 }

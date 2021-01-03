@@ -3,14 +3,16 @@
 
     <string name="option_type">اختر نوع العملية</string>
     <string name="delete">حذف</string>
+    <string name="update">تعديل</string>
+
     <string name="delete_all">حذف الجميع</string>
     <string name="edit">تعديل</string>
     <string name="clos">الغاء</string>
     <string name="add">اضافة</string>
 
     <string name="log_in">تسجيل الدخول</string>
-    <string name="user_name">اسم المستخدم :</string>
-    <string name="password">كلمة المرور :</string>
+    <string name="user_name">اسم المستخدم </string>
+    <string name="password">كلمة المرور </string>
     <string name="enter">دخول</string>
 
     <string name="price">السعر</string>
@@ -83,11 +85,24 @@
 
 
     <string name="delete_message">هل انت متأكد من حذف جميع المواد ؟</string>
+    <string name="save_message">هل انت متأكد من حفظ الماده  ؟</string>
+
+    <string name="delete_message_for_item">هل انت متأكد من حذف هذه المادة ؟</string>
+    <string name="update_message_for_item">هل انت متأكد من تعديل هذه المادة ؟</string>
+
     <string name="delete_item_message">هل انت متأكد من حذف هذه المادة ؟</string>
     <string name="delete_category_message">هل انت متأكد من حذف هذه المجموعة ؟</string>
     <string name="no_items_message">لم يتم اضافة مواد !</string>
     <string name="cant_edit_price_message">لا يمكنك التعديل على السعر !</string>
     <string name="cant_edit_qty_message">لا يمكنك التعديل على الكمية !</string>
     <string name="item_added_message">تم اضافة المادة الى القائمة !</string>
+    <string name="item">Item</string>
+    <string name="add_new_item">Add New Item</string>
+    <string name="All_category">All Category</string>
+    <string name="voucher_no">Voucher No</string>
+    <string name="delete_last_item">Delete Last Item</string>
+    <string name="back">Back</string>
+    <string name="Item_Can_Not_Delete">Item Can Not Be Delete</string>
+    <string name="Item_Can_Not_Update">Item Can Not Be Update</string>
 
 </resources>

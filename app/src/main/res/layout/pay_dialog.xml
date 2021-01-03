@@ -1,107 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="450dp"
-    android:layout_height="320dp"
-    android:background="@color/cream"
-    android:gravity="center"
-    android:padding="40dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/save_back"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bac_save_button"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="horizontal"
+        android:padding="0dp">
 
-        <TextView
-            android:layout_width="150dp"
+        <Button
+            android:id="@+id/pay"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/required"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/required"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/bac_save_button"
+            android:drawableStart="@drawable/ic_bubble_chart_black_24dp"
+            android:drawablePadding="3dp"
             android:gravity="center"
-            android:paddingHorizontal="10dp"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-
+            android:padding="10dp"
+            android:text="@string/pay"
+            android:textColor="@color/whitesL"
+            android:textSize="14sp" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/closeDialogLiner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="@string/payed"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/payed"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6px"
-            android:background="@drawable/shape2"
-            android:gravity="center"
-            android:paddingHorizontal="10dp"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="@string/remaining"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/remaining"
-            android:layout_width="220dp"
-            android:layout_height="35dp"
-            android:layout_marginVertical="6dp"
-            android:gravity="center"
-            android:paddingHorizontal="10dp"
-            android:text="0"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/pay"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/green_dot"
-        android:text="@string/pay"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:layout_weight="1"
+        android:background="@color/whites"
+        android:elevation="@dimen/cardview_default_elevation"
+        app:cardBackgroundColor="@color/whites"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        app:cardMaxElevation="10dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/addNewItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:drawableStart="@drawable/ic_assessment_black_24dp"
+                android:gravity="center|start"
+                android:padding="3dp"
+                android:text="@string/pay"
+                android:textAllCaps="false"
+                android:textColor="@color/greenS"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2.4"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/required"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/required"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bac_search"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:paddingHorizontal="10dp"
+                        android:textColor="@color/red"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/payed"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/payed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="6px"
+                        android:layout_weight="1"
+                        android:background="@drawable/bac_search"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:paddingHorizontal="10dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/remaining"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/remaining"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="6dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:paddingHorizontal="10dp"
+                        android:text="0"
+                        android:textAlignment="center"
+                        android:textColor="@color/greenS"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

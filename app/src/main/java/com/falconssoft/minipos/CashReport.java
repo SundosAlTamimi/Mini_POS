@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,30 +34,51 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.falconssoft.minipos.GlobelFunction.ipAddress;
+
 public class CashReport extends AppCompatActivity {
 
-    private LinearLayout linear1, linear2, back, alpha;
+    private LinearLayout linear1, linear2, alpha;
     private EditText dateField, salesNoTax, tax, salesAfterTax;
     private String salsNoTx , tx , salsWthTx;
     String dDate;
 
     DatabaseHandler DHandler;
     private Calendar myCalendar;
-
+    TextView back,preview;
+GlobelFunction globelFunction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cash_report);
+        setContentView(R.layout.cash_report_new);
 
         init();
+        globelFunction=new GlobelFunction();
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dDate = dateField.getText().toString();
+                new JSONTask().execute();
+            }
+        });
 
         DHandler = new DatabaseHandler(this);
-        if (DHandler.getSettings().getIpAddress() != null)
-            setThemeNo(DHandler.getSettings().getThemeNo());
+//        if (DHandler.getSettings().getIpAddress() != null)
+//            setThemeNo(DHandler.getSettings().getThemeNo());
 
+        dateField.setText(globelFunction.DateInToday());
         startAnimation();
 
         myCalendar = Calendar.getInstance();
+        globelFunction.GlobelFunctionSetting(DHandler);
 
         dateField.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,51 +140,51 @@ public class CashReport extends AppCompatActivity {
 
     }
 
-    void setThemeNo(int themeNo) {
-
-        switch (themeNo) {
-            case 2:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
-                alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
-                break;
-
-            case 3:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
-                alpha.setBackgroundColor(getResources().getColor(R.color.green3));
-                break;
-
-            case 4:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
-                alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
-                break;
-
-            case 5:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
-                alpha.setBackgroundColor(getResources().getColor(R.color.red3));
-                break;
-
-            case 6:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
-                alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
-                break;
-
-            case 7:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
-                alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
-                break;
-
-            case 8:
-                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
-                alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
-                break;
-
-            case 9:
-                back.setBackgroundColor(getResources().getColor(R.color.cream));
-                alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
-                break;
-
-        }
-    }
+//    void setThemeNo(int themeNo) {
+//
+//        switch (themeNo) {
+//            case 2:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_rose));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.rosy4));
+//                break;
+//
+//            case 3:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_green));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.green3));
+//                break;
+//
+//            case 4:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_gray));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.gray3));
+//                break;
+//
+//            case 5:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_red));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.red3));
+//                break;
+//
+//            case 6:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_pronz));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.pronz3));
+//                break;
+//
+//            case 7:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_sky));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.sky3));
+//                break;
+//
+//            case 8:
+//                back.setBackgroundDrawable(getResources().getDrawable(R.drawable.back_blue));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.blue4));
+//                break;
+//
+//            case 9:
+//                back.setBackgroundColor(getResources().getColor(R.color.cream));
+//                alpha.setBackgroundColor(getResources().getColor(R.color.beetle_green));
+//                break;
+//
+//        }
+//    }
 
     void init() {
         linear1 = findViewById(R.id.linear1);
@@ -173,6 +195,7 @@ public class CashReport extends AppCompatActivity {
         salesNoTax = findViewById(R.id.sales_no_tax);
         tax = findViewById(R.id.tax);
         salesAfterTax = findViewById(R.id.sales_after_tax);
+        preview=findViewById(R.id.preview);
     }
 
     private class JSONTask extends AsyncTask<String, String, String> {
@@ -189,7 +212,7 @@ public class CashReport extends AppCompatActivity {
             String finalJson = null;
 
             try {
-                URL url = new URL("http://10.0.0.214/miniPOS/import.php?FLAG=3&D_DATE='" + dDate + "'");
+                URL url = new URL("http://"+ipAddress+"/miniPOS/import.php?FLAG=3&D_DATE='" + dDate + "'");
 
                 Log.e("dDate", "********"+ dDate);
 
